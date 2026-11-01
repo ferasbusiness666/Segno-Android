@@ -177,8 +177,9 @@ object YouTube {
         is YoutubeMusicPremiumContentException, is PaidContentException -> "This one is only for paying YouTube members."
         is PrivateContentException -> "This video is private."
         is ContentNotAvailableException -> "This isn't available on YouTube anymore."
-        is SignInConfirmNotBotException, is ReCaptchaException ->
-            "YouTube is asking Segno to slow down. Try again in a few minutes."
+        is SignInConfirmNotBotException ->
+            "YouTube wants this network to sign in before it plays anything. Try again later, or switch between Wi-Fi and mobile data."
+        is ReCaptchaException -> "YouTube is asking Segno to slow down. Try again in a few minutes."
         is IOException -> "Couldn't reach YouTube. Check your internet connection."
         else -> "YouTube answered in a way Segno didn't understand. Try again, or update Segno if it keeps happening."
     }

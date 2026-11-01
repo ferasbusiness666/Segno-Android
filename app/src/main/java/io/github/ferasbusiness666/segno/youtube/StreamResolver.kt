@@ -55,7 +55,13 @@ object StreamResolver {
         val lock = locks.getOrPut(videoId) { Any() }
         synchronized(lock) {
             cached(videoId)?.let { if (!preferM4a || it.isM4a) return it }
-            val audio = YouTube.guard { fetch(videoId) }
+            val audio = try {
+                YouTube.guard { fetch(videoId) }
+            } catch (e: YouTubeException) {
+                // The extractor's own words, for logcat and bug reports.
+                android.util.Log.w("Segno", "Couldn't get the audio of $videoId: ${e.message} (${e.cause})")
+                throw e
+            }
             synchronized(cache) { cache[videoId] = audio }
             return audio
         }

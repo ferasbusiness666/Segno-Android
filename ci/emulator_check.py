@@ -201,13 +201,14 @@ shot("03-library-no-access")
 # Some songs on the phone, then allow access.
 try:
     import wave, struct, math, tempfile
-    for k, name in enumerate(["Lumen - Paper Planes", "Kora Sun - Desert Bloom", "Atlas Echo - Northern Lights"]):
+    for k, name in enumerate(["Lumen - Paper Planes", "Kora Sun - Desert Bloom", "Atlas Echo - Northern Lights", "Segno CI - Long Tone"]):
         path = os.path.join(tempfile.gettempdir(), f"song{k}.wav")
+        secs = 120 if k == 3 else 3
         with wave.open(path, "w") as w:
             w.setnchannels(1)
             w.setsampwidth(2)
             w.setframerate(8000)
-            frames = b"".join(struct.pack("<h", int(3000 * math.sin(2 * math.pi * (220 + 110 * k) * t / 8000))) for t in range(8000 * 3))
+            frames = b"".join(struct.pack("<h", int(3000 * math.sin(2 * math.pi * (220 + 110 * k) * t / 8000))) for t in range(8000 * secs))
             w.writeframes(frames)
         adb("push", path, f"/sdcard/Music/{name}.wav")
         sh(f"am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d 'file:///sdcard/Music/{name}.wav' >/dev/null 2>&1")
@@ -270,38 +271,65 @@ if got:
         back()  # close Now Playing
 
 # Background playback -----------------------------------------------------------------------------
-if playing:
+def background_check(label):
+    """Home screen for 30 s: the session must stay PLAYING, the position must move on, and the
+    media notification must be there."""
     adb("logcat", "-c")
     sh("input keyevent 3")  # Home
-    t0 = time.time()
     time.sleep(2)
-    ms0 = sh("dumpsys media_session")
     time.sleep(30)
     ms1 = sh("dumpsys media_session")
     lines = re.findall(r"pos=(\d+) playing=(\w+) state=(\d+)", adb("logcat", "-d", "-s", "SegnoCI:I"))
     pos = [(int(p), pl) for p, pl, _ in lines]
     st = re.findall(r"state=PlaybackState \{state=(\w+)\((\d)\)|state=PlaybackState \{state=(\d+)", ms1)
-    states = [s[1] or s[2] for s in st]
-    in_session = PKG in ms1
-    log(f"background: media_session has Segno: {in_session}; playback states: {states}")
-    log(f"background: positions every 5 s while in the background: {[p for p, _ in pos]}")
+    states = [x[1] or x[2] for x in st]
+    log(f"background ({label}): media_session has Segno: {PKG in ms1}; playback states: {states}")
+    log(f"background ({label}): positions every 5 s with the app in the background: {[p for p, _ in pos]}")
     advancing = len(pos) >= 3 and pos[-1][0] - pos[0][0] >= 15000 and all(pl == "true" for _, pl in pos[-3:])
     playing_state = "3" in states
     notif = sh("dumpsys notification --noredact")
     has_notif = PKG in notif and ("MediaStyle" in notif or "mediaSession" in notif or "transport" in notif)
-    log(f"background: PLAYING={playing_state}, position advancing={advancing}, media notification={has_notif}")
-    with open(os.path.join(OUT, "media_session.txt"), "w") as f:
+    log(f"background ({label}): PLAYING={playing_state}, position advancing={advancing}, media notification={has_notif}")
+    with open(os.path.join(OUT, f"media_session-{label}.txt"), "w") as f:
         f.write(ms1)
     sh("cmd statusbar expand-notifications")
     time.sleep(2)
-    shot("12-notification")
+    shot(f"12-notification-{label}")
     sh("cmd statusbar collapse")
-    if not (playing_state and advancing and has_notif):
-        failures.append("background playback check failed")
     adb("shell", "am", "start", "-n", ACT)
     time.sleep(3)
+    return playing_state and advancing and has_notif
+
+
+if playing:
+    if not background_check("youtube"):
+        failures.append("background playback (YouTube) check failed")
 else:
-    failures.append("song did not play")
+    # Usually YouTube refusing the CI runner's data-center address, not a bug: report it.
+    why = re.findall(r"Couldn't get the audio of \S+: (.*)", adb("logcat", "-d", "-s", "Segno:W"))
+    cause = re.findall(r"Caused by: (org\.schabi\S+: [^\n]*)", adb("logcat", "-d"))
+    log(f"YouTube playback on this runner: did not start. Segno said: {why[-1] if why else '?'}")
+    log(f"  extractor error: {cause[-1] if cause else '?'}")
+    if not any("bot" in c.lower() or "sign in" in c.lower() for c in cause + why):
+        failures.append("YouTube song did not play (not a bot check)")
+    # The playback service itself is checked with a music file from the phone instead.
+    tap_id("tabLibrary")
+    time.sleep(1)
+    tap_id("chipSongs")
+    time.sleep(2)
+    adb("logcat", "-c")
+    if tap_id("title", text="Long Tone"):
+        ok = wait_for(lambda: "playing=true" in adb("logcat", "-d", "-s", "SegnoCI:I"), 30)
+        log(f"local file playback started: {'yes' if ok else 'NO'}")
+        if ok:
+            time.sleep(2)
+            shot("08b-mini-player-local")
+            if not background_check("local-file"):
+                failures.append("background playback (local file) check failed")
+        else:
+            failures.append("local file did not play")
+    else:
+        failures.append("local test song not found")
 
 # Jank: scroll the search results -----------------------------------------------------------------
 tap_id("tabSearch")
@@ -375,7 +403,7 @@ if tap_id("settings"):
     back()
 
 # Landscape Now Playing ---------------------------------------------------------------------------
-if playing and tap_id("miniCard"):
+if tap_id("miniCard"):
     sh("settings put system accelerometer_rotation 0")
     sh("settings put system user_rotation 1")
     time.sleep(3)

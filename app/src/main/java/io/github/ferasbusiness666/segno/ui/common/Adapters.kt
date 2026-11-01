@@ -114,7 +114,7 @@ class ViewAdapter(
 }
 
 /** A section title, with an optional action on the right ("See all"). */
-class SectionAdapter(private val stableId: Long) : RecyclerView.Adapter<SectionAdapter.Holder>() {
+class SectionAdapter(private val stableId: Long, private val small: Boolean = false) : RecyclerView.Adapter<SectionAdapter.Holder>() {
     private var title: String = ""
     private var action: String? = null
     private var onAction: (() -> Unit)? = null
@@ -145,6 +145,11 @@ class SectionAdapter(private val stableId: Long) : RecyclerView.Adapter<SectionA
         Holder(ItemSectionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(h: Holder, position: Int) {
+        if (small) {
+            h.b.sectionTitle.setTextAppearance(R.style.TextAppearance_Segno_SmallStrong)
+            h.b.sectionTitle.setTextColor(androidx.core.content.ContextCompat.getColor(h.itemView.context, R.color.text_2))
+            h.b.root.minimumHeight = 0
+        }
         h.b.sectionTitle.text = title
         h.b.sectionAction.isVisible = action != null
         h.b.sectionAction.text = action

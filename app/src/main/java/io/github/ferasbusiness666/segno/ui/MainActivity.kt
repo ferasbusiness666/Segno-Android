@@ -291,7 +291,7 @@ class MainActivity : AppCompatActivity() {
             lastTrackId = t.id
             Images.track(m.miniArt, t, dp(80))
         }
-        val playing = s.playWhenReady
+        val playing = s.showPause
         m.miniPlay.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
         m.miniPlay.contentDescription = getString(if (playing) R.string.pause else R.string.play)
         m.miniNext.isEnabled = s.hasNext

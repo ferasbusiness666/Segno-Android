@@ -35,7 +35,10 @@ data class NowState(
     val sleep: Sleep = Sleep.Off,
     /** Changes whenever the queue changes. */
     val queueVersion: Int = 0,
-)
+) {
+    /** Pause shows while music plays or is about to; after an error, Play shows again. */
+    val showPause: Boolean get() = isPlaying || (playWhenReady && buffering)
+}
 
 /** One song in the queue: where it is in the player's list. */
 data class QueueEntry(val index: Int, val track: Track, val uid: Long)

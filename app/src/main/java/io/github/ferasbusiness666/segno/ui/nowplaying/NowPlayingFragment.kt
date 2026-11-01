@@ -154,7 +154,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         }
         if (old.track?.id != t.id) refreshLoved()
 
-        val playing = s.playWhenReady
+        val playing = s.showPause
         b.controls.npPlay.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
         b.controls.npPlay.contentDescription = getString(if (playing) R.string.pause else R.string.play)
         b.npArt.contentDescription = b.controls.npPlay.contentDescription

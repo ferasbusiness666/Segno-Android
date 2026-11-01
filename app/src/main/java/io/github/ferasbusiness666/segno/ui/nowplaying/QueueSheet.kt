@@ -41,8 +41,8 @@ import kotlinx.coroutines.launch
 /** The queue as a bottom sheet: the song playing, then what's next. Drag to reorder, swipe to remove. */
 class QueueSheet : BottomSheetDialogFragment() {
     private var b: SheetQueueBinding? = null
-    private val nowTitle = SectionAdapter(1)
-    private val nextTitle = SectionAdapter(2)
+    private val nowTitle = SectionAdapter(1, small = true)
+    private val nextTitle = SectionAdapter(2, small = true)
     private lateinit var now: QueueAdapter
     private lateinit var next: QueueAdapter
     private lateinit var emptyNote: ViewAdapter

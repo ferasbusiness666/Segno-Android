@@ -39,6 +39,7 @@
         <item name="fontFamily">@font/inter_regular</item>
         <item name="android:textViewStyle">@style/Widget.Segno.TextView</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Segno.BottomSheet</item>
+        <item name="elevationOverlayEnabled">false</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.Segno.Dialog</item>
         <item name="textAppearanceBodyLarge">@style/TextAppearance.Segno.Body</item>
         <item name="textAppearanceBodyMedium">@style/TextAppearance.Segno.Body</item>
@@ -56,6 +57,9 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="enableEdgeToEdge">true</item>
         <item name="android:fontFamily">@font/inter_regular</item>
+        <!-- Plain panel color: no pink tint from Material's elevation overlay. -->
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="colorSurfaceContainerLow">@color/panel</item>
     </style>
 
     <style name="Widget.Segno.BottomSheet" parent="Widget.Material3.BottomSheet.Modal">
