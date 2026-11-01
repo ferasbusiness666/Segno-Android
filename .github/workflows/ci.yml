@@ -46,7 +46,7 @@ jobs:
             echo
             echo "== Unit tests"
             for f in app/build/test-results/testDebugUnitTest/*.xml; do
-              [ -f "$f" ] && grep -o '<testsuite [^>]*' "$f" | sed -E 's/.*name="([^"]*)".*tests="([0-9]*)".*failures="([0-9]*)".*errors="([0-9]*)".*/\1 tests=\2 failures=\3 errors=\4/'
+              [ -f "$f" ] && echo "$(basename "$f" .xml | sed 's/^TEST-//') $(grep -o '<testsuite [^>]*' "$f" | grep -o 'tests="[0-9]*"\|failures="[0-9]*"\|errors="[0-9]*"' | tr '\n' ' ')"
             done
             echo
             echo "== Lint"

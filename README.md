@@ -102,9 +102,12 @@ Without it, release builds are signed with the debug key so you can still instal
 
 Every push builds the app, runs the unit tests and lint, then installs it on Android 8.0
 (API 26) and Android 14 (API 34) emulators. There it measures cold start time, takes
-screenshots of each screen, plays a real YouTube song, goes to the home screen for 30 seconds
-to check that the music keeps playing, and measures scrolling smoothness and memory. Results go
-to the [`ci-out`](https://github.com/ferasbusiness666/segno-android/tree/ci-out) branch.
+screenshots of each screen, searches YouTube and tries to play a song, goes to the home screen
+for 30 seconds to check that the music keeps playing (with the notification), and measures
+scrolling smoothness and memory. YouTube usually refuses to play to GitHub's servers ("sign in
+to confirm you're not a bot"), so the CI reports that and checks background playback with a
+music file instead. Results go to the
+[`ci-out`](https://github.com/ferasbusiness666/segno-android/tree/ci-out) branch.
 
 The **Release** workflow (run by hand) builds the signed APK and publishes a GitHub release
 with notes from [CHANGELOG.md](CHANGELOG.md).
