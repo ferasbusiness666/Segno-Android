@@ -64,7 +64,7 @@
             android:fontFeatureSettings="tnum"
             android:textAppearance="@style/TextAppearance.Segno.SmallStrong"
             android:textColor="@color/accent"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:visibility="gone" />
     </FrameLayout>
 

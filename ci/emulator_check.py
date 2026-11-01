@@ -1,0 +1,344 @@
+#!/usr/bin/env python3
+"""Drives Segno on an emulator with adb: cold start time, screenshots of every main screen,
+a real YouTube song playing in the background, scrolling jank and memory.
+
+Usage: emulator_check.py APK OUT_DIR
+Writes OUT_DIR/results.txt and OUT_DIR/*.png. Exits non-zero only if the app crashes on launch
+or background playback fails, so the screenshots are kept either way.
+"""
+import os
+import re
+import subprocess
+import sys
+import time
+import xml.etree.ElementTree as ET
+
+APK, OUT = sys.argv[1], sys.argv[2]
+PKG = "io.github.ferasbusiness666.segno.debug"
+ACT = PKG + "/io.github.ferasbusiness666.segno.ui.MainActivity"
+os.makedirs(OUT, exist_ok=True)
+results = []
+failures = []
+
+
+def log(msg):
+    print(msg, flush=True)
+    results.append(msg)
+
+
+def run(args, timeout=120, check=False):
+    p = subprocess.run(args, capture_output=True, text=True, timeout=timeout)
+    if check and p.returncode != 0:
+        raise RuntimeError(f"{args}: {p.stderr}")
+    return p.stdout
+
+
+def adb(*args, timeout=120):
+    return run(["adb", *args], timeout=timeout)
+
+
+def sh(cmd, timeout=120):
+    return adb("shell", cmd, timeout=timeout)
+
+
+def api():
+    return int(sh("getprop ro.build.version.sdk").strip())
+
+
+def shot(name):
+    path = os.path.join(OUT, name + ".png")
+    with open(path, "wb") as f:
+        subprocess.run(["adb", "exec-out", "screencap", "-p"], stdout=f, timeout=60)
+    print("screenshot", path, flush=True)
+
+
+def dump():
+    for _ in range(3):
+        sh("uiautomator dump /sdcard/ui.xml >/dev/null 2>&1")
+        xml = sh("cat /sdcard/ui.xml")
+        if "<hierarchy" in xml:
+            try:
+                return ET.fromstring(xml[xml.index("<?xml") if "<?xml" in xml else xml.index("<hierarchy"):])
+            except ET.ParseError:
+                pass
+        time.sleep(1)
+    return None
+
+
+def nodes(root):
+    return [] if root is None else list(root.iter("node"))
+
+
+def find(rid=None, text=None, desc=None, root=None, index=0):
+    root = root if root is not None else dump()
+    hits = []
+    for n in nodes(root):
+        if rid and n.get("resource-id") != f"{PKG}:id/{rid}":
+            continue
+        if text and text.lower() not in (n.get("text") or "").lower():
+            continue
+        if desc and desc.lower() not in (n.get("content-desc") or "").lower():
+            continue
+        hits.append(n)
+    return hits[index] if len(hits) > index else None
+
+
+def center(n):
+    a, b, c, d = map(int, re.findall(r"\d+", n.get("bounds")))
+    return (a + c) // 2, (b + d) // 2
+
+
+def tap(n):
+    x, y = center(n)
+    sh(f"input tap {x} {y}")
+
+
+def tap_id(rid, wait=10, **kw):
+    n = wait_for(lambda: find(rid=rid, **kw), wait)
+    if n is None:
+        log(f"  could not find {rid}")
+        return False
+    tap(n)
+    return True
+
+
+def wait_for(fn, timeout):
+    end = time.time() + timeout
+    while time.time() < end:
+        r = fn()
+        if r:
+            return r
+        time.sleep(1)
+    return None
+
+
+def back():
+    sh("input keyevent 4")
+    time.sleep(1)
+
+
+def type_text(t):
+    safe = t.replace(" ", "%s").replace("&", "\\&").replace("?", "\\?").replace("=", "\\=")
+    sh(f"input text '{safe}'")
+
+
+def crashed():
+    out = adb("logcat", "-d", "-b", "crash")
+    return PKG in out
+
+
+# Install -----------------------------------------------------------------------------------------
+level = api()
+log(f"== Segno emulator check, API {level}")
+log(f"screen: {sh('wm size').strip()} / {sh('wm density').strip()}")
+adb("install", "-r", APK, timeout=300)
+adb("logcat", "-c")
+if level >= 33:
+    sh(f"pm grant {PKG} android.permission.POST_NOTIFICATIONS")
+
+# Cold start --------------------------------------------------------------------------------------
+times = []
+for i in range(4):
+    sh(f"am force-stop {PKG}")
+    time.sleep(2)
+    out = sh(f"am start -W -n {ACT}")
+    m = re.search(r"TotalTime:\s*(\d+)", out)
+    if m:
+        times.append(int(m.group(1)))
+    time.sleep(3)
+if times:
+    first, warm = times[0], sorted(times[1:])
+    log(f"cold start (am start -W TotalTime): first {first} ms, then {warm} ms, median {warm[len(warm) // 2] if warm else first} ms")
+else:
+    log("cold start: no TotalTime reported")
+time.sleep(2)
+if crashed():
+    failures.append("crash on launch")
+    log("CRASH on launch:\n" + adb("logcat", "-d", "-b", "crash")[-4000:])
+
+# Home (empty) ------------------------------------------------------------------------------------
+shot("01-home-empty")
+
+# Library -----------------------------------------------------------------------------------------
+tap_id("tabLibrary")
+time.sleep(2)
+shot("02-library-playlists")
+tap_id("chipSongs")
+time.sleep(2)
+shot("03-library-no-access")
+# Some songs on the phone, then allow access.
+try:
+    import wave, struct, math, tempfile
+    for k, name in enumerate(["Lumen - Paper Planes", "Kora Sun - Desert Bloom", "Atlas Echo - Northern Lights"]):
+        path = os.path.join(tempfile.gettempdir(), f"song{k}.wav")
+        with wave.open(path, "w") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(8000)
+            frames = b"".join(struct.pack("<h", int(3000 * math.sin(2 * math.pi * (220 + 110 * k) * t / 8000))) for t in range(8000 * 3))
+            w.writeframes(frames)
+        adb("push", path, f"/sdcard/Music/{name}.wav")
+        sh(f"am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d 'file:///sdcard/Music/{name}.wav' >/dev/null 2>&1")
+except Exception as e:  # noqa: BLE001
+    log(f"  sample songs: {e}")
+perm = "android.permission.READ_MEDIA_AUDIO" if level >= 33 else "android.permission.READ_EXTERNAL_STORAGE"
+sh(f"pm grant {PKG} {perm}")
+time.sleep(4)
+tap_id("chipPlaylists")
+time.sleep(1)
+tap_id("chipSongs")
+time.sleep(3)
+shot("04-library-songs")
+tap_id("chipAlbums")
+time.sleep(2)
+shot("05-library-albums")
+tap_id("chipPlaylists")
+
+# Search ------------------------------------------------------------------------------------------
+tap_id("tabSearch")
+time.sleep(1)
+back()  # close the keyboard if it opened
+shot("06-search-idle")
+tap_id("query")
+time.sleep(1)
+type_text("daft punk get lucky")
+sh("input keyevent 66")
+got = wait_for(lambda: find(rid="title"), 40)
+time.sleep(3)
+back()  # hide the keyboard
+time.sleep(1)
+log(f"search results shown: {'yes' if got else 'NO'}")
+shot("07-search-results")
+if not got:
+    failures.append("no search results")
+
+# Play a song -------------------------------------------------------------------------------------
+playing = False
+if got:
+    tap(find(rid="title") or got)
+    mini = wait_for(lambda: find(rid="miniTitle"), 20)
+    started = wait_for(lambda: "playing=true" in adb("logcat", "-d", "-s", "SegnoCI:I"), 60)
+    playing = bool(started)
+    log(f"playback started: {'yes' if playing else 'NO'}")
+    time.sleep(2)
+    shot("08-mini-player")
+
+    # Now Playing, queue, sleep timer.
+    if tap_id("miniCard"):
+        time.sleep(3)
+        shot("09-now-playing")
+        if tap_id("npQueue"):
+            time.sleep(3)
+            shot("10-queue")
+            back()
+        if tap_id("npSleep"):
+            time.sleep(2)
+            shot("11-sleep-timer")
+            back()
+        back()  # close Now Playing
+
+# Background playback -----------------------------------------------------------------------------
+if playing:
+    adb("logcat", "-c")
+    sh("input keyevent 3")  # Home
+    t0 = time.time()
+    time.sleep(2)
+    ms0 = sh("dumpsys media_session")
+    time.sleep(30)
+    ms1 = sh("dumpsys media_session")
+    lines = re.findall(r"pos=(\d+) playing=(\w+) state=(\d+)", adb("logcat", "-d", "-s", "SegnoCI:I"))
+    pos = [(int(p), pl) for p, pl, _ in lines]
+    st = re.findall(r"state=PlaybackState \{state=(\w+)\((\d)\)|state=PlaybackState \{state=(\d+)", ms1)
+    states = [s[1] or s[2] for s in st]
+    in_session = PKG in ms1
+    log(f"background: media_session has Segno: {in_session}; playback states: {states}")
+    log(f"background: positions every 5 s while in the background: {[p for p, _ in pos]}")
+    advancing = len(pos) >= 3 and pos[-1][0] - pos[0][0] >= 15000 and all(pl == "true" for _, pl in pos[-3:])
+    playing_state = "3" in states
+    notif = sh("dumpsys notification --noredact")
+    has_notif = PKG in notif and ("MediaStyle" in notif or "mediaSession" in notif or "transport" in notif)
+    log(f"background: PLAYING={playing_state}, position advancing={advancing}, media notification={has_notif}")
+    with open(os.path.join(OUT, "media_session.txt"), "w") as f:
+        f.write(ms1)
+    sh("cmd statusbar expand-notifications")
+    time.sleep(2)
+    shot("12-notification")
+    sh("cmd statusbar collapse")
+    if not (playing_state and advancing and has_notif):
+        failures.append("background playback check failed")
+    adb("shell", "am", "start", "-n", ACT)
+    time.sleep(3)
+else:
+    failures.append("song did not play")
+
+# Jank: scroll the search results -----------------------------------------------------------------
+tap_id("tabSearch")
+time.sleep(2)
+sh(f"dumpsys gfxinfo {PKG} reset")
+size = re.search(r"(\d+)x(\d+)", sh("wm size"))
+w, h = int(size.group(1)), int(size.group(2))
+for i in range(12):
+    if i % 2 == 0:
+        sh(f"input swipe {w // 2} {int(h * 0.75)} {w // 2} {int(h * 0.3)} 250")
+    else:
+        sh(f"input swipe {w // 2} {int(h * 0.3)} {w // 2} {int(h * 0.75)} 250")
+    time.sleep(0.6)
+gfx = sh(f"dumpsys gfxinfo {PKG}")
+tot = re.search(r"Total frames rendered:\s*(\d+)", gfx)
+jank = re.search(r"Janky frames:\s*(\d+)\s*\(([\d.]+)%\)", gfx)
+p90 = re.search(r"90th percentile:\s*(\d+)ms", gfx)
+log(f"jank after scrolling search results: frames={tot.group(1) if tot else '?'}, janky={jank.group(1) + ' (' + jank.group(2) + '%)' if jank else '?'}, 90th percentile={p90.group(1) + 'ms' if p90 else '?'}")
+mem = sh(f"dumpsys meminfo {PKG}")
+pss = re.search(r"TOTAL PSS:\s*(\d+)", mem) or re.search(r"TOTAL\s+(\d+)", mem)
+log(f"memory (TOTAL PSS): {int(pss.group(1)) // 1024 if pss else '?'} MB")
+with open(os.path.join(OUT, "gfxinfo.txt"), "w") as f:
+    f.write(gfx)
+with open(os.path.join(OUT, "meminfo.txt"), "w") as f:
+    f.write(mem)
+
+# Home with history, Import, Settings, empty states -----------------------------------------------
+tap_id("tabHome")
+time.sleep(3)
+shot("13-home")
+if tap_id("tileLoved"):
+    time.sleep(2)
+    shot("14-loved-empty")
+    back()
+if tap_id("tileImport"):
+    time.sleep(2)
+    shot("15-import")
+    tap_id("paste")
+    type_text("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
+    back()
+    tap_id("find")
+    wait_for(lambda: find(rid="foundTitle") or find(text="Spotify"), 40)
+    time.sleep(2)
+    shot("16-import-found")
+    back()
+tap_id("tabHome")
+time.sleep(1)
+if tap_id("settings"):
+    time.sleep(2)
+    shot("17-settings")
+    back()
+
+# Landscape Now Playing ---------------------------------------------------------------------------
+if playing and tap_id("miniCard"):
+    sh("settings put system accelerometer_rotation 0")
+    sh("settings put system user_rotation 1")
+    time.sleep(3)
+    shot("18-now-playing-landscape")
+    sh("settings put system user_rotation 0")
+    time.sleep(2)
+    back()
+
+if crashed():
+    failures.append("crash during the run")
+    log("CRASH:\n" + adb("logcat", "-d", "-b", "crash")[-6000:])
+
+with open(os.path.join(OUT, "logcat.txt"), "w") as f:
+    f.write(adb("logcat", "-d", "-t", "3000"))
+log("failures: " + (", ".join(failures) if failures else "none"))
+with open(os.path.join(OUT, "results.txt"), "w") as f:
+    f.write("\n".join(results) + "\n")
+sys.exit(1 if failures else 0)

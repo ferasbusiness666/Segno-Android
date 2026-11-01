@@ -105,6 +105,7 @@ class PlaybackService : MediaSessionService() {
 
         SegnoDataSource.onSpotifyMatched = { id, video -> handler.post { onSpotifyMatched(id, video) } }
         restore()
+        if (io.github.ferasbusiness666.segno.BuildConfig.DEBUG) handler.postDelayed(ciLog, 5000)
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession = session
@@ -262,6 +263,14 @@ class PlaybackService : MediaSessionService() {
                 val related = video?.let { StreamResolver.cached(it)?.related }
                 if (!related.isNullOrEmpty()) Related.save(track, related.take(12))
             }
+        }
+    }
+
+    /** Debug builds log the position every few seconds, so CI can see music keep going in the background. */
+    private val ciLog = object : Runnable {
+        override fun run() {
+            android.util.Log.i("SegnoCI", "pos=${player.currentPosition} playing=${player.isPlaying} state=${player.playbackState}")
+            handler.postDelayed(this, 5000)
         }
     }
 
@@ -450,7 +459,7 @@ class PlaybackService : MediaSessionService() {
                 Commands.QUEUE_ADD -> addToQueue(tracksFrom(args))
                 Commands.QUEUE_ORDER -> args.getIntArray(Commands.ARG_ORDER)?.let { if (player.shuffleModeEnabled) setOrder(it) }
                 Commands.QUEUE_CLEAR -> clearUpcoming()
-                else -> return Futures.immediateFuture(SessionResult(SessionResult.RESULT_ERROR_NOT_SUPPORTED))
+                else -> return Futures.immediateFuture(SessionResult(androidx.media3.session.SessionError.ERROR_NOT_SUPPORTED))
             }
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
