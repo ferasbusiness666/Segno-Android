@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 4-point grid, as on desktop. -->
+    <dimen name="s1">4dp</dimen>
+    <dimen name="s2">8dp</dimen>
+    <dimen name="s3">12dp</dimen>
+    <dimen name="s4">16dp</dimen>
+    <dimen name="s5">20dp</dimen>
+    <dimen name="s6">24dp</dimen>
+    <dimen name="s8">32dp</dimen>
+    <dimen name="s12">48dp</dimen>
+
+    <dimen name="r_sm">4dp</dimen>
+    <dimen name="r_md">8dp</dimen>
+    <dimen name="r_lg">12dp</dimen>
+
+    <dimen name="pad_x">16dp</dimen>
+    <dimen name="touch">48dp</dimen>
+    <dimen name="row_h">64dp</dimen>
+    <dimen name="row_art">48dp</dimen>
+    <dimen name="topbar_h">56dp</dimen>
+    <dimen name="tabbar_h">60dp</dimen>
+    <dimen name="mini_h">60dp</dimen>
+    <dimen name="mini_art">40dp</dimen>
+    <dimen name="icon">24dp</dimen>
+    <dimen name="icon_sm">20dp</dimen>
+    <dimen name="pill_h">40dp</dimen>
+
+    <dimen name="text_xs">12sp</dimen>
+    <dimen name="text_sm">13sp</dimen>
+    <dimen name="text_body">15sp</dimen>
+    <dimen name="text_h2">19sp</dimen>
+    <dimen name="text_h1">28sp</dimen>
+    <dimen name="text_np_title">22sp</dimen>
+</resources>

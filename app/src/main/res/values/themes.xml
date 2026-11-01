@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Segno" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">@color/on_accent</item>
+        <item name="colorPrimaryContainer">@color/raised_2</item>
+        <item name="colorOnPrimaryContainer">@color/text</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorOnSecondary">@color/on_accent</item>
+        <item name="colorSecondaryContainer">@color/raised_2</item>
+        <item name="colorOnSecondaryContainer">@color/text</item>
+        <item name="colorTertiary">@color/accent_hi</item>
+        <item name="colorError">@color/warn</item>
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="colorOnBackground">@color/text</item>
+        <item name="colorSurface">@color/panel</item>
+        <item name="colorOnSurface">@color/text</item>
+        <item name="colorSurfaceVariant">@color/raised</item>
+        <item name="colorOnSurfaceVariant">@color/text_2</item>
+        <item name="colorSurfaceContainerLowest">@color/bg</item>
+        <item name="colorSurfaceContainerLow">@color/panel</item>
+        <item name="colorSurfaceContainer">@color/raised</item>
+        <item name="colorSurfaceContainerHigh">@color/overlay</item>
+        <item name="colorSurfaceContainerHighest">@color/raised_2</item>
+        <item name="colorOutline">@color/hairline</item>
+        <item name="colorOutlineVariant">@color/hairline</item>
+        <item name="colorControlHighlight">@color/ripple</item>
+        <item name="colorControlNormal">@color/text_2</item>
+        <item name="colorControlActivated">@color/accent</item>
+        <item name="android:textColorPrimary">@color/text</item>
+        <item name="android:textColorSecondary">@color/text_2</item>
+        <item name="android:textColorHint">@color/text_3</item>
+        <item name="android:textColorHighlight">#73FF4D6D</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="android:textViewStyle">@style/Widget.Segno.TextView</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Segno.BottomSheet</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Segno.Dialog</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Segno.Body</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Segno.Body</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Segno.H2</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Segno.BodyStrong</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Segno.H2</item>
+    </style>
+
+    <style name="Theme.Segno.Main" parent="Theme.Segno" />
+
+    <style name="ThemeOverlay.Segno.BottomSheet" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.Segno.BottomSheet</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="enableEdgeToEdge">true</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+    </style>
+
+    <style name="Widget.Segno.BottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="backgroundTint">@color/panel</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Segno.Sheet</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+
+    <style name="ShapeAppearance.Segno.Sheet" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="ThemeOverlay.Segno.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/raised</item>
+        <item name="colorSurfaceContainerHigh">@color/raised</item>
+        <item name="colorPrimary">@color/accent</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Segno.DialogTitle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Segno.DialogBody</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Segno.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Segno.DialogButton.Quiet</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.Segno.Dialog</item>
+    </style>
+
+    <style name="ShapeAppearance.Segno.Dialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="Segno.DialogTitle" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textAppearance">@style/TextAppearance.Segno.H2</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <style name="Segno.DialogBody" parent="MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textAppearance">@style/TextAppearance.Segno.Body</item>
+        <item name="android:textColor">@color/text_2</item>
+    </style>
+
+    <style name="Segno.DialogButton" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/accent</item>
+        <item name="android:textAppearance">@style/TextAppearance.Segno.BodyStrong</item>
+    </style>
+
+    <style name="Segno.DialogButton.Quiet">
+        <item name="android:textColor">@color/text_2</item>
+    </style>
+</resources>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- app_name comes from the build type (Segno, or Segno Debug). -->
+
+    <!-- Tabs -->
+    <string name="tab_home">Home</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_library">Library</string>
+
+    <!-- Common -->
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="shuffle_on">Shuffle is on</string>
+    <string name="repeat">Repeat</string>
+    <string name="repeat_all">Repeating all</string>
+    <string name="repeat_one">Repeating this song</string>
+    <string name="more">More</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="try_again">Try again</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="clear">Clear</string>
+    <string name="settings">Settings</string>
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="play_all">Play</string>
+    <string name="shuffle_play">Shuffle</string>
+    <string name="loading">Loading…</string>
+
+    <!-- Song menu (same words as desktop) -->
+    <string name="menu_play_next">Play next</string>
+    <string name="menu_add_to_queue">Add to queue</string>
+    <string name="menu_love">Love</string>
+    <string name="menu_unlove">Remove from Loved songs</string>
+    <string name="menu_add_to_playlist">Add to playlist</string>
+    <string name="menu_download">Download</string>
+    <string name="menu_remove_download">Remove download</string>
+    <string name="menu_remove_from_playlist">Remove from this playlist</string>
+    <string name="menu_open_youtube">Open on YouTube</string>
+    <string name="menu_open_spotify">Open on Spotify</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_go_to_album">Go to album</string>
+    <string name="menu_go_to_artist">Go to artist</string>
+    <string name="new_playlist">New playlist</string>
+    <string name="new_playlist_hint">Playlist name</string>
+    <string name="rename_playlist">Rename</string>
+    <string name="delete_playlist">Delete playlist</string>
+    <string name="delete_playlist_q">Delete “%1$s”?</string>
+    <string name="delete_playlist_body">The playlist goes away. Downloaded songs stay on your phone.</string>
+    <string name="add_all_to_queue">Add all to queue</string>
+    <string name="download_all">Download all</string>
+    <string name="download_n_more">Download %1$d more</string>
+    <string name="all_downloaded">All downloaded</string>
+
+    <!-- Toasts -->
+    <string name="toast_play_next">Plays next</string>
+    <string name="toast_added_queue">Added to the queue</string>
+    <string name="toast_added_queue_n">Added %1$d songs to the queue</string>
+    <string name="toast_loved">Added to Loved songs</string>
+    <string name="toast_unloved">Removed from Loved songs</string>
+    <string name="toast_added_to">Added to %1$s</string>
+    <string name="toast_already_in">Already in %1$s</string>
+    <string name="toast_downloading">Downloading to Music/Segno</string>
+    <string name="toast_downloading_n">Downloading %1$d songs to Music/Segno</string>
+    <string name="toast_already_downloaded">Already downloaded</string>
+    <string name="toast_download_removed">Download removed</string>
+    <string name="toast_playlist_made">Made %1$s</string>
+    <string name="toast_playlist_deleted">Playlist deleted</string>
+    <string name="toast_no_browser">There\'s no browser on this phone to open it.</string>
+    <string name="toast_nothing_to_play">Nothing to play yet</string>
+    <string name="toast_sleep_set">Music stops in %1$s</string>
+    <string name="toast_sleep_end">Music stops after this song</string>
+    <string name="toast_sleep_off">Sleep timer off</string>
+    <string name="toast_saved_playlist">Saved to your playlists</string>
+
+    <!-- Home -->
+    <string name="home_title">Segno</string>
+    <string name="home_recent">Recently played</string>
+    <string name="home_because">Because you played %1$s</string>
+    <string name="home_playlists">Your playlists</string>
+    <string name="home_loved">Loved songs</string>
+    <string name="home_downloads">Downloads</string>
+    <string name="home_import">Import</string>
+    <string name="home_empty_title">Nothing played yet</string>
+    <string name="home_empty_body">Search YouTube for a song to start. What you play shows up here, with more like it.</string>
+    <string name="home_empty_button">Search YouTube</string>
+    <string name="update_banner">Segno %1$s is out.</string>
+    <string name="update_get">Get it</string>
+    <string name="update_dismiss">Not now</string>
+
+    <!-- Search -->
+    <string name="search_hint">Songs, artists or a link</string>
+    <string name="search_songs">Songs</string>
+    <string name="search_videos">Videos</string>
+    <string name="search_recent">Recent searches</string>
+    <string name="search_clear_recent">Clear</string>
+    <string name="search_tip1_title">Type a song or artist</string>
+    <string name="search_tip1_body">Results come from YouTube Music. Switch to Videos for everything else on YouTube.</string>
+    <string name="search_tip2_title">Paste a link</string>
+    <string name="search_tip2_body">A YouTube or Spotify song plays right here. Playlists open on the Import page.</string>
+    <string name="search_tip3_title">Tap to listen, download to keep</string>
+    <string name="search_tip3_body">Songs keep playing with the screen off. Downloads go to Music/Segno with their cover.</string>
+    <string name="search_no_results">No results. Try different words.</string>
+    <string name="search_failed">Couldn\'t search YouTube</string>
+    <string name="search_link_failed">Couldn\'t open this link</string>
+    <string name="search_offline">You\'re offline</string>
+    <string name="search_offline_body">Connect to the internet to search YouTube. Downloaded songs still play.</string>
+    <string name="search_open_import">This is a playlist. Opening the Import page…</string>
+
+    <!-- Library -->
+    <string name="lib_title">Library</string>
+    <string name="lib_playlists">Playlists</string>
+    <string name="lib_songs">Songs</string>
+    <string name="lib_albums">Albums</string>
+    <string name="lib_artists">Artists</string>
+    <string name="lib_loved_sub">Your favorites</string>
+    <string name="lib_downloads_sub">On this phone</string>
+    <string name="lib_import">Import playlists</string>
+    <string name="lib_import_sub">From Spotify and YouTube</string>
+    <string name="lib_new_playlist_sub">Start an empty one</string>
+    <string name="lib_no_access_title">Your music files</string>
+    <string name="lib_no_access_body">Let Segno see the music on your phone to play it here. Segno only reads it; nothing leaves your phone.</string>
+    <string name="lib_no_access_button">Allow access</string>
+    <string name="lib_no_access_settings">Open settings</string>
+    <string name="lib_no_songs_title">No music on this phone yet</string>
+    <string name="lib_no_songs_body">Songs you download from YouTube land here, and so do music files you copy to the phone.</string>
+    <string name="lib_no_albums_title">No albums yet</string>
+    <string name="lib_no_albums_body">Albums show up when your songs have album info.</string>
+    <string name="lib_no_artists_title">No artists yet</string>
+    <string name="lib_no_artists_body">Artists show up when your songs have artist info.</string>
+    <string name="lib_playlist_sub">Playlist · %1$s</string>
+    <string name="lib_imported_sub">%1$s · %2$s</string>
+
+    <!-- Detail pages -->
+    <string name="loved_title">Loved songs</string>
+    <string name="loved_empty_title">Songs you love land here</string>
+    <string name="loved_empty_body">Press the heart on any song, in Now Playing or in a song\'s menu.</string>
+    <string name="downloads_title">Downloads</string>
+    <string name="downloads_empty_title">Nothing downloaded yet</string>
+    <string name="downloads_empty_body">Search for a song, then press ⋮ and Download. Songs are saved to Music/Segno, so other music apps see them too.</string>
+    <string name="downloads_stop">Stop downloads</string>
+    <string name="playlist_empty_title">Let\'s add some songs</string>
+    <string name="playlist_empty_body">Search for songs and add them with ⋮ → Add to playlist.</string>
+    <string name="kind_playlist">Playlist</string>
+    <string name="kind_album">Album</string>
+    <string name="kind_artist">Artist</string>
+    <string name="kind_favorites">Your favorites</string>
+    <string name="kind_on_phone">On this phone</string>
+    <string name="gone_title">This isn\'t here anymore</string>
+    <string name="gone_body">It may have been deleted.</string>
+
+    <!-- Song row states -->
+    <string name="state_downloaded">Downloaded</string>
+    <string name="state_waiting">Waiting to download</string>
+    <string name="state_downloading">Downloading · %1$d%%</string>
+    <string name="state_failed">Download failed: %1$s</string>
+    <string name="from_spotify">Spotify</string>
+
+    <!-- Now Playing -->
+    <string name="np_title">Now playing</string>
+    <string name="np_from_youtube">From YouTube</string>
+    <string name="np_from_spotify">From Spotify, played from YouTube</string>
+    <string name="np_from_phone">On this phone</string>
+    <string name="np_downloaded">Downloaded</string>
+    <string name="np_nothing_title">Nothing playing</string>
+    <string name="np_nothing_body">Pick a song and it shows up here.</string>
+    <string name="np_queue">Queue</string>
+    <string name="np_sleep">Sleep timer</string>
+    <string name="np_love">Love</string>
+    <string name="np_download">Download</string>
+    <string name="np_seek">Seek</string>
+    <string name="np_close">Close Now Playing</string>
+    <string name="np_loading">Getting the song ready…</string>
+
+    <!-- Queue -->
+    <string name="queue_now">Now playing</string>
+    <string name="queue_next">Next up</string>
+    <string name="queue_empty">Nothing next. When the queue ends, Segno keeps going with songs like this one.</string>
+    <string name="queue_empty_off">Nothing next.</string>
+    <string name="queue_clear">Clear</string>
+    <string name="queue_drag">Drag to reorder</string>
+    <string name="queue_removed">Removed from the queue</string>
+
+    <!-- Sleep timer -->
+    <string name="sleep_title">Sleep timer</string>
+    <string name="sleep_sub">Fades the music out, then stops it</string>
+    <string name="sleep_15">15 min</string>
+    <string name="sleep_30">30 min</string>
+    <string name="sleep_45">45 min</string>
+    <string name="sleep_60">1 hour</string>
+    <string name="sleep_end_of_song">End of song</string>
+    <string name="sleep_stops_in">Music stops in</string>
+    <string name="sleep_after_song">Music stops after this song</string>
+    <string name="sleep_plus10">+10 min</string>
+    <string name="sleep_turn_off">Turn off</string>
+
+    <!-- Import -->
+    <string name="import_title">Import playlists</string>
+    <string name="import_sub">Bring your playlists from Spotify and YouTube. Songs play online until you download them.</string>
+    <string name="import_where">Where to find the link</string>
+    <string name="import_paste_title">Paste links</string>
+    <string name="import_paste_sub">One or many: playlists, albums, your YouTube channel, or songs copied from Spotify.</string>
+    <string name="import_paste_hint">https://open.spotify.com/playlist/…\nhttps://www.youtube.com/@yourname</string>
+    <string name="import_paste">Paste</string>
+    <string name="import_find">Find playlists</string>
+    <string name="import_looking">Looking…</string>
+    <string name="import_reading">Reading %1$s…</string>
+    <string name="import_reading_channel">Reading the channel\'s playlists…</string>
+    <string name="import_reading_songs">Reading songs from Spotify: %1$d of %2$d…</string>
+    <string name="import_found">Found %1$s</string>
+    <string name="import_select_all">Select all</string>
+    <string name="import_select_none">Select none</string>
+    <string name="import_go">Import %1$s</string>
+    <string name="import_importing">Importing %1$d of %2$d…</string>
+    <string name="import_done">Imported %1$s with %2$s</string>
+    <string name="import_nothing">Nothing was imported</string>
+    <string name="import_done_where">They\'re in Library, under Playlists.</string>
+    <string name="import_more">Import more</string>
+    <string name="import_no_link">There\'s no link in what you pasted. See the steps above for where to find one.</string>
+    <string name="import_no_songs">“%1$s” has no songs Segno can play.</string>
+    <string name="import_single_song">%1$s: that\'s a single song, not a playlist. Paste it in Search to play it.</string>
+    <string name="import_no_public">%1$s has no public playlists. On YouTube, set the playlists you want to Public, then try again.</string>
+    <string name="import_this_channel">This channel</string>
+    <string name="import_profile">Spotify doesn\'t show a profile\'s playlists to apps. Paste the playlists\' own links instead (Share → Copy link to playlist), as many as you like at once.</string>
+    <string name="import_songs_missed">%1$d of the copied songs couldn\'t be read from Spotify.</string>
+    <string name="import_songs_title">Songs from Spotify</string>
+    <string name="import_already">Already imported: adds any new songs</string>
+    <string name="import_unsupported">%1$s: Segno can import from Spotify and YouTube. This link is from somewhere else.</string>
+    <string name="import_clipboard_empty">There\'s nothing to paste. Copy a link first.</string>
+
+    <string name="import_sp_one">One playlist or album</string>
+    <string name="import_sp_one_how">In the Spotify app, open it, tap ⋮ then Share → Copy link.</string>
+    <string name="import_sp_many">Several playlists</string>
+    <string name="import_sp_many_how">Copy each one\'s link and paste them all here at once, one per line.</string>
+    <string name="import_sp_liked">Liked Songs or a private playlist</string>
+    <string name="import_sp_liked_how">On a computer, open it in the Spotify app, click any song, press Ctrl+A then Ctrl+C, and paste the result here.</string>
+    <string name="import_yt_one">One playlist</string>
+    <string name="import_yt_one_how">Open it in the YouTube app, tap Share → Copy link.</string>
+    <string name="import_yt_all">All your public playlists</string>
+    <string name="import_yt_all_how">Copy your channel\'s link (Your channel → ⋮ → Share). Only Public playlists show; set the others to Public first if you want them.</string>
+    <string name="import_ytm_one">One playlist</string>
+    <string name="import_ytm_one_how">Open it, tap ⋮ → Share → Copy link.</string>
+    <string name="import_ytm_all">All your playlists</string>
+    <string name="import_ytm_all_how">Your YouTube Music playlists live on your YouTube channel too: follow the YouTube steps.</string>
+
+    <!-- Settings -->
+    <string name="set_playback">Playback</string>
+    <string name="set_autoplay">Keep playing when the queue ends</string>
+    <string name="set_autoplay_sub">Carries on with songs like the last one, so the music doesn\'t stop.</string>
+    <string name="set_downloads">Downloads</string>
+    <string name="set_downloads_sub">Songs are saved as M4A files in Music/Segno, with their name, artist and cover, so every music app on your phone sees them.</string>
+    <string name="set_downloads_rights">Only download music you have the right to, like your own songs, free releases, or music the artist lets you download.</string>
+    <string name="set_updates">Updates</string>
+    <string name="set_version">You\'re on Segno %1$s.</string>
+    <string name="set_checking">Checking for updates…</string>
+    <string name="set_up_to_date">You have the latest version, Segno %1$s.</string>
+    <string name="set_update_available">Segno %1$s is out. Get it from the download page.</string>
+    <string name="set_update_failed">Couldn\'t check for updates. Check your internet connection.</string>
+    <string name="set_check_now">Check for updates</string>
+    <string name="set_get_update">Get Segno %1$s</string>
+    <string name="set_auto_check">Check once a day</string>
+    <string name="set_auto_check_sub">Asks GitHub if there\'s a newer version. Nothing else is sent.</string>
+    <string name="set_about">About</string>
+    <string name="set_about_line">Version %1$s · Made by Feras Hania</string>
+    <string name="set_about_body">A light music player for YouTube, Spotify links and the music on your phone. Free and open source.</string>
+    <string name="set_privacy">Segno collects nothing. No accounts, no analytics, no ads.</string>
+    <string name="set_website">Website</string>
+    <string name="set_source">Source code</string>
+    <string name="set_licenses">Open-source licenses</string>
+    <string name="set_licenses_sub">Segno is free software under the GPL-3.0, and is built on these projects.</string>
+    <string name="set_thanks">Thanks to</string>
+    <string name="set_thanks_body">YouTube support by NewPipe Extractor. Playback by AndroidX Media3. Icons by Lucide. Type set in Inter.</string>
+
+    <!-- Permissions -->
+    <string name="perm_notif_denied">Without notifications you won\'t see download progress. You can turn them on in Settings.</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_playback">Playing music</string>
+    <string name="dl_channel">Downloads</string>
+    <string name="dl_getting_ready">Getting ready</string>
+    <string name="dl_notif_title">Downloading %1$s</string>
+    <string name="dl_stop">Stop</string>
+    <string name="dl_stopped">Stopped</string>
+    <string name="dl_done_text">Saved to Music/Segno</string>
+    <string name="dl_failed_network">The connection dropped. Try again.</string>
+    <string name="dl_failed_other">Something went wrong saving it. Try again.</string>
+    <string name="dl_no_m4a">YouTube only offered this one in a format Segno can\'t save yet.</string>
+
+    <!-- Playback errors -->
+    <string name="err_play_generic">It couldn\'t be played.</string>
+    <string name="err_skipping">Skipped “%1$s”. %2$s</string>
+    <string name="err_cant_play">Can\'t play “%1$s”. %2$s</string>
+    <string name="err_network_play">Lost the connection. Segno keeps trying; downloaded songs still play.</string>
+</resources>

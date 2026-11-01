@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Type: Inter in three weights, like desktop, sized for phones. -->
+    <style name="TextAppearance.Segno" parent="">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+    <style name="TextAppearance.Segno.Body" />
+    <style name="TextAppearance.Segno.BodyStrong">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+    </style>
+    <style name="TextAppearance.Segno.Small">
+        <item name="android:textSize">@dimen/text_sm</item>
+        <item name="android:textColor">@color/text_2</item>
+    </style>
+    <style name="TextAppearance.Segno.SmallStrong">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:textSize">@dimen/text_sm</item>
+    </style>
+    <style name="TextAppearance.Segno.Caption">
+        <item name="android:textSize">@dimen/text_xs</item>
+        <item name="android:textColor">@color/text_3</item>
+    </style>
+    <style name="TextAppearance.Segno.H2">
+        <item name="android:fontFamily">@font/inter_display_bold</item>
+        <item name="fontFamily">@font/inter_display_bold</item>
+        <item name="android:textSize">@dimen/text_h2</item>
+    </style>
+    <style name="TextAppearance.Segno.H1">
+        <item name="android:fontFamily">@font/inter_display_bold</item>
+        <item name="fontFamily">@font/inter_display_bold</item>
+        <item name="android:textSize">@dimen/text_h1</item>
+    </style>
+    <style name="TextAppearance.Segno.Title">
+        <item name="android:fontFamily">@font/inter_display_bold</item>
+        <item name="fontFamily">@font/inter_display_bold</item>
+        <item name="android:textSize">@dimen/text_np_title</item>
+    </style>
+
+    <!-- Plain text: start-aligned in the layout's direction, while Arabic and Hebrew titles
+         still read right to left. -->
+    <style name="Widget.Segno.TextView" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.Segno.Body</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:textDirection">firstStrong</item>
+    </style>
+
+    <style name="Widget.Segno.Line" parent="Widget.Segno.TextView">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="Widget.Segno.Line.Title">
+        <item name="android:textAppearance">@style/TextAppearance.Segno.Body</item>
+    </style>
+    <style name="Widget.Segno.Line.Sub">
+        <item name="android:textAppearance">@style/TextAppearance.Segno.Small</item>
+    </style>
+
+    <style name="Widget.Segno.Heading" parent="Widget.Segno.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.Segno.H1</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="Widget.Segno.Section" parent="Widget.Segno.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.Segno.H2</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:paddingStart">@dimen/pad_x</item>
+        <item name="android:paddingEnd">@dimen/pad_x</item>
+        <item name="android:paddingTop">@dimen/s6</item>
+        <item name="android:paddingBottom">@dimen/s2</item>
+    </style>
+
+    <!-- A 48dp icon button. -->
+    <style name="Widget.Segno.IconButton" parent="">
+        <item name="android:layout_width">@dimen/touch</item>
+        <item name="android:layout_height">@dimen/touch</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="tint">@color/text_2</item>
+    </style>
+
+    <!-- Pills, like desktop's buttons. -->
+    <style name="Widget.Segno.Pill" parent="">
+        <item name="android:layout_height">@dimen/pill_h</item>
+        <item name="android:minWidth">@dimen/touch</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/s4</item>
+        <item name="android:paddingEnd">@dimen/s4</item>
+        <item name="android:textAppearance">@style/TextAppearance.Segno.BodyStrong</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:drawablePadding">@dimen/s2</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="Widget.Segno.Pill.Primary">
+        <item name="android:background">@drawable/bg_pill_primary</item>
+        <item name="android:textColor">@color/on_accent</item>
+        <item name="drawableTint">@color/on_accent</item>
+    </style>
+    <style name="Widget.Segno.Pill.Secondary">
+        <item name="android:background">@drawable/bg_pill_secondary</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="drawableTint">@color/text</item>
+    </style>
+    <style name="Widget.Segno.Pill.Ghost">
+        <item name="android:background">@drawable/bg_pill_ghost</item>
+        <item name="android:textColor">@color/text_2</item>
+        <item name="drawableTint">@color/text_2</item>
+    </style>
+
+    <!-- Filter chips (Songs / Videos, Playlists / Songs / Albums / Artists). -->
+    <style name="Widget.Segno.Chip" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:background">@drawable/bg_chip</item>
+        <item name="android:textAppearance">@style/TextAppearance.Segno.SmallStrong</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Widget.Segno.Card" parent="">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:padding">@dimen/s4</item>
+    </style>
+
+    <style name="ShapeAppearance.Segno.Small" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/r_sm</item>
+    </style>
+    <style name="ShapeAppearance.Segno.Medium" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/r_md</item>
+    </style>
+    <style name="ShapeAppearance.Segno.Large" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/r_lg</item>
+    </style>
+    <style name="ShapeAppearance.Segno.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Widget.Segno.Seek" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable">@drawable/seek_track</item>
+        <item name="android:thumb">@drawable/seek_thumb</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:paddingStart">@dimen/s2</item>
+        <item name="android:paddingEnd">@dimen/s2</item>
+        <item name="android:minHeight">4dp</item>
+        <item name="android:maxHeight">4dp</item>
+        <item name="android:background">@null</item>
+    </style>
+</resources>
