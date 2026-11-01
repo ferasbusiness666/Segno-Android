@@ -178,7 +178,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             }
             ARTIST -> {
                 headIcon.isVisible = false
-                headArt.setImageResource(R.drawable.art_placeholder_artist)
+                Images.placeholder(headArt, R.drawable.art_placeholder_artist)
             }
             else -> {
                 headIcon.isVisible = false
@@ -187,13 +187,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
         val has = tracks.isNotEmpty()
         v.findViewById<View>(R.id.headPlay).apply {
-            isEnabled = has
-            alpha = if (has) 1f else 0.5f
+            isVisible = has
             setOnClickListener { PlayerHub.play(main, tracks, 0) }
         }
         v.findViewById<View>(R.id.headShuffle).apply {
-            isEnabled = has
-            alpha = if (has) 1f else 0.5f
+            isVisible = has
             setOnClickListener { PlayerHub.play(main, tracks, 0, shuffle = true) }
         }
         val online = tracks.filter { it.isOnline }

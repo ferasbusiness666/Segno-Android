@@ -34,6 +34,7 @@ import io.github.ferasbusiness666.segno.playback.MediaItems
 import io.github.ferasbusiness666.segno.playback.Sleep
 import io.github.ferasbusiness666.segno.playback.SleepTimer
 import io.github.ferasbusiness666.segno.ui.MainActivity
+import io.github.ferasbusiness666.segno.ui.common.Images
 import io.github.ferasbusiness666.segno.ui.common.Messages
 import io.github.ferasbusiness666.segno.ui.common.NowState
 import io.github.ferasbusiness666.segno.ui.common.PlayerHub
@@ -129,7 +130,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             b.npTitle.setTextIfChanged(getString(R.string.np_nothing_title))
             b.npArtist.setTextIfChanged(getString(R.string.np_nothing_body))
             b.top.npSource.text = ""
-            b.npArt.setImageResource(R.drawable.art_placeholder)
+            Images.placeholder(b.npArt)
             setControlsEnabled(false)
             return
         }
@@ -192,13 +193,14 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         val b = b ?: return
         val url = MediaItems.artFor(t, 720)
         if (url.isEmpty()) {
-            b.npArt.setImageResource(R.drawable.art_placeholder)
+            Images.placeholder(b.npArt)
             wash(null)
             return
         }
         b.npArt.load(url) {
-            placeholder(R.drawable.art_placeholder)
-            error(R.drawable.art_placeholder)
+            val ph = Images.placeholderDrawable(b.npArt)
+            placeholder(ph)
+            error(ph)
             // A readable bitmap, so the background can take the cover's color.
             allowHardware(false)
             listener(

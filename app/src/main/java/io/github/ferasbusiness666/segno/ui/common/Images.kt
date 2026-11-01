@@ -18,16 +18,32 @@ object Images {
         url(view, url, R.drawable.art_placeholder)
     }
 
-    fun url(view: ImageView, url: String, placeholder: Int = R.drawable.art_placeholder) {
+    /** [kind]: R.drawable.art_placeholder, art_placeholder_playlist or art_placeholder_artist. */
+    fun url(view: ImageView, url: String, kind: Int = R.drawable.art_placeholder) {
+        val ph = ArtPlaceholder(view.context, iconFor(kind))
         if (url.isEmpty()) {
             view.dispose()
-            view.setImageResource(placeholder)
+            view.setImageDrawable(ph)
             return
         }
         view.load(url) {
-            placeholder(placeholder)
-            error(placeholder)
+            placeholder(ph)
+            error(ph)
         }
+    }
+
+    /** Shows the empty-cover picture. */
+    fun placeholder(view: ImageView, kind: Int = R.drawable.art_placeholder) {
+        view.dispose()
+        view.setImageDrawable(ArtPlaceholder(view.context, iconFor(kind)))
+    }
+
+    fun placeholderDrawable(view: ImageView, kind: Int = R.drawable.art_placeholder) = ArtPlaceholder(view.context, iconFor(kind))
+
+    private fun iconFor(kind: Int) = when (kind) {
+        R.drawable.art_placeholder_playlist -> R.drawable.ic_playlist
+        R.drawable.art_placeholder_artist -> R.drawable.ic_artist
+        else -> R.drawable.ic_music
     }
 
     fun sized(url: String, px: Int) = Thumbs.sized(url, px)

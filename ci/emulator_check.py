@@ -79,12 +79,13 @@ def find(rid=None, text=None, desc=None, root=None, index=0):
             continue
         if desc and desc.lower() not in (n.get("content-desc") or "").lower():
             continue
-        hits.append(n)
+        # A plain dict: ElementTree elements without children count as False in "if".
+        hits.append(dict(n.attrib))
     return hits[index] if len(hits) > index else None
 
 
 def center(n):
-    a, b, c, d = map(int, re.findall(r"\d+", n.get("bounds")))
+    a, b, c, d = map(int, re.findall(r"\d+", n["bounds"]))
     return (a + c) // 2, (b + d) // 2
 
 
@@ -143,6 +144,30 @@ adb("logcat", "-c")
 if level >= 33:
     sh(f"pm grant {PKG} android.permission.POST_NOTIFICATIONS")
 
+# Cold start of the release build (R8, as people get it) ------------------------------------------
+def cold_starts(pkg, act, label):
+    times = []
+    for _ in range(5):
+        sh(f"am force-stop {pkg}")
+        time.sleep(2)
+        m = re.search(r"TotalTime:\s*(\d+)", sh(f"am start -W -n {act}"))
+        if m:
+            times.append(int(m.group(1)))
+        time.sleep(3)
+    sh(f"am force-stop {pkg}")
+    if times:
+        rest = sorted(times[1:])
+        log(f"cold start, {label} (am start -W TotalTime): first {times[0]} ms, then {rest} ms, median {rest[len(rest) // 2] if rest else times[0]} ms")
+    else:
+        log(f"cold start, {label}: no TotalTime reported")
+
+
+release_apk = os.path.join(os.path.dirname(APK), "segno-release-unsigned-key.apk")
+if os.path.exists(release_apk):
+    adb("install", "-r", release_apk, timeout=300)
+    cold_starts("io.github.ferasbusiness666.segno", "io.github.ferasbusiness666.segno/.ui.MainActivity", "release build")
+    adb("uninstall", "io.github.ferasbusiness666.segno")
+
 # Cold start --------------------------------------------------------------------------------------
 times = []
 for i in range(4):
@@ -155,7 +180,7 @@ for i in range(4):
     time.sleep(3)
 if times:
     first, warm = times[0], sorted(times[1:])
-    log(f"cold start (am start -W TotalTime): first {first} ms, then {warm} ms, median {warm[len(warm) // 2] if warm else first} ms")
+    log(f"cold start, debug build (am start -W TotalTime): first {first} ms, then {warm} ms, median {warm[len(warm) // 2] if warm else first} ms")
 else:
     log("cold start: no TotalTime reported")
 time.sleep(2)
@@ -222,7 +247,7 @@ if not got:
 # Play a song -------------------------------------------------------------------------------------
 playing = False
 if got:
-    tap(find(rid="title") or got)
+    tap(got)
     mini = wait_for(lambda: find(rid="miniTitle"), 20)
     started = wait_for(lambda: "playing=true" in adb("logcat", "-d", "-s", "SegnoCI:I"), 60)
     playing = bool(started)
@@ -295,6 +320,26 @@ tot = re.search(r"Total frames rendered:\s*(\d+)", gfx)
 jank = re.search(r"Janky frames:\s*(\d+)\s*\(([\d.]+)%\)", gfx)
 p90 = re.search(r"90th percentile:\s*(\d+)ms", gfx)
 log(f"jank after scrolling search results: frames={tot.group(1) if tot else '?'}, janky={jank.group(1) + ' (' + jank.group(2) + '%)' if jank else '?'}, 90th percentile={p90.group(1) + 'ms' if p90 else '?'}")
+# The same scroll in Android's own Settings app, to show what this emulator manages at all.
+sh("am start -a android.settings.SETTINGS")
+time.sleep(4)
+settings_pkg = "com.android.settings"
+sh(f"dumpsys gfxinfo {settings_pkg} reset")
+for i in range(12):
+    if i % 2 == 0:
+        sh(f"input swipe {w // 2} {int(h * 0.75)} {w // 2} {int(h * 0.3)} 250")
+    else:
+        sh(f"input swipe {w // 2} {int(h * 0.3)} {w // 2} {int(h * 0.75)} 250")
+    time.sleep(0.6)
+sgfx = sh(f"dumpsys gfxinfo {settings_pkg}")
+stot = re.search(r"Total frames rendered:\s*(\d+)", sgfx)
+sjank = re.search(r"Janky frames:\s*(\d+)\s*\(([\d.]+)%\)", sgfx)
+sp90 = re.search(r"90th percentile:\s*(\d+)ms", sgfx)
+log(f"for comparison, Android Settings with the same swipes: frames={stot.group(1) if stot else '?'}, janky={sjank.group(1) + ' (' + sjank.group(2) + '%)' if sjank else '?'}, 90th percentile={sp90.group(1) + 'ms' if sp90 else '?'}")
+sh("am force-stop com.android.settings")
+adb("shell", "am", "start", "-n", ACT)
+time.sleep(2)
+
 mem = sh(f"dumpsys meminfo {PKG}")
 pss = re.search(r"TOTAL PSS:\s*(\d+)", mem) or re.search(r"TOTAL\s+(\d+)", mem)
 log(f"memory (TOTAL PSS): {int(pss.group(1)) // 1024 if pss else '?'} MB")
@@ -318,7 +363,7 @@ if tap_id("tileImport"):
     type_text("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
     hide_keyboard()
     tap_id("find")
-    wait_for(lambda: find(rid="foundTitle") or find(text="Spotify"), 40)
+    wait_for(lambda: find(rid="foundTitle"), 40)
     time.sleep(2)
     shot("16-import-found")
     back()
@@ -338,6 +383,14 @@ if playing and tap_id("miniCard"):
     sh("settings put system user_rotation 0")
     time.sleep(2)
     back()
+
+# Arabic titles: search through a shared text (adb can't type Arabic).
+sh(f"am start -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT 'فيروز' -n {ACT}")
+time.sleep(4)
+wait_for(lambda: find(rid="title"), 40)
+time.sleep(4)
+hide_keyboard()
+shot("19-search-arabic")
 
 if crashed():
     failures.append("crash during the run")
