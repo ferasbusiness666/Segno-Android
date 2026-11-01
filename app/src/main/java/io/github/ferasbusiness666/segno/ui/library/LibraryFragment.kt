@@ -48,7 +48,10 @@ import kotlinx.coroutines.withContext
 class LibraryFragment : Fragment(R.layout.fragment_library), MainActivity.Root {
     private var b: FragmentLibraryBinding? = null
     private val main get() = requireActivity() as MainActivity
-    private var tab = 0
+    private var page = SONGS
+    /** A page asked for before the saved one was read (Home's Songs tile). */
+    private var requested: String? = null
+    private var ready = false
 
     private val playlists = RowAdapter()
     private val artists = RowAdapter()
@@ -73,16 +76,18 @@ class LibraryFragment : Fragment(R.layout.fragment_library), MainActivity.Root {
         b.list.setHasFixedSize(true)
         b.newPlaylist.setOnClickListener { SongActions.newPlaylist(main) { id -> main.openDetail(DetailFragment.playlist(id)) } }
         b.settings.setOnClickListener { main.openSettings() }
-        val chips = listOf(b.chipPlaylists, b.chipSongs, b.chipAlbums, b.chipArtists)
-        chips.forEachIndexed { i, c -> c.setOnClickListener { select(i) } }
+        chips(b).forEach { (p, c) -> c.setOnClickListener { select(p) } }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            tab = withContext(Dispatchers.IO) { Settings.libraryTab }
-            select(tab, save = false)
+            val saved = withContext(Dispatchers.IO) { Settings.libraryPage }
+            ready = true
+            val want = requested
+            requested = null
+            select(want ?: saved, save = want != null)
         }
         whileStarted {
-            launch { Changes.playlists.collect { if (tab == 0) loadPlaylists() } }
-            launch { Changes.downloads.collect { if (tab != 0) loadLocal() } }
+            launch { Changes.playlists.collect { if (ready && page == PLAYLISTS) loadPlaylists() } }
+            launch { Changes.downloads.collect { if (ready && page != PLAYLISTS) loadLocal() } }
             launch { PlayerHub.state.collect { songs.setNow(it.track?.id) } }
         }
     }
@@ -90,28 +95,39 @@ class LibraryFragment : Fragment(R.layout.fragment_library), MainActivity.Root {
     override fun onStart() {
         super.onStart()
         // Music files may have changed while away (a download finished, a file was copied).
-        if (b != null && tab != 0) viewLifecycleOwner.lifecycleScope.launch { loadLocal() }
+        if (b != null && ready && page != PLAYLISTS) viewLifecycleOwner.lifecycleScope.launch { loadLocal() }
     }
 
     private val lifecycleScopeOrNull get() = if (view != null) viewLifecycleOwner.lifecycleScope else null
 
-    private fun select(i: Int, save: Boolean = true) {
+    private fun chips(b: FragmentLibraryBinding) =
+        listOf(SONGS to b.chipSongs, PLAYLISTS to b.chipPlaylists, ALBUMS to b.chipAlbums, ARTISTS to b.chipArtists)
+
+    /** Opens a page (Songs, Playlists, Albums or Artists), from Home's tiles for instance. */
+    fun showPage(p: String) {
+        if (b != null && ready) select(p) else requested = p
+    }
+
+    private fun select(p: String, save: Boolean = true) {
         val b = b ?: return
-        tab = i
-        listOf(b.chipPlaylists, b.chipSongs, b.chipAlbums, b.chipArtists).forEachIndexed { k, c -> c.isSelected = k == i }
-        if (save) lifecycleScopeOrNull?.launch(Dispatchers.IO) { Settings.libraryTab = i }
+        page = if (p in PAGES) p else SONGS
+        val i = page
+        chips(b).forEach { (k, c) -> c.isSelected = k == i }
+        // The last page picked comes back next time.
+        if (save) lifecycleScopeOrNull?.launch(Dispatchers.IO) { Settings.libraryPage = i }
         b.empty.root.isVisible = false
+        b.list.isVisible = true
         when (i) {
-            0 -> {
+            PLAYLISTS -> {
                 b.list.layoutManager = LinearLayoutManager(requireContext())
                 b.list.adapter = playlists
             }
-            1 -> {
+            SONGS -> {
                 b.list.layoutManager = LinearLayoutManager(requireContext())
                 val config = ConcatAdapter.Config.Builder().setStableIdMode(ConcatAdapter.Config.StableIdMode.ISOLATED_STABLE_IDS).build()
                 b.list.adapter = ConcatAdapter(config, songsHeader, songs)
             }
-            2 -> {
+            ALBUMS -> {
                 val span = if (resources.configuration.screenWidthDp >= 600) 4 else if (resources.configuration.screenWidthDp >= 420) 3 else 2
                 b.list.layoutManager = GridLayoutManager(requireContext(), span)
                 b.list.adapter = albums
@@ -121,7 +137,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library), MainActivity.Root {
                 b.list.adapter = artists
             }
         }
-        lifecycleScopeOrNull?.launch { if (i == 0) loadPlaylists() else loadLocal() }
+        lifecycleScopeOrNull?.launch { if (i == PLAYLISTS) loadPlaylists() else loadLocal() }
     }
 
     private suspend fun loadPlaylists() {
@@ -161,11 +177,11 @@ class LibraryFragment : Fragment(R.layout.fragment_library), MainActivity.Root {
             showNoAccess()
             return
         }
-        val which = tab
+        val which = page
         when (which) {
-            1 -> {
+            SONGS -> {
                 val list = withContext(Dispatchers.IO) { LocalMusic.songs(ctx) }
-                if (tab != which) return
+                if (page != which) return
                 songList = list
                 songs.submitList(list)
                 songsHeader.refresh()
@@ -174,17 +190,17 @@ class LibraryFragment : Fragment(R.layout.fragment_library), MainActivity.Root {
                 else b.empty.root.isVisible = false
                 b.list.isVisible = list.isNotEmpty()
             }
-            2 -> {
+            ALBUMS -> {
                 val list = withContext(Dispatchers.IO) { LocalMusic.albums(ctx) }
-                if (tab != which) return
+                if (page != which) return
                 albums.submitList(list)
                 if (list.isEmpty()) b.empty.show(R.drawable.ic_album, getString(R.string.lib_no_albums_title), getString(R.string.lib_no_albums_body))
                 else b.empty.root.isVisible = false
                 b.list.isVisible = list.isNotEmpty()
             }
-            3 -> {
+            ARTISTS -> {
                 val list = withContext(Dispatchers.IO) { LocalMusic.artists(ctx) }
-                if (tab != which) return
+                if (page != which) return
                 artists.submitList(
                     list.map { a ->
                         Row(
@@ -221,6 +237,14 @@ class LibraryFragment : Fragment(R.layout.fragment_library), MainActivity.Root {
                 }
             }
         }
+    }
+
+    companion object {
+        const val SONGS = "songs"
+        const val PLAYLISTS = "playlists"
+        const val ALBUMS = "albums"
+        const val ARTISTS = "artists"
+        private val PAGES = setOf(SONGS, PLAYLISTS, ALBUMS, ARTISTS)
     }
 
     override fun scrollToTop() {

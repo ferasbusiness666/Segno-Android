@@ -247,7 +247,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun openLibrary() = showTab(2)
+    /** Shows Library, on [page] if given (LibraryFragment.SONGS, PLAYLISTS...). */
+    fun openLibrary(page: String? = null) {
+        showTab(2)
+        if (page != null) (supportFragmentManager.findFragmentByTag(TAGS[2]) as? LibraryFragment)?.showPage(page)
+    }
 
     fun isNowPlayingOpen() = supportFragmentManager.findFragmentByTag(NP) != null
 

@@ -195,26 +195,6 @@
         <item name="android:textColor">@color/tab_text</item>
         <item name="android:maxLines">1</item>
     </style>
-    <style name="Widget.Segno.Tile" parent="">
-        <item name="android:textAlignment">center</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_marginStart">@dimen/s1</item>
-        <item name="android:layout_marginEnd">@dimen/s1</item>
-        <item name="android:background">@drawable/bg_card_clickable</item>
-        <item name="android:gravity">center</item>
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">12dp</item>
-        <item name="android:paddingStart">@dimen/s1</item>
-        <item name="android:paddingEnd">@dimen/s1</item>
-        <item name="android:drawablePadding">@dimen/s2</item>
-        <item name="android:textAppearance">@style/TextAppearance.Segno.SmallStrong</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-    </style>
     <style name="Widget.Segno.SleepChip" parent="">
         <item name="android:textAlignment">center</item>
         <item name="android:layout_width">0dp</item>
@@ -261,5 +241,28 @@
         <item name="thumbTint">@color/switch_thumb</item>
         <item name="trackTint">@color/switch_track</item>
         <item name="trackDecorationTint">@color/transparent</item>
+    </style>
+    <!-- Home's shortcut tiles: icon square on the left, name on the right. -->
+    <style name="Widget.Segno.TileRow" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:layout_marginStart">@dimen/s1</item>
+        <item name="android:layout_marginEnd">@dimen/s1</item>
+        <item name="android:background">@drawable/bg_card_clickable</item>
+        <item name="android:gravity">center_vertical|start</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:paddingStart">@dimen/s2</item>
+        <item name="android:paddingEnd">@dimen/s2</item>
+        <item name="android:paddingTop">@dimen/s2</item>
+        <item name="android:paddingBottom">@dimen/s2</item>
+        <item name="android:drawablePadding">@dimen/s3</item>
+        <item name="android:textAppearance">@style/TextAppearance.Segno.SmallStrong</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
     </style>
 </resources>

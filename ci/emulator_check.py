@@ -214,12 +214,21 @@ if crashed():
 shot("01-home-empty")
 
 # Library -----------------------------------------------------------------------------------------
+def selected_chip():
+    for rid in ("chipSongs", "chipPlaylists", "chipAlbums", "chipArtists"):
+        n = find(rid=rid)
+        if n is not None and n.get("selected") == "true":
+            return rid
+    return None
+
+
 tap_id("tabLibrary")
 time.sleep(2)
-shot("02-library-playlists")
-tap_id("chipSongs")
+log(f"library opens on: {selected_chip()} (should be chipSongs)")
+shot("02-library-songs-no-access")
+tap_id("chipPlaylists")
 time.sleep(2)
-shot("03-library-no-access")
+shot("03-library-playlists")
 # Some songs on the phone, then allow access.
 try:
     import wave, struct, math, tempfile
@@ -239,15 +248,20 @@ except Exception as e:  # noqa: BLE001
 perm = "android.permission.READ_MEDIA_AUDIO" if level >= 33 else "android.permission.READ_EXTERNAL_STORAGE"
 sh(f"pm grant {PKG} {perm}")
 time.sleep(4)
-tap_id("chipPlaylists")
-time.sleep(1)
 tap_id("chipSongs")
 time.sleep(3)
 shot("04-library-songs")
 tap_id("chipAlbums")
 time.sleep(2)
 shot("05-library-albums")
-tap_id("chipPlaylists")
+# The last page picked comes back after leaving Library.
+tap_id("tabHome")
+time.sleep(1)
+tap_id("tabLibrary")
+time.sleep(2)
+log(f"library after Home and back: {selected_chip()} (should be chipAlbums)")
+tap_id("chipSongs")
+time.sleep(1)
 
 # Search ------------------------------------------------------------------------------------------
 tap_id("tabSearch")
@@ -423,6 +437,20 @@ if tap_id("settings"):
     time.sleep(2)
     shot("17-settings")
     back()
+
+# Home's Songs tile opens Library on Songs.
+tap_id("tabLibrary")
+time.sleep(1)
+tap_id("chipPlaylists")
+time.sleep(1)
+tap_id("tabHome")
+time.sleep(2)
+if tap_id("tileSongs"):
+    time.sleep(2)
+    log(f"Home's Songs tile opens: {selected_chip()} (should be chipSongs)")
+    shot("13b-songs-tile-opens-library")
+tap_id("tabHome")
+time.sleep(1)
 
 # Landscape Now Playing ---------------------------------------------------------------------------
 if tap_id("miniCard"):

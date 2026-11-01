@@ -82,6 +82,7 @@
     <string name="home_recent">Recently played</string>
     <string name="home_because">Because you played %1$s</string>
     <string name="home_playlists">Your playlists</string>
+    <string name="home_songs">Songs</string>
     <string name="home_loved">Loved songs</string>
     <string name="home_downloads">Downloads</string>
     <string name="home_import">Import</string>

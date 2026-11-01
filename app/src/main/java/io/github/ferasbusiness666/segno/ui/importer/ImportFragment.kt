@@ -145,7 +145,7 @@ class ImportFragment : Fragment(R.layout.fragment_import) {
                     box.addView(text(getString(R.string.import_done_where)))
                     val open = inflater.inflate(R.layout.item_pill_primary, box, false) as TextView
                     open.setText(R.string.lib_playlists)
-                    open.setOnClickListener { main.openLibrary() }
+                    open.setOnClickListener { main.openLibrary(io.github.ferasbusiness666.segno.ui.library.LibraryFragment.PLAYLISTS) }
                     box.addView(open)
                 }
                 val more = inflater.inflate(R.layout.item_pill_secondary, box, false) as TextView

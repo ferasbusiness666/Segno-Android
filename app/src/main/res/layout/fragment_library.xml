@@ -48,15 +48,15 @@
             android:paddingBottom="@dimen/s2">
 
             <TextView
-                android:id="@+id/chipPlaylists"
-                style="@style/Widget.Segno.Chip"
-                android:text="@string/lib_playlists" />
-
-            <TextView
                 android:id="@+id/chipSongs"
                 style="@style/Widget.Segno.Chip"
-                android:layout_marginStart="@dimen/s2"
                 android:text="@string/lib_songs" />
+
+            <TextView
+                android:id="@+id/chipPlaylists"
+                style="@style/Widget.Segno.Chip"
+                android:layout_marginStart="@dimen/s2"
+                android:text="@string/lib_playlists" />
 
             <TextView
                 android:id="@+id/chipAlbums"

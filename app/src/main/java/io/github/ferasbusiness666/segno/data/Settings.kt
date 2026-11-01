@@ -51,9 +51,10 @@ object Settings {
         get() = prefs.getString("recent_searches", "").orEmpty().split('\n').filter { it.isNotBlank() }
         set(v) = prefs.edit { putString("recent_searches", v.take(8).joinToString("\n")) }
 
-    var libraryTab: Int
-        get() = prefs.getInt("library_tab", 0)
-        set(v) = prefs.edit { putInt("library_tab", v) }
+    /** The Library page picked last: "songs" (the default), "playlists", "albums" or "artists". */
+    var libraryPage: String
+        get() = prefs.getString("library_page", "songs").orEmpty()
+        set(v) = prefs.edit { putString("library_page", v) }
 
     var askedNotifications: Boolean
         get() = prefs.getBoolean("asked_notifications", false)

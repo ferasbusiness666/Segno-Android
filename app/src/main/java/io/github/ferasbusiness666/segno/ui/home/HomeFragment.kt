@@ -30,6 +30,7 @@ import io.github.ferasbusiness666.segno.ui.common.openUrl
 import io.github.ferasbusiness666.segno.ui.common.show
 import io.github.ferasbusiness666.segno.ui.common.whileStarted
 import io.github.ferasbusiness666.segno.ui.detail.DetailFragment
+import io.github.ferasbusiness666.segno.ui.library.LibraryFragment
 import io.github.ferasbusiness666.segno.update.Updates
 import io.github.ferasbusiness666.segno.databinding.ViewEmptyBinding
 import kotlinx.coroutines.Dispatchers
@@ -82,6 +83,7 @@ class HomeFragment : Fragment(R.layout.fragment_list), MainActivity.Root {
             }
         }.apply { visible = false }
         val tiles = ViewAdapter(R.layout.item_tiles, 6) { v ->
+            v.findViewById<View>(R.id.tileSongs).setOnClickListener { main.openLibrary(LibraryFragment.SONGS) }
             v.findViewById<View>(R.id.tileLoved).setOnClickListener { main.openDetail(DetailFragment.loved()) }
             v.findViewById<View>(R.id.tileDownloads).setOnClickListener { main.openDetail(DetailFragment.downloads()) }
             v.findViewById<View>(R.id.tileImport).setOnClickListener { main.openImport() }
@@ -142,7 +144,7 @@ class HomeFragment : Fragment(R.layout.fragment_list), MainActivity.Root {
         playlistsTitle.set(
             if (shown.isNotEmpty()) getString(R.string.home_playlists) else null,
             if (lists.size > shown.size) getString(R.string.lib_title) else null,
-        ) { main.openLibrary() }
+        ) { main.openLibrary(LibraryFragment.PLAYLISTS) }
 
         empty.visible = rec.isEmpty()
     }
