@@ -106,7 +106,8 @@ def wait_for(fn, timeout):
     end = time.time() + timeout
     while time.time() < end:
         r = fn()
-        if r:
+        # Element objects without children are falsy, so compare with None.
+        if r is not None and r is not False:
             return r
         time.sleep(1)
     return None
@@ -115,6 +116,12 @@ def wait_for(fn, timeout):
 def back():
     sh("input keyevent 4")
     time.sleep(1)
+
+
+def hide_keyboard():
+    """Back closes the keyboard, but only press it when the keyboard is up."""
+    if re.search(r"mInputShown=true", sh("dumpsys input_method")):
+        back()
 
 
 def type_text(t):
@@ -197,7 +204,7 @@ tap_id("chipPlaylists")
 # Search ------------------------------------------------------------------------------------------
 tap_id("tabSearch")
 time.sleep(1)
-back()  # close the keyboard if it opened
+hide_keyboard()
 shot("06-search-idle")
 tap_id("query")
 time.sleep(1)
@@ -205,7 +212,7 @@ type_text("daft punk get lucky")
 sh("input keyevent 66")
 got = wait_for(lambda: find(rid="title"), 40)
 time.sleep(3)
-back()  # hide the keyboard
+hide_keyboard()
 time.sleep(1)
 log(f"search results shown: {'yes' if got else 'NO'}")
 shot("07-search-results")
@@ -309,7 +316,7 @@ if tap_id("tileImport"):
     shot("15-import")
     tap_id("paste")
     type_text("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
-    back()
+    hide_keyboard()
     tap_id("find")
     wait_for(lambda: find(rid="foundTitle") or find(text="Spotify"), 40)
     time.sleep(2)

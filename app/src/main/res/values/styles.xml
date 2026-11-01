@@ -82,12 +82,13 @@
         <item name="android:layout_height">@dimen/touch</item>
         <item name="android:padding">12dp</item>
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:background">@drawable/bg_icon_button</item>
         <item name="tint">@color/text_2</item>
     </style>
 
     <!-- Pills, like desktop's buttons. -->
     <style name="Widget.Segno.Pill" parent="">
+        <item name="android:textAlignment">center</item>
         <item name="android:layout_height">@dimen/pill_h</item>
         <item name="android:minWidth">@dimen/touch</item>
         <item name="android:gravity">center</item>
@@ -119,6 +120,7 @@
 
     <!-- Filter chips (Songs / Videos, Playlists / Songs / Albums / Artists). -->
     <style name="Widget.Segno.Chip" parent="">
+        <item name="android:textAlignment">center</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">36dp</item>
         <item name="android:gravity">center</item>
@@ -194,6 +196,7 @@
         <item name="android:maxLines">1</item>
     </style>
     <style name="Widget.Segno.Tile" parent="">
+        <item name="android:textAlignment">center</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
@@ -213,6 +216,7 @@
         <item name="android:focusable">true</item>
     </style>
     <style name="Widget.Segno.SleepChip" parent="">
+        <item name="android:textAlignment">center</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">@dimen/touch</item>
         <item name="android:layout_weight">1</item>
