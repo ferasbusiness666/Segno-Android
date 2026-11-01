@@ -264,12 +264,15 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         val ring = b.actions.npDownloadProgress
         when {
             t == null || !t.isOnline -> {
-                btn.setImageResource(R.drawable.ic_downloaded)
+                // Songs already on the phone: nothing to download.
+                btn.setImageResource(R.drawable.ic_download)
                 btn.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.text_3)
                 btn.isEnabled = false
+                btn.alpha = 0.4f
                 ring.isVisible = false
             }
             d?.isDone == true -> {
+                btn.alpha = 1f
                 btn.setImageResource(R.drawable.ic_downloaded)
                 btn.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.accent)
                 btn.isEnabled = true
@@ -283,6 +286,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 btn.contentDescription = if (d.state == DownloadState.WAITING) getString(R.string.state_waiting) else getString(R.string.state_downloading, (d.progress * 100).toInt())
             }
             else -> {
+                btn.alpha = 1f
                 btn.setImageResource(R.drawable.ic_download)
                 btn.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.text_2)
                 btn.isEnabled = true

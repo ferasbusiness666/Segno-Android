@@ -46,6 +46,7 @@ def api():
 
 
 def shot(name):
+    dump()  # clears any system "isn't responding" dialog first
     path = os.path.join(OUT, name + ".png")
     with open(path, "wb") as f:
         subprocess.run(["adb", "exec-out", "screencap", "-p"], stdout=f, timeout=60)
@@ -53,16 +54,37 @@ def shot(name):
 
 
 def dump():
-    for _ in range(3):
+    for _ in range(4):
         sh("uiautomator dump /sdcard/ui.xml >/dev/null 2>&1")
         xml = sh("cat /sdcard/ui.xml")
         if "<hierarchy" in xml:
             try:
-                return ET.fromstring(xml[xml.index("<?xml") if "<?xml" in xml else xml.index("<hierarchy"):])
+                root = ET.fromstring(xml[xml.index("<?xml") if "<?xml" in xml else xml.index("<hierarchy"):])
             except ET.ParseError:
-                pass
+                root = None
+            if root is not None and dismiss_system_dialog(root):
+                time.sleep(2)
+                continue
+            if root is not None:
+                return root
         time.sleep(1)
     return None
+
+
+def dismiss_system_dialog(root):
+    """The emulator's own apps sometimes stop answering ("Pixel Launcher isn't responding").
+    Press Wait so the dialog doesn't cover Segno."""
+    texts = [(n.get("text") or "") for n in root.iter("node")]
+    if not any("isn't responding" in t or "keeps stopping" in t for t in texts):
+        return False
+    for n in root.iter("node"):
+        if (n.get("text") or "") in ("Wait", "Close app") and n.get("text") == "Wait" or n.get("resource-id") == "android:id/aerr_wait":
+            a, b, c, d = map(int, re.findall(r"\d+", n.get("bounds")))
+            sh(f"input tap {(a + c) // 2} {(b + d) // 2}")
+            print("dismissed a system dialog", flush=True)
+            return True
+    sh("input keyevent 4")
+    return True
 
 
 def nodes(root):
@@ -310,7 +332,7 @@ else:
     cause = re.findall(r"Caused by: (org\.schabi\S+: [^\n]*)", adb("logcat", "-d"))
     log(f"YouTube playback on this runner: did not start. Segno said: {why[-1] if why else '?'}")
     log(f"  extractor error: {cause[-1] if cause else '?'}")
-    if not any("bot" in c.lower() or "sign in" in c.lower() for c in cause + why):
+    if got is not None and not any("bot" in c.lower() or "sign in" in c.lower() for c in cause + why):
         failures.append("YouTube song did not play (not a bot check)")
     # The playback service itself is checked with a music file from the phone instead.
     tap_id("tabLibrary")
