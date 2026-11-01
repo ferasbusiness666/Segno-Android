@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/topbar_h"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/pad_x"
+    android:paddingEnd="@dimen/s1">
+
+    <ImageView
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_segno_mark" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/s3"
+        android:layout_weight="1"
+        android:text="@string/home_title"
+        android:textAppearance="@style/TextAppearance.Segno.H1"
+        android:textSize="24sp" />
+
+    <ImageButton
+        android:id="@+id/settings"
+        style="@style/Widget.Segno.IconButton"
+        android:contentDescription="@string/settings"
+        android:src="@drawable/ic_settings" />
+</LinearLayout>

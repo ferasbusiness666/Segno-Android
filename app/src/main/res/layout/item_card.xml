@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="144dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_row"
+    android:orientation="vertical"
+    android:padding="@dimen/s1">
+
+    <io.github.ferasbusiness666.segno.ui.common.ArtView
+        android:id="@+id/cardArt"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:importantForAccessibility="no"
+        app:artRadius="@dimen/r_md"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+    <TextView
+        android:id="@+id/cardTitle"
+        style="@style/Widget.Segno.Line.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/s2"
+        android:textAppearance="@style/TextAppearance.Segno.BodyStrong"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/cardSub"
+        style="@style/Widget.Segno.Line.Sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/s1" />
+</LinearLayout>

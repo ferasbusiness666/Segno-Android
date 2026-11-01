@@ -33,3 +33,26 @@ class VersionsTest {
         assertNull(Versions.parts("abc"))
     }
 }
+
+class UpdateParseTest {
+    @Test
+    fun findsTheApk() {
+        val json = """{"tag_name":"v1.2.0","html_url":"https://github.com/x/releases/tag/v1.2.0","draft":false,"prerelease":false,
+            "assets":[{"name":"notes.txt","browser_download_url":"https://x/notes.txt"},{"name":"Segno-1.2.0.apk","browser_download_url":"https://x/Segno-1.2.0.apk"}]}"""
+        val r = io.github.ferasbusiness666.segno.update.Updates.parse(json)!!
+        assertEquals("1.2.0", r.version)
+        assertEquals("https://x/Segno-1.2.0.apk", r.url)
+    }
+
+    @Test
+    fun noApkMeansTheReleasePage() {
+        val json = """{"tag_name":"1.3.0","html_url":"https://github.com/x/releases/tag/1.3.0","assets":[]}"""
+        assertEquals("https://github.com/x/releases/tag/1.3.0", io.github.ferasbusiness666.segno.update.Updates.parse(json)!!.url)
+    }
+
+    @Test
+    fun preReleasesAndJunkAreIgnored() {
+        assertNull(io.github.ferasbusiness666.segno.update.Updates.parse("""{"tag_name":"2.0.0","prerelease":true,"assets":[]}"""))
+        assertNull(io.github.ferasbusiness666.segno.update.Updates.parse("not json"))
+    }
+}

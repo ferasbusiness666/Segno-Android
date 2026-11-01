@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/s3"
+    android:paddingTop="@dimen/s3"
+    android:paddingEnd="@dimen/s3">
+
+    <TextView
+        android:id="@+id/tileLoved"
+        style="@style/Widget.Segno.Tile"
+        android:drawableTop="@drawable/tile_loved"
+        android:text="@string/home_loved" />
+
+    <TextView
+        android:id="@+id/tileDownloads"
+        style="@style/Widget.Segno.Tile"
+        android:drawableTop="@drawable/tile_downloads"
+        android:text="@string/home_downloads" />
+
+    <TextView
+        android:id="@+id/tileImport"
+        style="@style/Widget.Segno.Tile"
+        android:drawableTop="@drawable/tile_import"
+        android:text="@string/home_import" />
+</LinearLayout>

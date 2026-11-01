@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/topbar_h"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/s1"
+        android:paddingEnd="@dimen/s1">
+
+        <ImageButton
+            android:id="@+id/back"
+            style="@style/Widget.Segno.IconButton"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_back"
+            app:tint="@color/text"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+        <TextView
+            android:id="@+id/barTitle"
+            style="@style/Widget.Segno.Line"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/s1"
+            android:layout_weight="1"
+            android:alpha="0"
+            android:textAppearance="@style/TextAppearance.Segno.BodyStrong" />
+
+        <ImageButton
+            android:id="@+id/barMore"
+            style="@style/Widget.Segno.IconButton"
+            android:contentDescription="@string/more"
+            android:src="@drawable/ic_more"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/s6"
+        android:scrollbars="vertical" />
+</LinearLayout>

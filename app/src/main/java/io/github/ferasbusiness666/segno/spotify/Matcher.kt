@@ -31,8 +31,8 @@ object Matcher {
 
     /** The accepted length range in seconds for a song of [songSec] seconds. */
     fun window(songSec: Double): LongRange {
-        val lo = (songSec * 0.85 - 5.0).coerceAtLeast(0.0).toLong()
-        val hi = (songSec * 1.15 + 5.0).toLong()
+        val lo = Math.round(songSec * 0.85 - 5.0).coerceAtLeast(0)
+        val hi = Math.round(songSec * 1.15 + 5.0)
         return lo..hi
     }
 

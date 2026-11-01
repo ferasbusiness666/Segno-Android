@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_row"
+    android:orientation="vertical"
+    android:padding="@dimen/s2">
+
+    <io.github.ferasbusiness666.segno.ui.common.ArtView
+        android:id="@+id/albumArt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:artSquare="true"
+        android:importantForAccessibility="no"
+        app:artRadius="@dimen/r_md" />
+
+    <TextView
+        android:id="@+id/albumTitle"
+        style="@style/Widget.Segno.Line.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/s2"
+        android:textAppearance="@style/TextAppearance.Segno.BodyStrong"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/albumSub"
+        style="@style/Widget.Segno.Line.Sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

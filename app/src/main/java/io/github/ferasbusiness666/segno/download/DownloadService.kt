@@ -212,7 +212,7 @@ class DownloadService : Service() {
         private const val CHANNEL = "downloads"
         private const val NOTIF_ID = 42
         private const val DONE_ID = 43
-        private const val ACTION_STOP = "io.github.ferasbusiness666.segno.STOP_DOWNLOADS"
+        const val ACTION_STOP = "io.github.ferasbusiness666.segno.STOP_DOWNLOADS"
 
         fun channel(context: Context) {
             val nm = context.getSystemService(NotificationManager::class.java)

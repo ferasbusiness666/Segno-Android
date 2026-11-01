@@ -184,6 +184,7 @@
     <string name="queue_clear">Clear</string>
     <string name="queue_drag">Drag to reorder</string>
     <string name="queue_removed">Removed from the queue</string>
+    <string name="queue_remove">Remove from the queue</string>
 
     <!-- Sleep timer -->
     <string name="sleep_title">Sleep timer</string>

@@ -165,4 +165,97 @@
         <item name="android:maxHeight">4dp</item>
         <item name="android:background">@null</item>
     </style>
+
+    <!-- Bottom tabs -->
+    <style name="Widget.Segno.Tab" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/tabbar_h</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="Widget.Segno.TabIcon" parent="">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="tint">@color/tab_icon</item>
+    </style>
+    <style name="Widget.Segno.TabLabel" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="android:textAppearance">@style/TextAppearance.Segno.SmallStrong</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/tab_text</item>
+        <item name="android:maxLines">1</item>
+    </style>
+    <style name="Widget.Segno.Tile" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">@dimen/s1</item>
+        <item name="android:layout_marginEnd">@dimen/s1</item>
+        <item name="android:background">@drawable/bg_card_clickable</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingStart">@dimen/s1</item>
+        <item name="android:paddingEnd">@dimen/s1</item>
+        <item name="android:drawablePadding">@dimen/s2</item>
+        <item name="android:textAppearance">@style/TextAppearance.Segno.SmallStrong</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="Widget.Segno.SleepChip" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/touch</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_chip_raised</item>
+        <item name="android:textAppearance">@style/TextAppearance.Segno.BodyStrong</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="Widget.Segno.SettingsCard" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/s3</item>
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/s4</item>
+    </style>
+    <style name="Widget.Segno.SettingsTitle" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/s2</item>
+        <item name="android:textAppearance">@style/TextAppearance.Segno.BodyStrong</item>
+    </style>
+    <style name="Widget.Segno.SettingsRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/touch</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="Widget.Segno.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/s3</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="thumbTint">@color/switch_thumb</item>
+        <item name="trackTint">@color/switch_track</item>
+        <item name="trackDecorationTint">@color/transparent</item>
+    </style>
 </resources>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/s2"
+    android:paddingTop="@dimen/s2"
+    android:paddingEnd="@dimen/s2"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:id="@+id/miniCard"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mini_h"
+        android:background="@drawable/bg_mini"
+        android:contentDescription="@string/np_title"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/s2"
+        android:paddingEnd="@dimen/s1">
+
+        <io.github.ferasbusiness666.segno.ui.common.ArtView
+            android:id="@+id/miniArt"
+            android:layout_width="@dimen/mini_art"
+            android:layout_height="@dimen/mini_art"
+            android:importantForAccessibility="no" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/s3"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/miniTitle"
+                style="@style/Widget.Segno.Line.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Segno.BodyStrong"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/miniArtist"
+                style="@style/Widget.Segno.Line.Sub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/miniPlay"
+            style="@style/Widget.Segno.IconButton"
+            android:contentDescription="@string/play"
+            android:src="@drawable/ic_play"
+            app:tint="@color/text" />
+
+        <ImageButton
+            android:id="@+id/miniNext"
+            style="@style/Widget.Segno.IconButton"
+            android:contentDescription="@string/next"
+            android:padding="13dp"
+            android:src="@drawable/ic_skip_forward"
+            app:tint="@color/text" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/miniProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/s2"
+        android:layout_marginEnd="@dimen/s2"
+        android:max="1000"
+        android:progressDrawable="@drawable/mini_progress" />
+</FrameLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ArtView">
+        <attr name="artRadius" format="dimension" />
+        <attr name="artCircle" format="boolean" />
+        <attr name="artSquare" format="boolean" />
+    </declare-styleable>
+</resources>

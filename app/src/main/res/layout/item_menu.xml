@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:background="?attr/selectableItemBackground"
+    android:drawablePadding="@dimen/s4"
+    android:ellipsize="end"
+    android:gravity="center_vertical|start"
+    android:maxLines="1"
+    android:paddingStart="@dimen/s5"
+    android:paddingEnd="@dimen/pad_x"
+    android:textAlignment="viewStart"
+    android:textAppearance="@style/TextAppearance.Segno.Body" />

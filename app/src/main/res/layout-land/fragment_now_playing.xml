@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/npRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:clickable="true"
+    android:focusable="true">
+
+    <View
+        android:id="@+id/wash"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/np_wash"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/top"
+        layout="@layout/view_np_top"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/topbar_h"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/half"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.45" />
+
+    <io.github.ferasbusiness666.segno.ui.common.ArtView
+        android:id="@+id/npArt"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/s6"
+        android:layout_marginTop="@dimen/s2"
+        android:layout_marginEnd="@dimen/s6"
+        android:layout_marginBottom="@dimen/s4"
+        android:contentDescription="@string/play"
+        android:elevation="16dp"
+        app:artRadius="@dimen/r_lg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/half"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top" />
+
+    <TextView
+        android:id="@+id/npTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/s6"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.Segno.Title"
+        android:textDirection="firstStrong"
+        app:layout_constraintBottom_toTopOf="@id/npArtist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/half"
+        app:layout_constraintTop_toBottomOf="@id/top"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/npArtist"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/s1"
+        android:layout_marginEnd="@dimen/s6"
+        android:layout_marginBottom="@dimen/s2"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.Segno.Body"
+        android:textColor="@color/text_2"
+        android:textDirection="firstStrong"
+        app:layout_constraintBottom_toTopOf="@id/seek"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/half"
+        app:layout_constraintTop_toBottomOf="@id/npTitle" />
+
+    <include
+        android:id="@+id/seek"
+        layout="@layout/view_np_seek"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/s4"
+        app:layout_constraintBottom_toTopOf="@id/controls"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/half"
+        app:layout_constraintTop_toBottomOf="@id/npArtist" />
+
+    <include
+        android:id="@+id/controls"
+        layout="@layout/view_np_controls"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/s3"
+        app:layout_constraintBottom_toTopOf="@id/actions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/half"
+        app:layout_constraintTop_toBottomOf="@id/seek" />
+
+    <include
+        android:id="@+id/actions"
+        layout="@layout/view_np_actions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/s4"
+        android:layout_marginEnd="@dimen/s8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/half"
+        app:layout_constraintTop_toBottomOf="@id/controls" />
+</androidx.constraintlayout.widget.ConstraintLayout>

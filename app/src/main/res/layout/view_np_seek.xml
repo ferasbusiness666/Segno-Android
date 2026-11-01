@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <SeekBar
+        android:id="@+id/npSeek"
+        style="@style/Widget.Segno.Seek"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:contentDescription="@string/np_seek"
+        android:max="1000" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="ltr"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/s2"
+        android:paddingEnd="@dimen/s2">
+
+        <TextView
+            android:id="@+id/npElapsed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFeatureSettings="tnum"
+            android:text="0:00"
+            android:textAppearance="@style/TextAppearance.Segno.Caption"
+            android:textColor="@color/text_2" />
+
+        <TextView
+            android:id="@+id/npRemaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFeatureSettings="tnum"
+            android:text="0:00"
+            android:textAppearance="@style/TextAppearance.Segno.Caption"
+            android:textColor="@color/text_2" />
+    </LinearLayout>
+</LinearLayout>

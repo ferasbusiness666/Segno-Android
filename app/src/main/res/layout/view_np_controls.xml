@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layoutDirection="ltr"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/npShuffle"
+        style="@style/Widget.Segno.IconButton"
+        android:contentDescription="@string/shuffle"
+        android:src="@drawable/ic_shuffle" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/npPrev"
+        style="@style/Widget.Segno.IconButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:contentDescription="@string/previous"
+        android:padding="14dp"
+        android:src="@drawable/ic_skip_back"
+        app:tint="@color/text" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <FrameLayout
+        android:layout_width="72dp"
+        android:layout_height="72dp">
+
+        <ImageButton
+            android:id="@+id/npPlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_play_big"
+            android:contentDescription="@string/play"
+            android:padding="22dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_play"
+            app:tint="@color/bg" />
+
+        <ProgressBar
+            android:id="@+id/npBuffering"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminateTint="@color/accent"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/npNext"
+        style="@style/Widget.Segno.IconButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:contentDescription="@string/next"
+        android:padding="14dp"
+        android:src="@drawable/ic_skip_forward"
+        app:tint="@color/text" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/npRepeat"
+        style="@style/Widget.Segno.IconButton"
+        android:contentDescription="@string/repeat"
+        android:src="@drawable/ic_repeat" />
+</LinearLayout>

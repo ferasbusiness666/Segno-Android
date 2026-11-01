@@ -415,12 +415,15 @@ class PlaybackService : MediaSessionService() {
 
     private inner class Callback : MediaSession.Callback {
         override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
-            val commands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon().apply {
-                Commands.incoming.forEach { add(Commands.command(it)) }
-            }.build()
-            return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
-                .setAvailableSessionCommands(commands)
-                .build()
+            val builder = MediaSession.ConnectionResult.AcceptedResultBuilder(session, controller)
+            // Segno's own screens also get the sleep timer and queue commands.
+            if (controller.packageName == packageName) {
+                val commands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon().apply {
+                    Commands.incoming.forEach { add(Commands.command(it)) }
+                }.build()
+                builder.setAvailableSessionCommands(commands)
+            }
+            return builder.build()
         }
 
         override fun onAddMediaItems(

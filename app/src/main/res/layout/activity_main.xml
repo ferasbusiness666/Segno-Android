@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/appRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/panel"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/mini"
+                layout="@layout/view_mini_player" />
+
+            <LinearLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/tabHome"
+                    style="@style/Widget.Segno.Tab">
+
+                    <ImageView
+                        style="@style/Widget.Segno.TabIcon"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_home" />
+
+                    <TextView
+                        style="@style/Widget.Segno.TabLabel"
+                        android:text="@string/tab_home" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tabSearch"
+                    style="@style/Widget.Segno.Tab">
+
+                    <ImageView
+                        style="@style/Widget.Segno.TabIcon"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_search" />
+
+                    <TextView
+                        style="@style/Widget.Segno.TabLabel"
+                        android:text="@string/tab_search" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tabLibrary"
+                    style="@style/Widget.Segno.Tab">
+
+                    <ImageView
+                        style="@style/Widget.Segno.TabIcon"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_library" />
+
+                    <TextView
+                        style="@style/Widget.Segno.TabLabel"
+                        android:text="@string/tab_library" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/toast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginStart="@dimen/s4"
+        android:layout_marginEnd="@dimen/s4"
+        android:background="@drawable/bg_toast"
+        android:gravity="center"
+        android:maxLines="3"
+        android:paddingStart="@dimen/s4"
+        android:paddingTop="@dimen/s3"
+        android:paddingEnd="@dimen/s4"
+        android:paddingBottom="@dimen/s3"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.Segno.Body"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+</FrameLayout>

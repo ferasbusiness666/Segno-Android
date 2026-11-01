@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_row"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/row_h"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/s1"
+    android:paddingBottom="@dimen/s1">
+
+    <CheckBox
+        android:id="@+id/foundCheck"
+        android:layout_width="@dimen/touch"
+        android:layout_height="@dimen/touch"
+        android:buttonTint="@color/accent"
+        android:clickable="false"
+        android:focusable="false" />
+
+    <io.github.ferasbusiness666.segno.ui.common.ArtView
+        android:id="@+id/foundArt"
+        android:layout_width="72dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/s1"
+        android:importantForAccessibility="no" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/s3"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/foundTitle"
+            style="@style/Widget.Segno.Line.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Segno.BodyStrong"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/foundSub"
+            style="@style/Widget.Segno.Line.Sub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2" />
+    </LinearLayout>
+</LinearLayout>

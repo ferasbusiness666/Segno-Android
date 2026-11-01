@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/topbar_h"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/s1"
+        android:paddingEnd="@dimen/s1">
+
+        <ImageButton
+            android:id="@+id/back"
+            style="@style/Widget.Segno.IconButton"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_back"
+            app:tint="@color/text" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/s8">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/pad_x"
+            android:paddingEnd="@dimen/pad_x">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/s4"
+                android:text="@string/settings"
+                android:textAppearance="@style/TextAppearance.Segno.H1" />
+
+            <!-- About -->
+            <LinearLayout style="@style/Widget.Segno.SettingsCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_segno_mark" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/s3"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_title"
+                            android:textAppearance="@style/TextAppearance.Segno.H2" />
+
+                        <TextView
+                            android:id="@+id/aboutLine"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.Segno.Small" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s3"
+                    android:text="@string/set_about_body"
+                    android:textAppearance="@style/TextAppearance.Segno.Body"
+                    android:textColor="@color/text_2"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s3"
+                    android:drawableStart="@drawable/ic_privacy_small"
+                    android:drawablePadding="@dimen/s2"
+                    android:gravity="center_vertical"
+                    android:text="@string/set_privacy"
+                    android:textAppearance="@style/TextAppearance.Segno.BodyStrong"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s3"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/website"
+                        style="@style/Widget.Segno.Pill.Secondary"
+                        android:layout_width="wrap_content"
+                        android:drawableStart="@drawable/ic_globe_small"
+                        android:text="@string/set_website" />
+
+                    <TextView
+                        android:id="@+id/source"
+                        style="@style/Widget.Segno.Pill.Secondary"
+                        android:layout_width="wrap_content"
+                        android:layout_marginStart="@dimen/s2"
+                        android:drawableStart="@drawable/ic_code_small"
+                        android:text="@string/set_source" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Playback -->
+            <LinearLayout style="@style/Widget.Segno.SettingsCard">
+
+                <TextView
+                    style="@style/Widget.Segno.SettingsTitle"
+                    android:text="@string/set_playback" />
+
+                <LinearLayout
+                    android:id="@+id/autoplayRow"
+                    style="@style/Widget.Segno.SettingsRow">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/set_autoplay"
+                            android:textAppearance="@style/TextAppearance.Segno.Body" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/set_autoplay_sub"
+                            android:textAppearance="@style/TextAppearance.Segno.Small" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/autoplay"
+                        style="@style/Widget.Segno.Switch" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Downloads -->
+            <LinearLayout style="@style/Widget.Segno.SettingsCard">
+
+                <TextView
+                    style="@style/Widget.Segno.SettingsTitle"
+                    android:text="@string/set_downloads" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_downloads_sub"
+                    android:textAppearance="@style/TextAppearance.Segno.Body"
+                    android:textColor="@color/text_2"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s2"
+                    android:text="@string/set_downloads_rights"
+                    android:textAppearance="@style/TextAppearance.Segno.Small"
+                    android:textColor="@color/text_3" />
+            </LinearLayout>
+
+            <!-- Updates -->
+            <LinearLayout style="@style/Widget.Segno.SettingsCard">
+
+                <TextView
+                    style="@style/Widget.Segno.SettingsTitle"
+                    android:text="@string/set_updates" />
+
+                <TextView
+                    android:id="@+id/updateStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Segno.Body"
+                    android:textColor="@color/text_2"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/updateButton"
+                    style="@style/Widget.Segno.Pill.Secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="@dimen/s3"
+                    android:drawableStart="@drawable/ic_refresh_small"
+                    android:text="@string/set_check_now" />
+
+                <LinearLayout
+                    android:id="@+id/autoCheckRow"
+                    style="@style/Widget.Segno.SettingsRow"
+                    android:layout_marginTop="@dimen/s2">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/set_auto_check"
+                            android:textAppearance="@style/TextAppearance.Segno.Body" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/set_auto_check_sub"
+                            android:textAppearance="@style/TextAppearance.Segno.Small" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/autoCheck"
+                        style="@style/Widget.Segno.Switch" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Licenses -->
+            <LinearLayout
+                android:id="@+id/licenses"
+                style="@style/Widget.Segno.SettingsCard"
+                android:background="@drawable/bg_card_clickable"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/set_licenses"
+                        android:textAppearance="@style/TextAppearance.Segno.BodyStrong" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/text_3" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/set_licenses_sub"
+                    android:textAppearance="@style/TextAppearance.Segno.Small" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/s2"
+                android:paddingStart="@dimen/s1"
+                android:paddingEnd="@dimen/s1"
+                android:text="@string/set_thanks_body"
+                android:textAppearance="@style/TextAppearance.Segno.Caption" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

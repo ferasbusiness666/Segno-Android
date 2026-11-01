@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/npLove"
+        style="@style/Widget.Segno.IconButton"
+        android:contentDescription="@string/np_love"
+        android:src="@drawable/ic_heart" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <FrameLayout
+        android:layout_width="@dimen/touch"
+        android:layout_height="@dimen/touch">
+
+        <ImageButton
+            android:id="@+id/npDownload"
+            style="@style/Widget.Segno.IconButton"
+            android:contentDescription="@string/np_download"
+            android:src="@drawable/ic_download" />
+
+        <ProgressBar
+            android:id="@+id/npDownloadProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_gravity="center"
+            android:indeterminate="false"
+            android:max="100"
+            android:progressDrawable="@drawable/progress_ring"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <FrameLayout
+        android:id="@+id/npSleepBox"
+        android:layout_width="@dimen/touch"
+        android:layout_height="@dimen/touch">
+
+        <ImageButton
+            android:id="@+id/npSleep"
+            style="@style/Widget.Segno.IconButton"
+            android:contentDescription="@string/np_sleep"
+            android:src="@drawable/ic_moon" />
+
+        <TextView
+            android:id="@+id/npSleepBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="1dp"
+            android:fontFeatureSettings="tnum"
+            android:textAppearance="@style/TextAppearance.Segno.SmallStrong"
+            android:textColor="@color/accent"
+            android:textSize="10sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/npQueue"
+        style="@style/Widget.Segno.IconButton"
+        android:contentDescription="@string/np_queue"
+        android:src="@drawable/ic_queue" />
+</LinearLayout>

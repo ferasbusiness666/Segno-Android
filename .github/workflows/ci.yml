@@ -29,7 +29,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Build debug and release APKs, run unit tests and lint
-        run: ./gradlew --stacktrace assembleDebug assembleRelease testDebugUnitTest lintDebug
+        run: ./gradlew --stacktrace --continue assembleDebug assembleRelease testDebugUnitTest lintDebug
 
       - name: Collect outputs
         if: always()
@@ -89,3 +89,5 @@ jobs:
           git add -A
           git -c user.name="Feras" -c user.email="250983428+ferasbusiness666@users.noreply.github.com" commit -qm "CI outputs for ${GITHUB_SHA::7}"
           git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" ci-out
+          # A leftover branch from setting up CI; gone once deleted.
+          git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" --delete ci-probe 2>/dev/null || true
