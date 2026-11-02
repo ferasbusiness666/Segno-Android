@@ -384,6 +384,9 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     override fun onDestroyView() {
         sleepPopup?.dismiss()
         sleepPopup = null
+        // A new view starts from scratch: cover, sleep icon and the rest are drawn again.
+        state = NowState()
+        artId = null
         b = null
         super.onDestroyView()
     }
