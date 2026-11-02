@@ -100,6 +100,18 @@ def version():
     return m.group(1) if m else "?"
 
 
+def refusal(text, verdict, timeout=30):
+    """The refusal on screen (a short message) or, if it already went, in the log."""
+    end = time.time() + timeout
+    while time.time() < end:
+        if find_text(text, exact=False) is not None:
+            return "on screen"
+        if f"Update refused: {verdict}" in adb("logcat", "-d", "-s", "Segno:W"):
+            return "in the log"
+        time.sleep(1)
+    return None
+
+
 def offer(apk_name, ver):
     sh(f"am start -n {ACT} -a {PKG}.TEST_UPDATE --es apk {apk_name} --es version {ver}")
 
@@ -117,6 +129,7 @@ adb("push", APK, f"{FILES}/same.apk")
 adb("push", APK_DEBUG, f"{FILES}/other.apk")
 adb("push", APK_NEXT, f"{FILES}/next.apk")
 log(f"installed: {version()}; files for the test: {sh(f'ls {FILES}').split()}")
+adb("logcat", "-c")
 
 # 1. Same version: offer, the install permission step, then "not newer".
 offer("same.apk", "1.0.0")
@@ -138,9 +151,9 @@ else:
         sh(f"appops set {PKG} REQUEST_INSTALL_PACKAGES allow")
         time.sleep(1)
         sh("input keyevent 4")
-        refused = wait_text("isn't newer", exact=False, timeout=30)
+        refused = refusal("isn't newer", "NotNewer")
         shot("21d-update-not-newer")
-        log(f"same version refused: {refused is not None}")
+        log(f"same version refused: {refused or 'no'}")
         if refused is None:
             failures.append("update: the same version wasn't refused")
 
@@ -149,9 +162,9 @@ time.sleep(4)
 offer("other.apk", "9.9.9")
 if wait_text("Segno 9.9.9 is out") is not None:
     tap(wait_text("Update"))
-    refused = wait_text("isn't Segno", exact=False, timeout=30)
+    refused = refusal("isn't Segno", "WrongApp")
     shot("21e-update-other-app")
-    log(f"other app refused: {refused is not None}")
+    log(f"other app refused: {refused or 'no'}")
     if refused is None:
         failures.append("update: another app's APK wasn't refused")
 else:
