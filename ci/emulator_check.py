@@ -146,14 +146,14 @@ def back():
 
 
 def keyboard_up():
-    return re.search(r"mInputShown=true|mIsInputViewShown=true|isInputViewShown=true", sh("dumpsys input_method")) is not None
+    return re.search(r"mInputShown=true", sh("dumpsys input_method")) is not None
 
 
 def hide_keyboard():
-    """Back closes the keyboard, but only press it when the keyboard is up."""
-    for _ in range(2):
-        if keyboard_up():
-            back()
+    """Back closes the keyboard. Press it once, and only when the keyboard is up and Segno has
+    hidden its tab bar for it: an extra back on Search goes Home, and on Home it leaves the app."""
+    if keyboard_up() and find(rid="tabs") is None:
+        back()
 
 
 def type_text(t):
@@ -362,15 +362,19 @@ else:
     cause = re.findall(r"Caused by: (org\.schabi\S+: [^\n]*)", adb("logcat", "-d"))
     log(f"YouTube playback on this runner: did not start. Segno said: {why[-1] if why else '?'}")
     log(f"  extractor error: {cause[-1] if cause else '?'}")
-    if got is not None and not any("bot" in c.lower() or "sign in" in c.lower() for c in cause + why):
+    if (cause or why) and not any("bot" in c.lower() or "sign in" in c.lower() for c in cause + why):
         failures.append("YouTube song did not play (not a bot check)")
+    elif not (cause or why):
+        log("  warning: no extractor error was logged; the player is checked with a local file below")
     # The playback service itself is checked with a music file from the phone instead.
+    adb("shell", "am", "start", "-n", ACT)  # make sure Segno is in front
+    time.sleep(2)
     tap_id("tabLibrary")
     time.sleep(1)
     tap_id("chipSongs")
     time.sleep(2)
     adb("logcat", "-c")
-    if tap_id("title", text="Long Tone"):
+    if tap_id("title", wait=30, text="Long Tone"):
         ok = wait_for(lambda: "playing=true" in adb("logcat", "-d", "-s", "SegnoCI:I"), 30)
         log(f"local file playback started: {'yes' if ok else 'NO'}")
         if ok:
