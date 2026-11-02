@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
+import android.net.Uri
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -27,6 +28,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.github.ferasbusiness666.segno.BuildConfig
 import io.github.ferasbusiness666.segno.R
 import io.github.ferasbusiness666.segno.data.Settings
 import io.github.ferasbusiness666.segno.databinding.ActivityMainBinding
@@ -36,6 +39,7 @@ import io.github.ferasbusiness666.segno.ui.common.Messages
 import io.github.ferasbusiness666.segno.ui.common.NowState
 import io.github.ferasbusiness666.segno.ui.common.PlayerHub
 import io.github.ferasbusiness666.segno.ui.common.dp
+import io.github.ferasbusiness666.segno.ui.common.openUrl
 import io.github.ferasbusiness666.segno.ui.common.setIcon
 import io.github.ferasbusiness666.segno.ui.common.setTextIfChanged
 import io.github.ferasbusiness666.segno.ui.detail.DetailFragment
@@ -45,11 +49,13 @@ import io.github.ferasbusiness666.segno.ui.library.LibraryFragment
 import io.github.ferasbusiness666.segno.ui.nowplaying.NowPlayingFragment
 import io.github.ferasbusiness666.segno.ui.search.SearchFragment
 import io.github.ferasbusiness666.segno.ui.settings.SettingsFragment
+import io.github.ferasbusiness666.segno.update.SelfUpdate
 import io.github.ferasbusiness666.segno.update.Updates
 import io.github.ferasbusiness666.segno.youtube.Links
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 
 /**
  * The one activity: three tabs (Home, Search, Library), screens opened on top of them, the mini
@@ -100,6 +106,15 @@ class MainActivity : AppCompatActivity() {
                 launch { PlayerHub.state.collect(::renderMini) }
                 launch { Messages.flow.collect(::toast) }
                 launch {
+                    // Android's "Install this update?" question, shown while Segno is on screen.
+                    SelfUpdate.confirm.collect { ask ->
+                        if (ask != null) {
+                            SelfUpdate.confirmShown()
+                            runCatching { startActivity(ask) }.onFailure { SelfUpdate.finished(getString(R.string.upd_install_failed)) }
+                        }
+                    }
+                }
+                launch {
                     // The mini player's thin progress line: once a second, only while playing.
                     while (true) {
                         if (PlayerHub.state.value.isPlaying) updateMiniProgress()
@@ -113,6 +128,7 @@ class MainActivity : AppCompatActivity() {
         // The update check waits a little, so it never slows down opening the app.
         lifecycleScope.launch(Dispatchers.IO) {
             delay(4000)
+            runCatching { SelfUpdate.cleanUp(applicationContext) }
             runCatching { Updates.checkIfDue() }
         }
     }
@@ -147,7 +163,79 @@ class MainActivity : AppCompatActivity() {
                 val text = intent.getStringExtra(Intent.EXTRA_TEXT)?.trim().orEmpty()
                 if (text.isNotEmpty()) openShared(text)
             }
+            ACTION_TEST_UPDATE -> if (BuildConfig.UPDATE_TEST_HOOK) testUpdate(intent)
         }
+    }
+
+    // Updates --------------------------------------------------------------------------------------
+
+    /** Asks about a new version: "Segno 1.0.1 is out", a few lines of notes, Update or Later. */
+    fun offerUpdate(r: Updates.Release, local: File? = null) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.update_banner, r.version))
+            .setMessage(r.notes.ifEmpty { getString(R.string.update_no_notes) })
+            .setPositiveButton(if (SelfUpdate.canInstall) R.string.update_get else R.string.update_open_page) { _, _ -> startUpdate(r, local) }
+            .setNegativeButton(R.string.update_dismiss) { _, _ -> Updates.dismiss() }
+            .show()
+    }
+
+    /** Update: downloads and installs it (release builds), or opens its page (debug builds, or no APK). */
+    fun startUpdate(r: Updates.Release, local: File? = null) {
+        if (!SelfUpdate.canInstall || (r.apkUrl.isEmpty() && local == null)) {
+            openUrl(r.pageUrl)
+            return
+        }
+        if (!packageManager.canRequestPackageInstalls()) {
+            pendingUpdate = r to local
+            if (!Settings.explainedInstalls) {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.upd_allow_title)
+                    .setMessage(R.string.upd_allow_body)
+                    .setPositiveButton(R.string.upd_allow_go) { _, _ ->
+                        Settings.explainedInstalls = true
+                        openInstallSettings()
+                    }
+                    .setNegativeButton(R.string.update_dismiss) { _, _ -> pendingUpdate = null }
+                    .show()
+            } else {
+                toast(getString(R.string.upd_allow_again))
+                openInstallSettings()
+            }
+            return
+        }
+        SelfUpdate.start(this, r, local)
+    }
+
+    private var pendingUpdate: Pair<Updates.Release, File?>? = null
+
+    private val installSettings = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        // Back from Android's "Install unknown apps" page: carry on if it's allowed now.
+        val p = pendingUpdate ?: return@registerForActivityResult
+        pendingUpdate = null
+        if (packageManager.canRequestPackageInstalls()) SelfUpdate.start(this, p.first, p.second) else toast(getString(R.string.upd_not_allowed))
+    }
+
+    private fun openInstallSettings() {
+        val intent = Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:$packageName"))
+        runCatching { installSettings.launch(intent) }.onFailure { pendingUpdate = null; openUrl(Updates.RELEASES_PAGE) }
+    }
+
+    /** CI only (builds without the real signing key): offers an APK the test copied into Segno's files folder. */
+    private fun testUpdate(intent: Intent) {
+        val name = File(intent.getStringExtra("apk").orEmpty()).name
+        val dir = getExternalFilesDir(null) ?: return
+        val file = File(dir, name)
+        if (name.isEmpty() || !file.isFile) {
+            toast("Test update: no file $name")
+            return
+        }
+        val r = Updates.Release(
+            version = intent.getStringExtra("version").orEmpty().ifEmpty { "0.0.0" },
+            pageUrl = Updates.RELEASES_PAGE,
+            apkName = name,
+            notes = "• A test update made by CI.\n• Checks the package, the signature and the version.",
+        )
+        offerUpdate(r, file)
     }
 
     /** A link or words shared from another app. */
@@ -392,6 +480,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val ACTION_NOW_PLAYING = "io.github.ferasbusiness666.segno.NOW_PLAYING"
         const val ACTION_DOWNLOADS = "io.github.ferasbusiness666.segno.DOWNLOADS"
+        const val ACTION_TEST_UPDATE = "io.github.ferasbusiness666.segno.TEST_UPDATE"
         private const val KEY_TAB = "tab"
         private const val NP = "now_playing"
         private val TAGS = listOf("home", "search", "library")

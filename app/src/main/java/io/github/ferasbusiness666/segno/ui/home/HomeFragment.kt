@@ -3,6 +3,7 @@ package io.github.ferasbusiness666.segno.ui.home
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,11 +27,11 @@ import io.github.ferasbusiness666.segno.ui.common.SectionAdapter
 import io.github.ferasbusiness666.segno.ui.common.SongActions
 import io.github.ferasbusiness666.segno.ui.common.TrackAdapter
 import io.github.ferasbusiness666.segno.ui.common.ViewAdapter
-import io.github.ferasbusiness666.segno.ui.common.openUrl
 import io.github.ferasbusiness666.segno.ui.common.show
 import io.github.ferasbusiness666.segno.ui.common.whileStarted
 import io.github.ferasbusiness666.segno.ui.detail.DetailFragment
 import io.github.ferasbusiness666.segno.ui.library.LibraryFragment
+import io.github.ferasbusiness666.segno.update.SelfUpdate
 import io.github.ferasbusiness666.segno.update.Updates
 import io.github.ferasbusiness666.segno.databinding.ViewEmptyBinding
 import kotlinx.coroutines.Dispatchers
@@ -76,11 +77,26 @@ class HomeFragment : Fragment(R.layout.fragment_list), MainActivity.Root {
         update = ViewAdapter(R.layout.item_update, 2) { v ->
             val r = release ?: return@ViewAdapter
             v.findViewById<TextView>(R.id.updateText).text = getString(R.string.update_banner, r.version)
-            v.findViewById<View>(R.id.updateGet).setOnClickListener { requireContext().openUrl(r.url) }
+            v.findViewById<TextView>(R.id.updateNotes).text = r.notes.ifEmpty { getString(R.string.update_no_notes) }
+            val get = v.findViewById<TextView>(R.id.updateGet)
+            get.setText(if (SelfUpdate.canInstall) R.string.update_get else R.string.update_open_page)
+            get.setOnClickListener { main.startUpdate(r) }
             v.findViewById<View>(R.id.updateClose).setOnClickListener {
                 Updates.dismiss()
                 update.visible = false
             }
+            // While it downloads and installs: the progress instead of the buttons.
+            val status = v.findViewById<TextView>(R.id.updateStatus)
+            val busy = when (val s = SelfUpdate.state.value) {
+                is SelfUpdate.State.Downloading ->
+                    if (s.percent >= 0) getString(R.string.update_downloading, s.percent) else getString(R.string.update_downloading_plain)
+                is SelfUpdate.State.Installing -> getString(R.string.update_installing)
+                SelfUpdate.State.Idle -> null
+            }
+            status.isVisible = busy != null
+            status.text = busy
+            get.isEnabled = busy == null
+            get.alpha = if (busy == null) 1f else 0.4f
         }.apply { visible = false }
         val tiles = ViewAdapter(R.layout.item_tiles, 6) { v ->
             v.findViewById<View>(R.id.tileSongs).setOnClickListener { main.openLibrary(LibraryFragment.SONGS) }
@@ -125,6 +141,7 @@ class HomeFragment : Fragment(R.layout.fragment_list), MainActivity.Root {
                     update.refresh()
                 }
             }
+            launch { SelfUpdate.state.collect { if (release != null) update.refresh() } }
         }
     }
 

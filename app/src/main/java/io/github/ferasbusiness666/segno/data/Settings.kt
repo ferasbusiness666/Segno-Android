@@ -37,6 +37,20 @@ object Settings {
         get() = prefs.getString("update_url", "").orEmpty()
         set(v) = prefs.edit { putString("update_url", v) }
 
+    /** The APK file in that release (empty: none, so the page opens instead), and a few lines of its notes. */
+    var updateApk: String
+        get() = prefs.getString("update_apk", "").orEmpty()
+        set(v) = prefs.edit { putString("update_apk", v) }
+
+    var updateNotes: String
+        get() = prefs.getString("update_notes", "").orEmpty()
+        set(v) = prefs.edit { putString("update_notes", v) }
+
+    /** Whether the "Segno needs your OK to install updates" note was shown. */
+    var explainedInstalls: Boolean
+        get() = prefs.getBoolean("explained_installs", false)
+        set(v) = prefs.edit { putBoolean("explained_installs", v) }
+
     /** The version whose banner was closed, so it doesn't come back. */
     var updateDismissed: String
         get() = prefs.getString("update_dismissed", "").orEmpty()

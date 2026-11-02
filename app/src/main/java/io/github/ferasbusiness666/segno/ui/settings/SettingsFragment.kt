@@ -52,7 +52,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         b.updateButton.setOnClickListener {
             val found = Updates.available.value
             if (found != null) {
-                requireContext().openUrl(found.url)
+                main.offerUpdate(found)
             } else {
                 check()
             }
@@ -71,6 +71,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             val r = withContext(Dispatchers.IO) { Updates.check() }
             checking = false
             renderUpdate(r)
+            if (r is Updates.Result.Available && b != null) main.offerUpdate(r.release)
         }
     }
 
@@ -104,6 +105,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     companion object {
         const val WEBSITE = "https://segnomusic.pages.dev"
-        const val SOURCE = "https://github.com/ferasbusiness666/segno-android"
+        const val SOURCE = "https://github.com/ferasbusiness666/Segno-Android"
     }
 }

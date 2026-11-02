@@ -26,11 +26,15 @@ jobs:
       - name: Read the version
         id: version
         run: |
-          v=$(grep -m1 'versionName = ' app/build.gradle.kts | sed -E 's/.*"([^"]+)".*/\1/')
+          v=$(grep -m1 '^val appVersion = ' app/build.gradle.kts | sed -E 's/.*"([^"]+)".*/\1/')
+          if ! echo "$v" | grep -Eq '^[0-9]+(\.[0-9]+){0,2}$'; then
+            echo "::error::appVersion in app/build.gradle.kts should look like 1.2.3, not '$v'."
+            exit 1
+          fi
           echo "version=$v" >> "$GITHUB_OUTPUT"
           echo "Version $v"
           if gh release view "v$v" >/dev/null 2>&1; then
-            echo "::error::Release v$v already exists. Raise versionName and versionCode in app/build.gradle.kts first."
+            echo "::error::Release v$v already exists. Raise appVersion in app/build.gradle.kts first."
             exit 1
           fi
         env:
@@ -64,6 +68,37 @@ jobs:
           fi
           cp "$apk" "Segno-${{ steps.version.outputs.version }}.apk"
           ls -l Segno-*.apk
+
+      # The app installs updates named Segno-<version>.apk, and Android only takes a higher
+      # versionCode, so check both against the last release.
+      - name: Check the version code
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v="${{ steps.version.outputs.version }}"
+          aapt2="$ANDROID_HOME/build-tools/37.0.0/aapt2"
+          badging=$("$aapt2" dump badging "Segno-$v.apk" | head -1)
+          echo "$badging"
+          code=$(echo "$badging" | sed -E "s/.*versionCode='([0-9]+)'.*/\1/")
+          name=$(echo "$badging" | sed -E "s/.*versionName='([^']+)'.*/\1/")
+          IFS=. read -r major minor patch <<< "$v"
+          want=$(( ${major:-0} * 1000000 + ${minor:-0} * 1000 + ${patch:-0} ))
+          if [ "$name" != "$v" ] || [ "$code" != "$want" ]; then
+            echo "::error::The APK says $name ($code), expected $v ($want)."
+            exit 1
+          fi
+          last=$(gh release list --limit 1 --exclude-drafts --exclude-pre-releases --json tagName --jq '.[0].tagName' 2>/dev/null || true)
+          if [ -n "$last" ]; then
+            mkdir -p last
+            if gh release download "$last" --pattern 'Segno-*.apk' --dir last; then
+              prev=$("$aapt2" dump badging last/Segno-*.apk | head -1 | sed -E "s/.*versionCode='([0-9]+)'.*/\1/")
+              echo "Last release $last has versionCode $prev; this one has $code."
+              if [ "$code" -le "$prev" ]; then
+                echo "::error::versionCode $code isn't higher than $prev in $last, so phones wouldn't take this update."
+                exit 1
+              fi
+            fi
+          fi
 
       - name: Release notes from CHANGELOG.md
         run: |

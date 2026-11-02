@@ -20,6 +20,19 @@ val keystoreProps = Properties().apply {
 fun signingValue(env: String, prop: String): String? =
     System.getenv(env)?.takeIf { it.isNotBlank() } ?: keystoreProps.getProperty(prop)
 
+// The version. Raise appVersion for every release; versionCode comes from it (1.2.3 → 1002003,
+// the same rule as Versions.code in the app), so it always goes up with the name. CI can pass
+// -PsegnoVersionName=... to build a test update.
+val appVersion = "1.0.0"
+val versionNameUsed = providers.gradleProperty("segnoVersionName").orNull ?: appVersion
+
+fun versionCodeOf(name: String): Int {
+    val p = name.substringBefore('-').split('.').map { it.toInt() }
+    require(p.size in 1..3 && p.all { it in 0..999 } && p[0] <= 2099) { "Can't make a versionCode from $name" }
+    val (major, minor, patch) = p + List(3 - p.size) { 0 }
+    return major * 1_000_000 + minor * 1_000 + patch
+}
+
 val releaseStoreFile = signingValue("SEGNO_KEYSTORE_FILE", "storeFile")
 val hasReleaseKey = releaseStoreFile != null && file(releaseStoreFile).exists()
 
@@ -37,9 +50,11 @@ android {
         targetSdk {
             version = release(37)
         }
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = versionCodeOf(versionNameUsed)
+        versionName = versionNameUsed
         resValue("string", "app_name", "Segno")
+        // CI's test hook for the in-app update (see MainActivity). Never in builds with the real key.
+        buildConfigField("boolean", "UPDATE_TEST_HOOK", "false")
     }
 
     signingConfigs {
@@ -67,6 +82,7 @@ android {
             resValue("string", "app_name", "Segno Debug")
         }
         release {
+            buildConfigField("boolean", "UPDATE_TEST_HOOK", (!hasReleaseKey).toString())
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

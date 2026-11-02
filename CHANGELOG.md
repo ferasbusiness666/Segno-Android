@@ -21,4 +21,4 @@ Inside, use "### New", "### Better" or "### Fixed", with one "- " line per chang
 - Import playlists: paste Spotify playlist, album and song links, YouTube playlists, or your YouTube channel to bring in all its public playlists. Spotify songs play from a YouTube video of the same length, skipping live versions, covers and sped-up edits unless the song itself is one.
 - Delete from phone: remove a music file or a download from the song's ⋮ menu. It also leaves the queue, your playlists and Loved songs.
 - Sleep timer: press the moon on Now Playing and pick 15, 30 or 45 minutes, an hour, or the end of the song. The music fades out over the last 30 seconds, then stops.
-- Segno checks GitHub once a day for a new version and shows a small note on Home when there is one.
+- Updates inside the app: Segno checks GitHub once a day (or when you tap Check for updates in Settings). When a new version is out, Home shows what's new, and Update downloads and installs it. Segno only installs updates signed with the same key, and Android asks you first.

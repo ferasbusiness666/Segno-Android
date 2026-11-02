@@ -40,14 +40,14 @@ No account, no ads, no tracking. Segno collects nothing.
   skipping live versions, covers and sped-up edits unless the song itself is one.
 - **Sleep timer**: 15, 30 or 45 minutes, an hour, or the end of the song. The music fades out
   over the last 30 seconds.
-- **Update check**: once a day Segno asks GitHub if there's a newer version and shows a small
-  note on Home. You can turn that off too.
+- **Updates inside the app**: once a day Segno asks GitHub if there's a newer version. Home then
+  shows what's new, and **Update** downloads and installs it. You can turn the check off too.
 
 ## Install
 
 Segno isn't on the Play Store. You install the APK from GitHub:
 
-1. On your phone, open the [latest release](https://github.com/ferasbusiness666/segno-android/releases/latest)
+1. On your phone, open the [latest release](https://github.com/ferasbusiness666/Segno-Android/releases/latest)
    and download **Segno-x.y.z.apk**.
 2. Open the downloaded file. Android asks whether your browser (or file manager) may install
    apps: tap **Settings**, turn on **Allow from this source**, then go back and tap **Install**.
@@ -58,8 +58,10 @@ Segno isn't on the Play Store. You install the APK from GitHub:
 4. Open Segno. When you first download a song, Android asks whether Segno may show
    notifications; say yes to see download progress.
 
-Updates install the same way: download the new APK and open it. Your playlists and downloads
-stay.
+Updates: tap **Update** on Home (or **Check for updates** in Settings). The first time, Android
+asks whether Segno may install apps: turn on **Allow from this source** and come back. Segno only
+installs an update signed with the same key as the Segno you have, and Android asks before it
+installs. Your playlists and downloads stay. Downloading the new APK from GitHub works too.
 
 ## Build it yourself
 

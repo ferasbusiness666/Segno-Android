@@ -9,6 +9,8 @@
     <!-- Android 14+: what the foreground services do. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <!-- Updating Segno from inside the app (release builds; Android asks the user first). -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <!-- Android 13+: download progress notifications. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Music files on the phone: READ_MEDIA_AUDIO from Android 13, the older permission before. -->
@@ -74,5 +76,10 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
+        <!-- Android's answer when Segno installs its own update. -->
+        <receiver
+            android:name=".update.InstallReceiver"
+            android:exported="false" />
     </application>
 </manifest>

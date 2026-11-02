@@ -10,6 +10,18 @@ object Versions {
         return nums
     }
 
+    /**
+     * The versionCode for a version name: 1.2.3 → 1002003, so the code always goes up with the
+     * name. app/build.gradle.kts uses the same rule. Null for names it can't read.
+     */
+    fun code(name: String): Long? {
+        val p = parts(name) ?: return null
+        if (p.size > 3 || p.any { it !in 0..999 }) return null
+        val (major, minor, patch) = (p + listOf(0, 0, 0)).take(3)
+        if (major > 2099) return null
+        return major * 1_000_000L + minor * 1_000L + patch
+    }
+
     private fun isPre(v: String) = v.trim().removePrefix("v").removePrefix("V").substringBefore('+').contains('-')
 
     /** True when [candidate] is a newer version than [current]. Pre-releases never count. */
