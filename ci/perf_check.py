@@ -122,9 +122,35 @@ def gfx():
     return int(tot.group(1)) if tot else 0, int(jank.group(1)) if jank else 0, hist
 
 
+def ui_times():
+    """Main-thread time of each recent frame in ms (input, animation, layout and drawing), from
+    framestats. That's the part Segno's code controls; the rest is the emulator's software GPU."""
+    out = sh(f"dumpsys gfxinfo {PKG} framestats")
+    times = []
+    for block in re.findall(r"---PROFILEDATA---\n(.*?)---PROFILEDATA---", out, re.S):
+        rows = [r.strip().rstrip(",").split(",") for r in block.strip().splitlines() if r.strip()]
+        if not rows:
+            continue
+        head = rows[0]
+        try:
+            flags, start, end = head.index("Flags"), head.index("HandleInputStart"), head.index("SyncQueued")
+        except ValueError:
+            continue
+        for r in rows[1:]:
+            try:
+                if int(r[flags]) != 0:
+                    continue
+                ms = (int(r[end]) - int(r[start])) / 1e6
+            except (ValueError, IndexError):
+                continue
+            if 0 <= ms < 2000:
+                times.append(ms)
+    return times
+
+
 class Score:
     def __init__(self, name):
-        self.name, self.frames, self.janky, self.hist = name, 0, 0, {}
+        self.name, self.frames, self.janky, self.hist, self.ui = name, 0, 0, {}, []
 
     def add(self, sample):
         f, j, h = sample
@@ -147,13 +173,18 @@ class Score:
     def line(self, label):
         pct = f"{100.0 * self.janky / self.frames:.1f}%" if self.frames else "?"
         p90 = self.p90()
-        return f"perf ({label}) {self.name}: frames={self.frames}, janky={self.janky} ({pct}), 90th percentile={p90 if p90 is not None else '?'}ms"
+        ui = sorted(self.ui)
+        ui90 = f"{ui[int(0.9 * (len(ui) - 1))]:.1f}ms" if ui else "?"
+        ui50 = f"{ui[len(ui) // 2]:.1f}ms" if ui else "?"
+        return (f"perf ({label}) {self.name}: frames={self.frames}, janky={self.janky} ({pct}), "
+                f"90th percentile={p90 if p90 is not None else '?'}ms; main thread per frame: median {ui50}, 90th {ui90}")
 
 
 def measure(score, action):
     sh(f"dumpsys gfxinfo {PKG} reset")
     action()
     score.add(gfx())
+    score.ui += ui_times()
 
 
 size = re.search(r"(\d+)x(\d+)", sh("wm size"))
@@ -185,12 +216,12 @@ with wave.open(path, "w") as w:
 sh("mkdir -p /sdcard/Music/Perf")
 adb("push", path, "/sdcard/Music/Perf/base.wav")
 sh("cd /sdcard/Music/Perf && for i in $(seq -w 1 240); do cp base.wav \"Perf Song $i.wav\"; done; rm base.wav", timeout=300)
-if level < 30:
-    sh("for f in /sdcard/Music/Perf/*.wav; do am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d \"file://$f\" >/dev/null 2>&1; done", timeout=600)
+# Files made in the shell aren't always scanned as music on their own, so ask for each one.
+sh("for f in /sdcard/Music/Perf/*.wav; do am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d \"file://$f\" >/dev/null 2>&1; done", timeout=600)
 
 
 def scanned():
-    out = sh("content query --uri content://media/external/audio/media --projection _id --where \"_data LIKE '%/Music/Perf/%'\"")
+    out = sh("content query --uri content://media/external/audio/media --projection _id --where \"_data LIKE '%/Music/Perf/%' AND is_music=1\"")
     return out.count("Row:")
 
 

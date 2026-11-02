@@ -13,7 +13,14 @@ PY
 adb shell mkdir -p /sdcard/Music/Profile
 adb push /tmp/profile.wav /sdcard/Music/Profile/base.wav
 adb shell 'cd /sdcard/Music/Profile && for i in $(seq -w 1 120); do cp base.wav "Profile Song $i.wav"; done; rm base.wav'
-sleep 20
+# Files made in the shell aren't always scanned as music on their own, so ask for each one.
+adb shell 'for f in /sdcard/Music/Profile/*.wav; do am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d "file://$f" >/dev/null 2>&1; done'
+for i in $(seq 1 30); do
+  n=$(adb shell "content query --uri content://media/external/audio/media --projection _id --where \"_data LIKE '%/Music/Profile/%' AND is_music=1\"" | grep -c "Row:")
+  echo "music files scanned: $n"
+  [ "$n" -ge 100 ] && break
+  sleep 2
+done
 ./gradlew --stacktrace :app:generateReleaseBaselineProfile
 status=$?
 mkdir -p profile-out

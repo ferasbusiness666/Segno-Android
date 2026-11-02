@@ -30,7 +30,11 @@ class SegnoApp : Application(), SingletonImageLoader.Factory {
                 // Also a short list in files/strictmode.txt, which CI reads back.
                 val io = Executors.newSingleThreadExecutor()
                 policy.penaltyListener(io) { v ->
-                    val where = v.stackTrace.firstOrNull { it.className.startsWith("io.github.ferasbusiness666") } ?: v.stackTrace.firstOrNull()
+                    // Segno's own frame if there is one, else the first one outside Android itself.
+                    val system = listOf("android.", "com.android.", "java.", "javax.", "libcore.", "dalvik.", "sun.", "kotlin.")
+                    val where = v.stackTrace.firstOrNull { it.className.startsWith("io.github.ferasbusiness666") }
+                        ?: v.stackTrace.firstOrNull { f -> system.none { f.className.startsWith(it) } }
+                        ?: v.stackTrace.getOrNull(2)
                     runCatching { File(filesDir, "strictmode.txt").appendText("${v.javaClass.simpleName} at $where\n") }
                 }
             }
