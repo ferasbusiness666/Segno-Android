@@ -95,18 +95,16 @@
 
     <!-- Search -->
     <string name="search_hint">Songs, artists or a link</string>
-    <string name="search_songs">Songs</string>
-    <string name="search_videos">Videos</string>
     <string name="search_recent">Recent searches</string>
     <string name="search_clear_recent">Clear</string>
     <string name="search_tip1_title">Type a song or artist</string>
-    <string name="search_tip1_body">Results come from YouTube Music. Switch to Videos for everything else on YouTube.</string>
+    <string name="search_tip1_body">Results are songs from YouTube Music. Add the artist\'s name to find the right one faster.</string>
     <string name="search_tip2_title">Paste a link</string>
     <string name="search_tip2_body">A YouTube or Spotify song plays right here. Playlists open on the Import page.</string>
     <string name="search_tip3_title">Tap to listen, download to keep</string>
     <string name="search_tip3_body">Songs keep playing with the screen off. Downloads go to Music/Segno with their cover.</string>
     <string name="search_no_results">No results. Try different words.</string>
-    <string name="search_failed">Couldn\'t search YouTube</string>
+    <string name="search_failed">Couldn\'t search right now</string>
     <string name="search_link_failed">Couldn\'t open this link</string>
     <string name="search_offline">You\'re offline</string>
     <string name="search_offline_body">Connect to the internet to search YouTube. Downloaded songs still play.</string>

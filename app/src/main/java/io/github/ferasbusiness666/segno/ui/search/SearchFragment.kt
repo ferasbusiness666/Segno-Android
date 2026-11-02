@@ -26,23 +26,17 @@ import io.github.ferasbusiness666.segno.ui.common.SongActions
 import io.github.ferasbusiness666.segno.ui.common.TrackAdapter
 import io.github.ferasbusiness666.segno.ui.common.show
 import io.github.ferasbusiness666.segno.ui.common.whileStarted
-import io.github.ferasbusiness666.segno.youtube.YouTube
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Search YouTube (YouTube Music songs first), or paste a link. */
+/** Search songs on YouTube Music, or paste a link. */
 class SearchFragment : Fragment(R.layout.fragment_search), MainActivity.Root {
     private var b: FragmentSearchBinding? = null
     private val vm: SearchViewModel by viewModels()
     private val main get() = requireActivity() as MainActivity
     private lateinit var adapter: TrackAdapter
     private var pendingQuery: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) vm.loadFilter()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val b = FragmentSearchBinding.bind(view)
@@ -88,8 +82,6 @@ class SearchFragment : Fragment(R.layout.fragment_search), MainActivity.Root {
             b.query.requestFocus()
             showKeyboard()
         }
-        b.chipSongs.setOnClickListener { setFilter(YouTube.SONGS) }
-        b.chipVideos.setOnClickListener { setFilter(YouTube.VIDEOS) }
         b.clearRecent.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 withContext(Dispatchers.IO) { Settings.recentSearches = emptyList() }
@@ -100,7 +92,6 @@ class SearchFragment : Fragment(R.layout.fragment_search), MainActivity.Root {
 
         whileStarted {
             launch { vm.state.collect(::render) }
-            launch { vm.filterFlow.collect { renderChips() } }
             launch { vm.openImport.collect { main.openImport(it) } }
             launch { PlayerHub.state.collect { adapter.setNow(it.track?.id) } }
             launch { Downloads.states.collect { adapter.setDownloads(it) } }
@@ -136,17 +127,6 @@ class SearchFragment : Fragment(R.layout.fragment_search), MainActivity.Root {
         if (text.isBlank()) return
         hideKeyboard()
         vm.search(text)
-    }
-
-    private fun setFilter(f: String) {
-        vm.setFilter(f)
-        renderChips()
-    }
-
-    private fun renderChips() {
-        val b = b ?: return
-        b.chipSongs.isSelected = vm.filter == YouTube.SONGS
-        b.chipVideos.isSelected = vm.filter == YouTube.VIDEOS
     }
 
     private fun render(s: SearchViewModel.State) {

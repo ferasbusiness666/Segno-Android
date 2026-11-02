@@ -42,11 +42,6 @@ object Settings {
         get() = prefs.getString("update_dismissed", "").orEmpty()
         set(v) = prefs.edit { putString("update_dismissed", v) }
 
-    /** "music_songs" or "videos". */
-    var searchFilter: String
-        get() = prefs.getString("search_filter", "music_songs").orEmpty()
-        set(v) = prefs.edit { putString("search_filter", v) }
-
     var recentSearches: List<String>
         get() = prefs.getString("recent_searches", "").orEmpty().split('\n').filter { it.isNotBlank() }
         set(v) = prefs.edit { putString("recent_searches", v.take(8).joinToString("\n")) }

@@ -23,7 +23,7 @@ No account, no ads, no tracking. Segno collects nothing.
 
 ## What it does
 
-- **YouTube search.** Songs from YouTube Music first, or everything on YouTube under Videos.
+- **Song search.** Songs from YouTube Music, with their artist and length.
   Paste a YouTube or Spotify song link and it plays.
 - **Plays in the background.** Screen off, another app open: the music keeps going. Pause and
   skip from the notification, the lock screen, Bluetooth or wired headphones. Unplugging your

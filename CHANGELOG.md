@@ -11,7 +11,7 @@ Inside, use "### New", "### Better" or "### Fixed", with one "- " line per chang
 
 ### New
 - Segno is on Android. It plays YouTube, Spotify links and the music on your phone, with the same dark look and pink accent as Segno for Windows.
-- Search YouTube Music for songs, or switch to Videos for everything else on YouTube. Paste a YouTube or Spotify song link to play it.
+- Search finds songs on YouTube Music. Paste a YouTube or Spotify song link to play it.
 - Music keeps playing with the screen off and when you leave the app. Pause and skip from the notification, the lock screen, Bluetooth or your headphones. Unplug your headphones and the music pauses.
 - When the queue ends, Segno keeps going with songs like the last one. Turn it off in Settings.
 - The queue: play next, add to queue, drag to reorder, swipe to remove.

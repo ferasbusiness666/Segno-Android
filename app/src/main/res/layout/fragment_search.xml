@@ -11,6 +11,7 @@
         android:layout_marginStart="@dimen/pad_x"
         android:layout_marginTop="@dimen/s3"
         android:layout_marginEnd="@dimen/pad_x"
+        android:layout_marginBottom="@dimen/s2"
         android:background="@drawable/bg_search"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -49,26 +50,6 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/pad_x"
-        android:paddingTop="@dimen/s3"
-        android:paddingEnd="@dimen/pad_x"
-        android:paddingBottom="@dimen/s2">
-
-        <TextView
-            android:id="@+id/chipSongs"
-            style="@style/Widget.Segno.Chip"
-            android:text="@string/search_songs" />
-
-        <TextView
-            android:id="@+id/chipVideos"
-            style="@style/Widget.Segno.Chip"
-            android:layout_marginStart="@dimen/s2"
-            android:text="@string/search_videos" />
-    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

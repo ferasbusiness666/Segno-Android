@@ -10,6 +10,7 @@ import io.github.ferasbusiness666.segno.spotify.SpotifyParser
 import io.github.ferasbusiness666.segno.youtube.Links
 import io.github.ferasbusiness666.segno.youtube.YouTube
 import io.github.ferasbusiness666.segno.youtube.YouTubeException
+import org.schabi.newpipe.extractor.exceptions.ReCaptchaException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -36,27 +38,10 @@ class SearchViewModel : ViewModel() {
     private val _openImport = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val openImport: SharedFlow<String> = _openImport
 
-    private val _filter = MutableStateFlow(YouTube.SONGS)
-    val filterFlow: StateFlow<String> = _filter
-    val filter: String get() = _filter.value
-
     private var page: YouTube.SearchPage? = null
     private var job: Job? = null
     private var moreJob: Job? = null
     private var lastQuery = ""
-
-    fun setFilter(f: String) {
-        if (f == filter) return
-        _filter.value = f
-        viewModelScope.launch(Dispatchers.IO) { Settings.searchFilter = f }
-        if (lastQuery.isNotEmpty() && !Links.looksLikeLink(lastQuery)) search(lastQuery)
-    }
-
-    fun loadFilter() {
-        viewModelScope.launch {
-            _filter.value = withContext(Dispatchers.IO) { Settings.searchFilter }
-        }
-    }
 
     fun clear() {
         job?.cancel()
@@ -102,16 +87,20 @@ class SearchViewModel : ViewModel() {
         }
     }
 
-    private fun words(query: String): List<Track> {
+    /** Songs from YouTube Music. One quiet retry, because a single failed answer is common. */
+    private suspend fun words(query: String): List<Track> {
         val p = try {
-            YouTube.search(query, filter)
+            YouTube.search(query, YouTube.SONGS)
         } catch (e: YouTubeException) {
-            // YouTube Music search can break when YouTube changes it; plain YouTube still works.
-            if (filter == YouTube.SONGS && !e.network) YouTube.search(query, YouTube.VIDEOS) else throw e
+            delay(700)
+            try {
+                YouTube.search(query, YouTube.SONGS)
+            } catch (again: YouTubeException) {
+                throw if (again.network || again.cause is ReCaptchaException) again else YouTubeException(SEARCH_FAILED, again)
+            }
         }
-        val got = if (p.tracks.isEmpty() && filter == YouTube.SONGS) YouTube.search(query, YouTube.VIDEOS) else p
-        page = got
-        return got.tracks.distinctBy { it.id }
+        page = p
+        return p.tracks.distinctBy { it.id }
     }
 
     /** A pasted link: a song plays here; playlists and channels go to the Import page. Null: handed off. */
@@ -150,6 +139,10 @@ class SearchViewModel : ViewModel() {
                 // The first page is still there; scrolling again tries again.
             }
         }
+    }
+
+    private companion object {
+        const val SEARCH_FAILED = "YouTube Music didn't answer the way Segno expected. Give it a moment and try again."
     }
 
     private fun remember(query: String) {
