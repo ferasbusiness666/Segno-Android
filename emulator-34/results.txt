@@ -1,0 +1,59 @@
+== Segno emulator check, API 34
+screen: Physical size: 1080x2400 / Physical density: 420
+cold start, debug build (am start -W TotalTime): first 4810 ms, then [3027, 3160, 3166] ms, median 3160 ms
+library opens on: chipSongs (should be chipSongs)
+library after Home and back: chipAlbums (should be chipAlbums)
+search results shown: yes
+playback started: NO
+YouTube playback on this runner: did not start. Segno said: YouTube wants this network to sign in before it plays anything. Try again later, or switch between Wi-Fi and mobile data. (org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException: YouTube probably temporarily blocked anonymous watch access with this IP , got error LOGIN_REQUIRED: "Sign in to confirm that you're not a bot")
+  extractor error: org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException: YouTube probably temporarily blocked anonymous watch access with this IP , got error LOGIN_REQUIRED: "Sign in to confirm that you're not a bot"
+local file playback started: yes
+background (local-file): media_session has Segno: True; playback states: ['3', '7', '7', '7', '7', '0', '0']
+background (local-file): positions every 5 s with the app in the background: [12801, 17926, 22837, 27845, 32851, 37850]
+background (local-file): PLAYING=True, position advancing=True, media notification=True
+delete dialog says: ['Allow Segno Debug to delete this audio file?', 'Deny', 'Allow']
+after delete: gone from Library=True, file still on the phone=False
+delete from phone: ok
+jank after scrolling search results: frames=218, janky=190 (87.16%), 90th percentile=97ms
+for comparison, Android Settings with the same swipes: frames=244, janky=200 (81.97%), 90th percentile=89ms
+memory (TOTAL PSS): 116 MB
+Home's Songs tile opens: chipSongs (should be chipSongs)
+StrictMode on the main thread: 6 warnings
+  6 x DiskReadViolation at android.database.sqlite.SQLiteConnection.executeForCursorWindow(SQLiteConnection.java:1021)
+failures: none
+
+== Smoothness of the release build (gfxinfo), before and after, same emulator
+songs for the Library scroll: 240
+-- before
+compile: Success, dexopt status: speed-profile
+perf (before) cold start: [843, 904, 1116] ms, median 904 ms
+perf (before) scrolling search results: frames=214, janky=189 (88.3%), 90th percentile=101ms; main thread per frame: median 0.4ms, 90th 5.3ms
+perf (before) scrolling Library Songs: frames=226, janky=184 (81.4%), 90th percentile=101ms; main thread per frame: median 0.3ms, 90th 6.3ms
+  perf: could not find npQueue
+  perf: could not find miniCard
+  perf: could not find npQueue
+  perf: could not find miniCard
+  perf: could not find npQueue
+perf (before) opening Now Playing: frames=14, janky=13 (92.9%), 90th percentile=250ms; main thread per frame: median 0.2ms, 90th 0.6ms
+perf (before) opening the queue: frames=32, janky=27 (84.4%), 90th percentile=38ms; main thread per frame: median 0.4ms, 90th 0.6ms
+-- after
+compile: Success, dexopt status: speed-profile
+perf (after) cold start: [826, 854, 951] ms, median 854 ms
+perf (after) scrolling search results: frames=277, janky=246 (88.8%), 90th percentile=105ms; main thread per frame: median 0.6ms, 90th 1.9ms
+perf (after) scrolling Library Songs: frames=241, janky=206 (85.5%), 90th percentile=97ms; main thread per frame: median 0.2ms, 90th 2.6ms
+  perf: could not find npQueue
+  perf: could not find miniCard
+  perf: could not find npQueue
+  perf: could not find miniCard
+  perf: could not find npQueue
+perf (after) opening Now Playing: frames=13, janky=13 (100.0%), 90th percentile=200ms; main thread per frame: median 0.2ms, 90th 0.3ms
+perf (after) opening the queue: frames=19, janky=13 (68.4%), 90th percentile=65ms; main thread per frame: median 0.2ms, 90th 0.2ms
+
+== In-app update (release build, CI hook)
+installed: 1.0.0; files for the test: ['next.apk', 'other.apk', 'same.apk']
+install permission explained: True
+same version refused: on screen
+other app refused: on screen
+Android's install question: ['Segno', 'Do you want to update this app?', 'Cancel', 'Update']
+after the update: 1.0.1
+update check: ok

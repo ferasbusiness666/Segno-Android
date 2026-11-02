@@ -1,0 +1,23 @@
+commit: 7852da2c40bc30d77b0695f7e989e3a98c129e30
+date: 2026-11-02T17:26:21Z
+
+== APK sizes (bytes)
+13142135 out/segno-debug.apk
+3908411 out/segno-release-1.0.1.apk
+3890139 out/segno-release-before.apk
+3908403 out/segno-release.apk
+
+== Unit tests
+io.github.ferasbusiness666.segno.ApkCheckTest tests="6" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.ImporterTest tests="3" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.LinksTest tests="6" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.MatcherTest tests="6" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.Mp4TaggerTest tests="2" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.PickApkTest tests="3" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.QueueOpsTest tests="5" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.SleepTimerTest tests="5" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.SpotifyParserTest tests="8" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.UpdateParseTest tests="3" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.VersionsTest tests="4" failures="0" errors="0" 
+
+== Lint

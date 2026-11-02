@@ -1,0 +1,59 @@
+Applications Memory Usage (in Kilobytes):
+Uptime: 509558 Realtime: 509558
+
+** MEMINFO in pid 4921 [io.github.ferasbusiness666.segno.debug] **
+                   Pss  Private  Private  SwapPss      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap    51547    51528        4       23    52584    63660    58016     1952
+  Dalvik Heap    17372    17352        0       91    18136    21980    10990    10990
+ Dalvik Other     5539     5072        8        2     6216                           
+        Stack     2996     2996        0        0     3000                           
+       Ashmem       15        0        0        0      592                           
+    Other dev       16        4       12        0      340                           
+     .so mmap     2922      372      256        3    41036                           
+    .jar mmap     3227        0      676        0    41984                           
+    .apk mmap      471        0      136        0     2816                           
+    .ttf mmap       48        0        0        0      272                           
+    .dex mmap        5        0        0        0      688                           
+    .oat mmap       22        0        0        0     1708                           
+    .art mmap     7765     6080     1100       56    22832                           
+   Other mmap      117        8       32        0     1744                           
+      Unknown    27360    27356        0        0    27732                           
+        TOTAL   119597   110768     2224      175   221680    85640    69006    12942
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:    24532                          40968
+         Native Heap:    51528                          52584
+                Code:     1444                          89436
+               Stack:     2996                           3000
+            Graphics:        0                              0
+       Private Other:    32492
+              System:     6605
+             Unknown:                                   35692
+ 
+           TOTAL PSS:   119597            TOTAL RSS:   221680       TOTAL SWAP PSS:      175
+ 
+ Objects
+               Views:      275         ViewRootImpl:        2
+         AppContexts:        6           Activities:        1
+              Assets:       18        AssetManagers:        0
+       Local Binders:       47        Proxy Binders:       84
+       Parcel memory:       18         Parcel count:       66
+    Death Recipients:        3             WebViews:        0
+ 
+ SQL
+         MEMORY_USED:      284
+  PAGECACHE_OVERFLOW:       84          MALLOC_SIZE:       46
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b) cache hits cache misses cache size  Dbname
+PER CONNECTION STATS
+         4       72             72     7    26     8  /data/user/0/io.github.ferasbusiness666.segno.debug/databases/segno.db
+         4       72             24     0    32     2  /data/user/0/io.github.ferasbusiness666.segno.debug/databases/segno.db (3)
+         4       72            103    45    19     6  /data/user/0/io.github.ferasbusiness666.segno.debug/databases/segno.db (2)
+POOL STATS
+     cache hits  cache misses    cache size  Dbname
+             33            73           106  /data/user/0/io.github.ferasbusiness666.segno.debug/databases/segno.db

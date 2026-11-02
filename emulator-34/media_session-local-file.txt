@@ -1,0 +1,135 @@
+MEDIA SESSION SERVICE (dumpsys media_session)
+
+6 sessions listeners.
+Global priority session is com.android.server.telecom/HeadsetMediaButton (userId=0)
+  HeadsetMediaButton com.android.server.telecom/HeadsetMediaButton (userId=0)
+    ownerPid=521, ownerUid=1000, userId=0
+    package=com.android.server.telecom
+    launchIntent=null
+    mediaButtonReceiver=null
+    active=false
+    flags=65537
+    rating type=0
+    controllers: 0
+    state=null
+    audioAttrs=AudioAttributes: usage=USAGE_VOICE_COMMUNICATION content=CONTENT_TYPE_SPEECH flags=0x800 tags= bundle=null
+    volumeType=LOCAL, controlType=ABSOLUTE, max=0, current=0, volumeControlId=null
+    metadata: null
+    queueTitle=null, size=0
+User Records:
+Record for full_user=0
+  Volume key long-press listener: null
+  Volume key long-press listener package: 
+  Media key listener: null
+  Media key listener package: 
+  OnMediaKeyEventDispatchedListener: added 0 listener(s)
+  OnMediaKeyEventSessionChangedListener: added 2 listener(s)
+    from com.android.bluetooth
+    from com.android.bluetooth
+  Last MediaButtonReceiver: MBR {pi=null, componentName=ComponentInfo{io.github.ferasbusiness666.segno.debug/androidx.media3.session.MediaButtonReceiver}, type=1, pkg=io.github.ferasbusiness666.segno.debug}
+  Media button session is io.github.ferasbusiness666.segno.debug/androidx.media3.session.id. (userId=0)
+  Sessions Stack - have 7 sessions:
+    androidx.media3.session.id. io.github.ferasbusiness666.segno.debug/androidx.media3.session.id. (userId=0)
+      ownerPid=4921, ownerUid=10192, userId=0
+      package=io.github.ferasbusiness666.segno.debug
+      launchIntent=PendingIntent{23918d4: PendingIntentRecord{a18271a io.github.ferasbusiness666.segno.debug startActivity (allowlist: 8bfcafd:+30s0ms/0/NOTIFICATION_SERVICE/NotificationManagerService)}}
+      mediaButtonReceiver=MBR {pi=null, componentName=ComponentInfo{io.github.ferasbusiness666.segno.debug/androidx.media3.session.MediaButtonReceiver}, type=1, pkg=io.github.ferasbusiness666.segno.debug}
+      active=true
+      flags=7
+      rating type=0
+      controllers: 8
+      state=PlaybackState {state=PLAYING(3), position=38849, buffered position=65500, speed=1.0, updated=414873, actions=7339995, custom actions=[], active item id=3, error=null}
+      audioAttrs=AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_MUSIC flags=0x800 tags= bundle=null
+      volumeType=LOCAL, controlType=ABSOLUTE, max=0, current=0, volumeControlId=null
+      metadata: size=18, description=Segno CI - Long Tone, Music, null
+      queueTitle=null, size=4
+    BluetoothMediaBrowserService com.google.android.bluetooth/BluetoothMediaBrowserService (userId=0)
+      ownerPid=1034, ownerUid=1002, userId=0
+      package=com.google.android.bluetooth
+      launchIntent=null
+      mediaButtonReceiver=null
+      active=false
+      flags=3
+      rating type=0
+      controllers: 0
+      state=PlaybackState {state=ERROR(7), position=0, buffered position=0, speed=0.0, updated=33864, actions=0, custom actions=[], active item id=-1, error=Bluetooth audio disconnected}
+      audioAttrs=AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0x800 tags= bundle=null
+      volumeType=LOCAL, controlType=ABSOLUTE, max=0, current=0, volumeControlId=null
+      metadata: null
+      queueTitle=Now Playing, size=0
+    BluetoothMediaBrowserService com.google.android.bluetooth/BluetoothMediaBrowserService (userId=0)
+      ownerPid=1034, ownerUid=1002, userId=0
+      package=com.google.android.bluetooth
+      launchIntent=null
+      mediaButtonReceiver=null
+      active=false
+      flags=3
+      rating type=0
+      controllers: 0
+      state=PlaybackState {state=ERROR(7), position=0, buffered position=0, speed=0.0, updated=33877, actions=0, custom actions=[], active item id=-1, error=Bluetooth audio disconnected}
+      audioAttrs=AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0x800 tags= bundle=null
+      volumeType=LOCAL, controlType=ABSOLUTE, max=0, current=0, volumeControlId=null
+      metadata: null
+      queueTitle=Now Playing, size=0
+    BluetoothMediaBrowserService com.google.android.bluetooth/BluetoothMediaBrowserService (userId=0)
+      ownerPid=1034, ownerUid=1002, userId=0
+      package=com.google.android.bluetooth
+      launchIntent=null
+      mediaButtonReceiver=null
+      active=false
+      flags=3
+      rating type=0
+      controllers: 0
+      state=PlaybackState {state=ERROR(7), position=0, buffered position=0, speed=0.0, updated=37516, actions=0, custom actions=[], active item id=-1, error=Bluetooth audio disconnected}
+      audioAttrs=AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0x800 tags= bundle=null
+      volumeType=LOCAL, controlType=ABSOLUTE, max=0, current=0, volumeControlId=null
+      metadata: null
+      queueTitle=Now Playing, size=0
+    BluetoothMediaBrowserService com.google.android.bluetooth/BluetoothMediaBrowserService (userId=0)
+      ownerPid=1034, ownerUid=1002, userId=0
+      package=com.google.android.bluetooth
+      launchIntent=null
+      mediaButtonReceiver=null
+      active=false
+      flags=3
+      rating type=0
+      controllers: 0
+      state=PlaybackState {state=ERROR(7), position=0, buffered position=0, speed=0.0, updated=37611, actions=0, custom actions=[], active item id=-1, error=Bluetooth audio disconnected}
+      audioAttrs=AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0x800 tags= bundle=null
+      volumeType=LOCAL, controlType=ABSOLUTE, max=0, current=0, volumeControlId=null
+      metadata: null
+      queueTitle=Now Playing, size=0
+    PodcastPlayer com.google.android.googlequicksearchbox/PodcastPlayer (userId=0)
+      ownerPid=1755, ownerUid=10132, userId=0
+      package=com.google.android.googlequicksearchbox
+      launchIntent=null
+      mediaButtonReceiver=null
+      active=true
+      flags=3
+      rating type=0
+      controllers: 2
+      state=PlaybackState {state=NONE(0), position=0, buffered position=0, speed=0.0, updated=44866, actions=2409991, custom actions=[Action:mName='Rewind 10 seconds, mIcon=2131234345, mExtras=null, Action:mName='Fast forward 30 second, mIcon=2131234125, mExtras=null, Action:mName='Skip to next episode, mIcon=2131234405, mExtras=null], active item id=-1, error=null}
+      audioAttrs=AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0x800 tags= bundle=null
+      volumeType=LOCAL, controlType=ABSOLUTE, max=0, current=0, volumeControlId=null
+      metadata: size=0, description=null, null, null
+      queueTitle=null, size=0
+    YouTube playerlib com.google.android.apps.youtube.music/YouTube playerlib (userId=0)
+      ownerPid=1701, ownerUid=10156, userId=0
+      package=com.google.android.apps.youtube.music
+      launchIntent=null
+      mediaButtonReceiver=MBR {pi=PendingIntent{fd85a7d: PendingIntentRecord{45ecd72 com.google.android.apps.youtube.music broadcastIntent}}, componentName=ComponentInfo{com.google.android.apps.youtube.music/androidx.media.session.MediaButtonReceiver}, type=1, pkg=com.google.android.apps.youtube.music}
+      active=false
+      flags=3
+      rating type=2
+      controllers: 0
+      state=PlaybackState {state=NONE(0), position=0, buffered position=0, speed=1.0, updated=47375, actions=11828, custom actions=[], active item id=-1, error=null}
+      audioAttrs=AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0x800 tags= bundle=null
+      volumeType=LOCAL, controlType=ABSOLUTE, max=0, current=0, volumeControlId=null
+      metadata: null
+      queueTitle=null, size=0
+Audio playback (lastly played comes first)
+  uid=10192 packages=io.github.ferasbusiness666.segno.debug 
+Media session config:
+  media_button_receiver_fgs_allowlist_duration_ms: [cur: 10000, def: 10000]
+  media_session_calback_fgs_allowlist_duration_ms: [cur: 10000, def: 10000]
+  media_session_callback_fgs_while_in_use_temp_allow_duration_ms: [cur: 10000, def: 10000]

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.VersionsTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-02T17:22:09.952Z" hostname="runnervm48cm3" time="0.007">
+  <properties/>
+  <testcase name="versionCodeGoesUpWithTheName" classname="io.github.ferasbusiness666.segno.VersionsTest" time="0.002"/>
+  <testcase name="newer" classname="io.github.ferasbusiness666.segno.VersionsTest" time="0.0"/>
+  <testcase name="parts" classname="io.github.ferasbusiness666.segno.VersionsTest" time="0.001"/>
+  <testcase name="notNewer" classname="io.github.ferasbusiness666.segno.VersionsTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

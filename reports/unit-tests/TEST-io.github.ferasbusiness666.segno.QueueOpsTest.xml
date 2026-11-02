@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.QueueOpsTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-02T17:22:09.805Z" hostname="runnervm48cm3" time="0.037">
+  <properties/>
+  <testcase name="addToQueueGoesLast" classname="io.github.ferasbusiness666.segno.QueueOpsTest" time="0.001"/>
+  <testcase name="move" classname="io.github.ferasbusiness666.segno.QueueOpsTest" time="0.0"/>
+  <testcase name="relatedSongsAreNewAndSongLength" classname="io.github.ferasbusiness666.segno.QueueOpsTest" time="0.018"/>
+  <testcase name="shuffleKeepsTheCurrentSongFirst" classname="io.github.ferasbusiness666.segno.QueueOpsTest" time="0.015"/>
+  <testcase name="playNextGoesRightAfterTheCurrentSong" classname="io.github.ferasbusiness666.segno.QueueOpsTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,30 @@
+== Segno emulator check, API 26
+screen: Physical size: 1080x1920 / Physical density: 480
+cold start, debug build (am start -W TotalTime): first 734 ms, then [649, 663, 718] ms, median 663 ms
+library opens on: chipSongs (should be chipSongs)
+library after Home and back: chipAlbums (should be chipAlbums)
+search results shown: yes
+playback started: NO
+YouTube playback on this runner: did not start. Segno said: YouTube wants this network to sign in before it plays anything. Try again later, or switch between Wi-Fi and mobile data. (org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException: YouTube probably temporarily blocked anonymous watch access with this IP , got error LOGIN_REQUIRED: "Sign in to confirm that you're not a bot")
+  extractor error: org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException: YouTube probably temporarily blocked anonymous watch access with this IP , got error LOGIN_REQUIRED: "Sign in to confirm that you're not a bot"
+local file playback started: yes
+background (local-file): media_session has Segno: True; playback states: ['3']
+background (local-file): positions every 5 s with the app in the background: [5541, 10549, 15550, 20550, 25550, 30550, 35551]
+background (local-file): PLAYING=True, position advancing=True, media notification=True
+delete dialog says: ['Delete “Kora Sun - Desert Bloom”?', 'This removes the file from your phone.', 'Cancel', 'Delete']
+after delete: gone from Library=True, file still on the phone=False
+delete from phone: ok
+jank after scrolling search results: frames=285, janky=254 (89.12%), 90th percentile=46ms
+for comparison, Android Settings with the same swipes: frames=511, janky=505 (98.83%), 90th percentile=48ms
+memory (TOTAL PSS): 70 MB
+Home's Songs tile opens: chipSongs (should be chipSongs)
+failures: none
+
+== In-app update (release build, CI hook)
+installed: 1.0.0; files for the test: ['next.apk', 'other.apk', 'same.apk']
+install permission explained: True
+same version refused: on screen
+other app refused: on screen
+Android's install question: ['Segno', 'Do you want to install an update to this existing application? Your existing data will not be lost. It does not require any special access.', 'CANCEL', 'INSTALL']
+after the update: 1.0.1
+update check: ok

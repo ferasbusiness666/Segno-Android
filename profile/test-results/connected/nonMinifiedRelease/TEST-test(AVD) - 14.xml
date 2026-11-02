@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="1" failures="0" errors="0" skipped="0" time="0.000" timestamp="2026-11-02T17:27:54" hostname="localhost">
+  <testsuite name="io.github.ferasbusiness666.segno.baselineprofile.BaselineProfileGenerator" tests="1" failures="0" errors="0" skipped="0" time="129.007" timestamp="2026-11-02T17:27:54" hostname="localhost">
+    <properties>
+      <property name="device" value="emulator-5554" />
+    </properties>
+    <testcase name="generate" classname="io.github.ferasbusiness666.segno.baselineprofile.BaselineProfileGenerator" time="129.007" />
+  </testsuite>
+</testsuites>

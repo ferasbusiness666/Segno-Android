@@ -1,0 +1,62 @@
+Applications Memory Usage (in Kilobytes):
+Uptime: 329211 Realtime: 329211
+
+** MEMINFO in pid 3125 [io.github.ferasbusiness666.segno.debug] **
+                   Pss  Private  Private  SwapPss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------
+  Native Heap    19616    19336        0        0    38912    30942     7969
+  Dalvik Heap     7392     7368        0        0    10812     5406     5406
+ Dalvik Other     5832     5832        0        0                           
+        Stack     1036     1036        0        0                           
+       Ashmem       43       32        0        0                           
+    Other dev       18        0       16        0                           
+     .so mmap     3998      264      276        0                           
+    .apk mmap     1116        0      116        0                           
+    .ttf mmap       30        0        0        0                           
+    .dex mmap    23597        4    20900        0                           
+    .oat mmap     2279        0       88        0                           
+    .art mmap     4720     4408        0        0                           
+   Other mmap      340        4      200        0                           
+      Unknown     1855     1820        0        0                           
+        TOTAL    71872    40104    21596        0    49724    36348    13375
+ 
+ App Summary
+                       Pss(KB)
+                        ------
+           Java Heap:    11776
+         Native Heap:    19336
+                Code:    21648
+               Stack:     1036
+            Graphics:        0
+       Private Other:     7904
+              System:    10172
+ 
+               TOTAL:    71872       TOTAL SWAP PSS:        0
+ 
+ Objects
+               Views:      245         ViewRootImpl:        3
+         AppContexts:        3           Activities:        1
+              Assets:        8        AssetManagers:        3
+       Local Binders:       36        Proxy Binders:       65
+       Parcel memory:       12         Parcel count:       49
+    Death Recipients:        0      OpenSSL Sockets:        5
+            WebViews:        0
+ 
+ SQL
+         MEMORY_USED:      549
+  PAGECACHE_OVERFLOW:      101          MALLOC_SIZE:      117
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b)          cache  Dbname
+         4       72             75         7/25/8  /data/user/0/io.github.ferasbusiness666.segno.debug/databases/segno.db
+         4       72             26         1/31/2  /data/user/0/io.github.ferasbusiness666.segno.debug/databases/segno.db (3)
+         4       72            101        43/18/6  /data/user/0/io.github.ferasbusiness666.segno.debug/databases/segno.db (2)
+ 
+ Asset Allocations
+    zip:/data/app/io.github.ferasbusiness666.segno.debug-mMBILEQB2atm5bco0VQJ1w==/base.apk:/res/font/inter_semibold.otf: 267K
+    zip:/data/app/io.github.ferasbusiness666.segno.debug-mMBILEQB2atm5bco0VQJ1w==/base.apk:/res/font/inter_regular.otf: 263K
+    zip:/data/app/io.github.ferasbusiness666.segno.debug-mMBILEQB2atm5bco0VQJ1w==/base.apk:/res/font/inter_semibold.otf: 267K
+    zip:/data/app/io.github.ferasbusiness666.segno.debug-mMBILEQB2atm5bco0VQJ1w==/base.apk:/res/font/inter_regular.otf: 263K
+    zip:/data/app/io.github.ferasbusiness666.segno.debug-mMBILEQB2atm5bco0VQJ1w==/base.apk:/res/font/inter_display_bold.otf: 266K
+    zip:/data/app/io.github.ferasbusiness666.segno.debug-mMBILEQB2atm5bco0VQJ1w==/base.apk:/res/font/inter_display_bold.otf: 266K

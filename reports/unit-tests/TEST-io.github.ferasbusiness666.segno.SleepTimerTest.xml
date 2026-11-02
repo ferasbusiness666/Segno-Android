@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.SleepTimerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-02T17:22:09.848Z" hostname="runnervm48cm3" time="0.009">
+  <properties/>
+  <testcase name="timeLeftReadsWell" classname="io.github.ferasbusiness666.segno.SleepTimerTest" time="0.002"/>
+  <testcase name="plusTenMinutes" classname="io.github.ferasbusiness666.segno.SleepTimerTest" time="0.0"/>
+  <testcase name="choices" classname="io.github.ferasbusiness666.segno.SleepTimerTest" time="0.001"/>
+  <testcase name="remaining" classname="io.github.ferasbusiness666.segno.SleepTimerTest" time="0.005"/>
+  <testcase name="fadesOutOverTheLast30Seconds" classname="io.github.ferasbusiness666.segno.SleepTimerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,16 @@
+NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+Delay to await runtime image flush
+BaselineProfileGenerator_generate
+Total run time Ns: 129005604528.
+Baseline profile [results](file://BaselineProfileGenerator_generate-baseline-prof-2026-11-02-17-27-54.txt)
+
+To copy the profile use:
+adb -e pull "/sdcard/Android/media/io.github.ferasbusiness666.segno.baselineprofile/additional_test_output/BaselineProfileGenerator_generate-baseline-prof.txt" .

@@ -1,0 +1,47 @@
+MEDIA SESSION SERVICE (dumpsys media_session)
+
+2 sessions listeners.
+Global priority session is null
+User Records:
+Record for full_user=0
+  Volume key long-press listener: null
+  Volume key long-press listener package: 
+  Media key listener: null
+  Media key listener package: 
+  Callback: null
+  Last MediaButtonReceiver: PendingIntent{e3646f2: PendingIntentRecord{7e62143 io.github.ferasbusiness666.segno.debug startForegroundService}}
+  Restored MediaButtonReceiver: null
+  Media button session is io.github.ferasbusiness666.segno.debug/androidx.media3.session.id. (userId=0)
+  Sessions Stack - have 2 sessions:
+    androidx.media3.session.id. io.github.ferasbusiness666.segno.debug/androidx.media3.session.id. (userId=0)
+      ownerPid=3125, ownerUid=10065, userId=0
+      package=io.github.ferasbusiness666.segno.debug
+      launchIntent=PendingIntent{7f0c3c0: PendingIntentRecord{4cfc8a0 io.github.ferasbusiness666.segno.debug startActivity (whitelist: 105a01e:+30s0ms)}}
+      mediaButtonReceiver=PendingIntent{e3646f2: PendingIntentRecord{7e62143 io.github.ferasbusiness666.segno.debug startForegroundService}}
+      active=true
+      flags=7
+      rating type=0
+      controllers: 2
+      state=PlaybackState {state=3, position=35801, buffered position=65500, speed=1.0, updated=252025, actions=7339995, custom actions=[], active item id=3, error=null}
+      audioAttrs=AudioAttributes: usage=1 content=2 flags=0x0 tags= bundle=null
+      volumeType=1, controlType=2, max=0, current=0
+      metadata:size=18, description=Segno CI - Long Tone, Music, null
+      queueTitle=null, size=4
+
+    HeadsetMediaButton com.android.server.telecom/HeadsetMediaButton (userId=0)
+      ownerPid=1612, ownerUid=1000, userId=0
+      package=com.android.server.telecom
+      launchIntent=null
+      mediaButtonReceiver=null
+      active=false
+      flags=65537
+      rating type=0
+      controllers: 0
+      state=null
+      audioAttrs=AudioAttributes: usage=2 content=1 flags=0x0 tags= bundle=null
+      volumeType=1, controlType=2, max=0, current=0
+      metadata:size=0, description=null
+      queueTitle=null, size=0
+
+Audio playback (lastly played comes first)
+  uid=10065 packages=io.github.ferasbusiness666.segno.debug 
