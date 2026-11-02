@@ -31,6 +31,7 @@ import io.github.ferasbusiness666.segno.library.LocalMusic
 import io.github.ferasbusiness666.segno.ui.MainActivity
 import io.github.ferasbusiness666.segno.ui.common.Images
 import io.github.ferasbusiness666.segno.ui.common.PlayerHub
+import io.github.ferasbusiness666.segno.ui.common.quietChanges
 import io.github.ferasbusiness666.segno.ui.common.Row
 import io.github.ferasbusiness666.segno.ui.common.RowAdapter
 import io.github.ferasbusiness666.segno.ui.common.SongActions
@@ -75,6 +76,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library), MainActivity.Root {
             v.findViewById<View>(R.id.songsShuffle).setOnClickListener { PlayerHub.play(main, songList, 0, shuffle = true) }
         }
         b.list.setHasFixedSize(true)
+        b.list.quietChanges()
         b.newPlaylist.setOnClickListener { SongActions.newPlaylist(main) { id -> main.openDetail(DetailFragment.playlist(id)) } }
         b.settings.setOnClickListener { main.openSettings() }
         chips(b).forEach { (p, c) -> c.setOnClickListener { select(p) } }

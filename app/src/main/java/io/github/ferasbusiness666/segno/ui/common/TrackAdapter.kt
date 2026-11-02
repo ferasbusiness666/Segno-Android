@@ -143,9 +143,14 @@ class TrackAdapter(
     private fun bindState(holder: Holder, t: Track) {
         val b = holder.b
         val ctx = b.root.context
-        b.title.setTextColor(ContextCompat.getColor(ctx, if (t.id == nowId) R.color.accent else R.color.text))
+        if (accent == 0) {
+            accent = ContextCompat.getColor(ctx, R.color.accent)
+            text = ContextCompat.getColor(ctx, R.color.text)
+            unknown = ctx.getString(R.string.unknown_artist)
+        }
+        b.title.setTextColor(if (t.id == nowId) accent else text)
         val d = downloads[t.id]
-        val artist = t.artist.ifEmpty { ctx.getString(R.string.unknown_artist) }
+        val artist = t.artist.ifEmpty { unknown }
         val length = if (t.durationMs > 0) Format.time(t.durationMs) else null
         val source = if (t.kind == Track.Kind.Spotify) ctx.getString(R.string.from_spotify) else null
         var icon = 0
@@ -168,10 +173,20 @@ class TrackAdapter(
                 ctx.getString(R.string.state_failed, d.error)
             }
         }
-        b.sub.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0)
+        // Setting the small icon lays the row out again, so only when it changes.
+        if (holder.subIcon != icon) {
+            holder.subIcon = icon
+            b.sub.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0)
+        }
     }
 
-    class Holder(val b: ItemTrackBinding) : RecyclerView.ViewHolder(b.root)
+    private var accent = 0
+    private var text = 0
+    private var unknown = ""
+
+    class Holder(val b: ItemTrackBinding) : RecyclerView.ViewHolder(b.root) {
+        var subIcon = 0
+    }
 
     object Diff : DiffUtil.ItemCallback<Track>() {
         override fun areItemsTheSame(a: Track, b: Track) = a.id == b.id

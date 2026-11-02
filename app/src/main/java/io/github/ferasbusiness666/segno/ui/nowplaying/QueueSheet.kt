@@ -232,10 +232,13 @@ class QueueSheet : BottomSheetDialogFragment() {
             val e = items[position]
             val ctx = h.b.root.context
             h.b.title.text = e.track.title
-            h.b.title.setTextColor(ContextCompat.getColor(ctx, if (draggable) R.color.text else R.color.accent))
+            if (titleColor == 0) titleColor = ContextCompat.getColor(ctx, if (draggable) R.color.text else R.color.accent)
+            h.b.title.setTextColor(titleColor)
             h.b.sub.text = Format.sub(e.track.artist, if (e.track.durationMs > 0) Format.time(e.track.durationMs) else null)
             Images.track(h.b.art, e.track, artPx)
         }
+
+        private var titleColor = 0
 
         class Holder(val b: ItemTrackBinding) : RecyclerView.ViewHolder(b.root)
 

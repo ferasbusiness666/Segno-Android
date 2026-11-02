@@ -424,11 +424,11 @@ def delete_check():
     time.sleep(2)
     item = wait_for(lambda: find(rid=None, text="Delete from phone"), 10)
     if item is None:
-        shot("17-delete-menu-missing")
+        shot("20-delete-menu-missing")
         return "no Delete from phone in the menu"
     tap(item)
     time.sleep(3)
-    shot("17-delete-dialog")
+    shot("20-delete-dialog")
     root = dump()
     texts = [(n.get("text") or "") for n in nodes(root)]
     log(f"delete dialog says: {[t for t in texts if t.strip()][:6]}")
@@ -438,7 +438,7 @@ def delete_check():
         return "no delete dialog"
     tap(ok)
     time.sleep(4)
-    shot("17b-after-delete")
+    shot("20b-after-delete")
     gone = find(rid="title", text="Desert Bloom") is None
     still = "Desert Bloom" in sh("ls /sdcard/Music/")
     log(f"after delete: gone from Library={gone}, file still on the phone={still}")
@@ -554,6 +554,17 @@ wait_for(lambda: find(rid="title"), 40)
 time.sleep(4)
 hide_keyboard()
 shot("19-search-arabic")
+
+# Main-thread disk and network work, from StrictMode (debug builds keep a list on API 28+).
+strict = sh(f"run-as {PKG} cat files/strictmode.txt 2>/dev/null")
+if level >= 28:
+    found = [l for l in strict.splitlines() if l.strip()]
+    log(f"StrictMode on the main thread: {len(found)} warnings")
+    counts = {}
+    for l in found:
+        counts[l] = counts.get(l, 0) + 1
+    for l, n in sorted(counts.items(), key=lambda kv: -kv[1])[:12]:
+        log(f"  {n} x {l}")
 
 if crashed():
     failures.append("crash during the run")

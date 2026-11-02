@@ -14,7 +14,7 @@ import io.github.ferasbusiness666.segno.R
  * The picture shown while a cover loads, or when there's none: a dark square with a small icon
  * in the middle. The icon keeps a sensible size whether the square is a 40 dp row or a big cover.
  */
-class ArtPlaceholder(context: Context, icon: Int) : Drawable() {
+class ArtPlaceholder(context: Context, val icon: Int) : Drawable() {
     private val paint = Paint().apply { color = ContextCompat.getColor(context, R.color.raised_2) }
     private val glyph = glyphFor(context, icon)
     private val min = context.dp(18)

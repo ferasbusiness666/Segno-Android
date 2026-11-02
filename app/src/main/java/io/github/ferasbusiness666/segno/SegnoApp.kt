@@ -1,6 +1,7 @@
 package io.github.ferasbusiness666.segno
 
 import android.app.Application
+import android.os.Build
 import android.os.StrictMode
 import coil3.ImageLoader
 import coil3.PlatformContext
@@ -12,6 +13,8 @@ import io.github.ferasbusiness666.segno.core.Net
 import io.github.ferasbusiness666.segno.data.Db
 import io.github.ferasbusiness666.segno.data.Settings
 import io.github.ferasbusiness666.segno.download.Downloads
+import java.io.File
+import java.util.concurrent.Executors
 
 /**
  * Nothing slow happens here: the database, settings and downloads list are read on a background
@@ -22,7 +25,16 @@ class SegnoApp : Application(), SingletonImageLoader.Factory {
         super.onCreate()
         instance = this
         if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build())
+            val policy = StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog()
+            if (Build.VERSION.SDK_INT >= 28) {
+                // Also a short list in files/strictmode.txt, which CI reads back.
+                val io = Executors.newSingleThreadExecutor()
+                policy.penaltyListener(io) { v ->
+                    val where = v.stackTrace.firstOrNull { it.className.startsWith("io.github.ferasbusiness666") } ?: v.stackTrace.firstOrNull()
+                    runCatching { File(filesDir, "strictmode.txt").appendText("${v.javaClass.simpleName} at $where\n") }
+                }
+            }
+            StrictMode.setThreadPolicy(policy.build())
             StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().detectLeakedClosableObjects().detectActivityLeaks().penaltyLog().build())
         }
         Thread({

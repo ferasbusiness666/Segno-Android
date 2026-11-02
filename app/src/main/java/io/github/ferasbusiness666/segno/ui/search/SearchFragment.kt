@@ -22,6 +22,7 @@ import io.github.ferasbusiness666.segno.databinding.ItemTipBinding
 import io.github.ferasbusiness666.segno.download.Downloads
 import io.github.ferasbusiness666.segno.ui.MainActivity
 import io.github.ferasbusiness666.segno.ui.common.PlayerHub
+import io.github.ferasbusiness666.segno.ui.common.quietChanges
 import io.github.ferasbusiness666.segno.ui.common.SongActions
 import io.github.ferasbusiness666.segno.ui.common.TrackAdapter
 import io.github.ferasbusiness666.segno.ui.common.show
@@ -52,6 +53,7 @@ class SearchFragment : Fragment(R.layout.fragment_search), MainActivity.Root {
         )
         b.results.layoutManager = LinearLayoutManager(requireContext())
         b.results.setHasFixedSize(true)
+        b.results.quietChanges()
         b.results.adapter = adapter
         b.results.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {

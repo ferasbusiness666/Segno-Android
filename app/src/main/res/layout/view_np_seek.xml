@@ -20,22 +20,29 @@
         android:paddingStart="@dimen/s2"
         android:paddingEnd="@dimen/s2">
 
+        <!-- Both times have a fixed width (half the row each), so a new second only redraws
+             the text and never lays the screen out again. -->
         <TextView
             android:id="@+id/npElapsed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFeatureSettings="tnum"
+            android:maxLines="1"
             android:text="0:00"
             android:textAppearance="@style/TextAppearance.Segno.Caption"
             android:textColor="@color/text_2" />
 
         <TextView
             android:id="@+id/npRemaining"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:fontFeatureSettings="tnum"
+            android:gravity="end"
+            android:maxLines="1"
             android:text="0:00"
+            android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.Segno.Caption"
             android:textColor="@color/text_2" />
     </LinearLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Remembers which icon and tint an ImageView shows (see setIcon in Ui.kt). -->
+    <item name="tag_icon" type="id" />
+    <!-- The empty-cover drawable an ImageView reuses (see Images.kt). -->
+    <item name="tag_placeholder" type="id" />
+</resources>

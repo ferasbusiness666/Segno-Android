@@ -39,7 +39,9 @@ import io.github.ferasbusiness666.segno.ui.common.Messages
 import io.github.ferasbusiness666.segno.ui.common.NowState
 import io.github.ferasbusiness666.segno.ui.common.PlayerHub
 import io.github.ferasbusiness666.segno.ui.common.SongActions
+import io.github.ferasbusiness666.segno.ui.common.clearIcon
 import io.github.ferasbusiness666.segno.ui.common.dp
+import io.github.ferasbusiness666.segno.ui.common.setIcon
 import io.github.ferasbusiness666.segno.ui.common.setTextIfChanged
 import io.github.ferasbusiness666.segno.ui.common.whileStarted
 import kotlinx.coroutines.Dispatchers
@@ -101,10 +103,12 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             launch { Downloads.states.collect { renderDownload() } }
             launch { Changes.loved.collect { refreshLoved() } }
             launch {
-                // Position and sleep countdown: twice a second, only while this screen shows.
+                // Position and sleep countdown, only while this screen shows: once a second, on
+                // the song's next whole second, so the time changes once and on time.
                 while (true) {
                     tick()
-                    delay(500)
+                    val pos = PlayerHub.position()
+                    delay(if (state.isPlaying) (1000 - pos % 1000).coerceIn(250, 1000) else 1000)
                 }
             }
         }
@@ -155,19 +159,19 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         if (old.track?.id != t.id) refreshLoved()
 
         val playing = s.showPause
-        b.controls.npPlay.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
+        b.controls.npPlay.setIcon(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
         b.controls.npPlay.contentDescription = getString(if (playing) R.string.pause else R.string.play)
         b.npArt.contentDescription = b.controls.npPlay.contentDescription
         b.controls.npBuffering.isVisible = s.buffering && s.playWhenReady
         b.controls.npNext.alpha = if (s.hasNext) 1f else 0.4f
         b.controls.npNext.isEnabled = s.hasNext
 
-        val accent = ContextCompat.getColorStateList(requireContext(), R.color.accent)
-        val dim = ContextCompat.getColorStateList(requireContext(), R.color.text_2)
-        b.controls.npShuffle.imageTintList = if (s.shuffle) accent else dim
+        b.controls.npShuffle.setIcon(R.drawable.ic_shuffle, if (s.shuffle) R.color.accent else R.color.text_2)
         b.controls.npShuffle.contentDescription = getString(if (s.shuffle) R.string.shuffle_on else R.string.shuffle)
-        b.controls.npRepeat.setImageResource(if (s.repeat == Player.REPEAT_MODE_ONE) R.drawable.ic_repeat_one else R.drawable.ic_repeat)
-        b.controls.npRepeat.imageTintList = if (s.repeat != Player.REPEAT_MODE_OFF) accent else dim
+        b.controls.npRepeat.setIcon(
+            if (s.repeat == Player.REPEAT_MODE_ONE) R.drawable.ic_repeat_one else R.drawable.ic_repeat,
+            if (s.repeat != Player.REPEAT_MODE_OFF) R.color.accent else R.color.text_2,
+        )
         b.controls.npRepeat.contentDescription = getString(
             when (s.repeat) {
                 Player.REPEAT_MODE_ALL -> R.string.repeat_all
@@ -176,7 +180,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             },
         )
         renderDownload()
-        renderSleep()
+        if (s.sleep != old.sleep || old.track == null) renderSleep()
         tick()
         sleepPopup?.render(s.sleep)
     }
@@ -210,10 +214,22 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         }
     }
 
-    /** The cover's color washes the top of the screen, calm enough for white text. */
+    /**
+     * The cover's color washes the top of the screen, calm enough for white text. The color is
+     * worked out off the main thread, so it never holds up the slide-in of this screen.
+     */
     private fun wash(bitmap: Bitmap?) {
+        if (bitmap == null) {
+            paintWash(Color.rgb(0x4A, 0x3A, 0x5E))
+            return
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            paintWash(withContext(Dispatchers.Default) { averageColor(bitmap) })
+        }
+    }
+
+    private fun paintWash(color: Int) {
         val b = b ?: return
-        val color = bitmap?.let { averageColor(it) } ?: Color.rgb(0x4A, 0x3A, 0x5E)
         val hsl = FloatArray(3)
         ColorUtils.colorToHSL(color, hsl)
         hsl[1] = (hsl[1] * 0.9f).coerceAtMost(0.62f)
@@ -265,30 +281,27 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         when {
             t == null || !t.isOnline -> {
                 // Songs already on the phone: nothing to download.
-                btn.setImageResource(R.drawable.ic_download)
-                btn.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.text_3)
+                btn.setIcon(R.drawable.ic_download, R.color.text_3)
                 btn.isEnabled = false
                 btn.alpha = 0.4f
                 ring.isVisible = false
             }
             d?.isDone == true -> {
                 btn.alpha = 1f
-                btn.setImageResource(R.drawable.ic_downloaded)
-                btn.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.accent)
+                btn.setIcon(R.drawable.ic_downloaded, R.color.accent)
                 btn.isEnabled = true
                 btn.contentDescription = getString(R.string.state_downloaded)
                 ring.isVisible = false
             }
             d?.isActive == true -> {
-                btn.setImageDrawable(null)
+                btn.clearIcon()
                 ring.isVisible = true
                 ring.progress = (d.progress * 100).toInt().coerceAtLeast(3)
                 btn.contentDescription = if (d.state == DownloadState.WAITING) getString(R.string.state_waiting) else getString(R.string.state_downloading, (d.progress * 100).toInt())
             }
             else -> {
                 btn.alpha = 1f
-                btn.setImageResource(R.drawable.ic_download)
-                btn.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.text_2)
+                btn.setIcon(R.drawable.ic_download, R.color.text_2)
                 btn.isEnabled = true
                 btn.contentDescription = getString(R.string.np_download)
                 ring.isVisible = false
@@ -320,7 +333,9 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             }
             showTimes(pos)
         }
-        renderSleep()
+        (state.sleep as? Sleep.At)?.let {
+            b.actions.npSleepBadge.setTextIfChanged(SleepTimer.badge(SleepTimer.secsLeft(it.endMs, SystemClock.elapsedRealtime())))
+        }
         sleepPopup?.tick()
     }
 
@@ -335,7 +350,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         val b = b ?: return
         val s = state.sleep
         val on = s != Sleep.Off
-        b.actions.npSleep.imageTintList = ContextCompat.getColorStateList(requireContext(), if (on) R.color.accent else R.color.text_2)
+        b.actions.npSleep.setIcon(R.drawable.ic_moon, if (on) R.color.accent else R.color.text_2)
         when (s) {
             is Sleep.At -> {
                 val left = SleepTimer.secsLeft(s.endMs, SystemClock.elapsedRealtime())

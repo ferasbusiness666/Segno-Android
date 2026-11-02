@@ -141,15 +141,17 @@ class SectionAdapter(private val stableId: Long, private val small: Boolean = fa
     override fun getItemCount() = if (shown) 1 else 0
     override fun getItemViewType(position: Int) = R.layout.item_section
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        Holder(ItemSectionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-
-    override fun onBindViewHolder(h: Holder, position: Int) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val h = Holder(ItemSectionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         if (small) {
             h.b.sectionTitle.setTextAppearance(R.style.TextAppearance_Segno_SmallStrong)
-            h.b.sectionTitle.setTextColor(androidx.core.content.ContextCompat.getColor(h.itemView.context, R.color.text_2))
+            h.b.sectionTitle.setTextColor(androidx.core.content.ContextCompat.getColor(parent.context, R.color.text_2))
             h.b.root.minimumHeight = 0
         }
+        return h
+    }
+
+    override fun onBindViewHolder(h: Holder, position: Int) {
         h.b.sectionTitle.text = title
         h.b.sectionAction.isVisible = action != null
         h.b.sectionAction.text = action

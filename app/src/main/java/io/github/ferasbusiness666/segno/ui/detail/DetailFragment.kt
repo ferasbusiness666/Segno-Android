@@ -29,6 +29,7 @@ import io.github.ferasbusiness666.segno.ui.common.ArtView
 import io.github.ferasbusiness666.segno.ui.common.Images
 import io.github.ferasbusiness666.segno.ui.common.Messages
 import io.github.ferasbusiness666.segno.ui.common.PlayerHub
+import io.github.ferasbusiness666.segno.ui.common.quietChanges
 import io.github.ferasbusiness666.segno.ui.common.SongActions
 import io.github.ferasbusiness666.segno.ui.common.TrackAdapter
 import io.github.ferasbusiness666.segno.ui.common.ViewAdapter
@@ -73,6 +74,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         val config = ConcatAdapter.Config.Builder().setStableIdMode(ConcatAdapter.Config.StableIdMode.ISOLATED_STABLE_IDS).build()
         b.list.layoutManager = LinearLayoutManager(requireContext())
         b.list.setHasFixedSize(true)
+        b.list.quietChanges()
         b.list.adapter = ConcatAdapter(config, header, empty, adapter)
         b.list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {

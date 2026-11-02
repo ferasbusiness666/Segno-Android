@@ -91,7 +91,10 @@ class HomeFragment : Fragment(R.layout.fragment_list), MainActivity.Root {
         recent = ViewAdapter(R.layout.item_carousel, 7) { v ->
             val rv = v as RecyclerView
             if (rv.adapter == null) {
-                rv.layoutManager = LinearLayoutManager(v.context, RecyclerView.HORIZONTAL, false)
+                rv.layoutManager = LinearLayoutManager(v.context, RecyclerView.HORIZONTAL, false).apply {
+                    // Lay out the first cards ahead, while the outer list scrolls toward them.
+                    initialPrefetchItemCount = 4
+                }
                 rv.setHasFixedSize(true)
                 rv.adapter = cards
             }

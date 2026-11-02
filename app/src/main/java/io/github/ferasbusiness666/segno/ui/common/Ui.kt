@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -32,6 +34,30 @@ fun Fragment.whileStarted(block: suspend CoroutineScope.() -> Unit) {
 /** Sets text only when it changed, so nothing is laid out again for nothing. */
 fun TextView.setTextIfChanged(text: CharSequence) {
     if (this.text.toString() != text.toString()) this.text = text
+}
+
+/**
+ * Shows icon [res] tinted with color resource [tint] (0: keep the tint), but only when that's a
+ * change: setting the same icon or tint again still reloads the drawable and redraws.
+ */
+fun ImageView.setIcon(res: Int, tint: Int = 0) {
+    val key = res.toLong() shl 32 or (tint.toLong() and 0xffffffffL)
+    if (getTag(R.id.tag_icon) == key) return
+    setTag(R.id.tag_icon, key)
+    setImageResource(res)
+    if (tint != 0) imageTintList = ContextCompat.getColorStateList(context, tint)
+}
+
+/** Song lists: rows that only change state (playing, downloading) don't cross-fade. */
+fun androidx.recyclerview.widget.RecyclerView.quietChanges() {
+    (itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
+}
+
+/** Clears the icon set with [setIcon]. */
+fun ImageView.clearIcon() {
+    if (getTag(R.id.tag_icon) == null && drawable == null) return
+    setTag(R.id.tag_icon, null)
+    setImageDrawable(null)
 }
 
 /** Pads the view by the status bar at the top (and any side bars). */

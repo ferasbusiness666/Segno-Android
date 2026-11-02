@@ -110,14 +110,17 @@ class DownloadService : Service() {
                 FileOutputStream(part).use { out ->
                     val buf = ByteArray(64 * 1024)
                     var got = 0L
+                    var shown = -1
                     while (true) {
                         coroutineContext.ensureActive()
                         val n = reader.read(buf, 0, buf.size)
                         if (n < 0) break
                         out.write(buf, 0, n)
                         got += n
-                        if (total > 0) {
-                            val pct = (got * 100 / total).toInt()
+                        val pct = if (total > 0) (got * 100 / total).toInt() else -1
+                        // Once per percent: every update redraws the rows that show it.
+                        if (pct >= 0 && pct != shown) {
+                            shown = pct
                             Downloads.setRunning(track.id, got.toFloat() / total)
                             notifyProgress(track, pct, waiting, force = false)
                         }

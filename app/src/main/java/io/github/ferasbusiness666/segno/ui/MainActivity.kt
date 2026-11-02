@@ -36,6 +36,7 @@ import io.github.ferasbusiness666.segno.ui.common.Messages
 import io.github.ferasbusiness666.segno.ui.common.NowState
 import io.github.ferasbusiness666.segno.ui.common.PlayerHub
 import io.github.ferasbusiness666.segno.ui.common.dp
+import io.github.ferasbusiness666.segno.ui.common.setIcon
 import io.github.ferasbusiness666.segno.ui.common.setTextIfChanged
 import io.github.ferasbusiness666.segno.ui.detail.DetailFragment
 import io.github.ferasbusiness666.segno.ui.home.HomeFragment
@@ -99,8 +100,9 @@ class MainActivity : AppCompatActivity() {
                 launch { PlayerHub.state.collect(::renderMini) }
                 launch { Messages.flow.collect(::toast) }
                 launch {
+                    // The mini player's thin progress line: once a second, only while playing.
                     while (true) {
-                        updateMiniProgress()
+                        if (PlayerHub.state.value.isPlaying) updateMiniProgress()
                         delay(1000)
                     }
                 }
@@ -177,13 +179,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun placeToast() {
-        b.toast.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            bottomMargin = when {
-                isNowPlayingOpen() -> navBottom + dp(96)
-                imeOpen -> b.main.paddingBottom + dp(12)
-                else -> (if (b.bottom.height > 0) b.bottom.height else dp(64) + navBottom) + dp(12)
-            }
+        val margin = when {
+            isNowPlayingOpen() -> navBottom + dp(96)
+            imeOpen -> b.main.paddingBottom + dp(12)
+            else -> (if (b.bottom.height > 0) b.bottom.height else dp(64) + navBottom) + dp(12)
         }
+        // Only when it moves: setting layout params lays the whole window out again.
+        val lp = b.toast.layoutParams as ViewGroup.MarginLayoutParams
+        if (lp.bottomMargin != margin) b.toast.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = margin }
     }
 
     // Tabs and screens -----------------------------------------------------------------------------
@@ -299,7 +302,7 @@ class MainActivity : AppCompatActivity() {
             Images.track(m.miniArt, t, dp(80))
         }
         val playing = s.showPause
-        m.miniPlay.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
+        m.miniPlay.setIcon(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
         m.miniPlay.contentDescription = getString(if (playing) R.string.pause else R.string.play)
         m.miniNext.isEnabled = s.hasNext
         m.miniNext.alpha = if (s.hasNext) 1f else 0.4f
