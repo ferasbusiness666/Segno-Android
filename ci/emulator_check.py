@@ -118,6 +118,10 @@ def tap(n):
 
 def tap_id(rid, wait=10, **kw):
     n = wait_for(lambda: find(rid=rid, **kw), wait)
+    if n is None and rid.startswith("tab"):
+        # Segno hides the tab bar while the keyboard is up.
+        hide_keyboard()
+        n = wait_for(lambda: find(rid=rid, **kw), wait)
     if n is None:
         log(f"  could not find {rid}")
         return False
@@ -141,10 +145,15 @@ def back():
     time.sleep(1)
 
 
+def keyboard_up():
+    return re.search(r"mInputShown=true|mIsInputViewShown=true|isInputViewShown=true", sh("dumpsys input_method")) is not None
+
+
 def hide_keyboard():
     """Back closes the keyboard, but only press it when the keyboard is up."""
-    if re.search(r"mInputShown=true", sh("dumpsys input_method")):
-        back()
+    for _ in range(2):
+        if keyboard_up():
+            back()
 
 
 def type_text(t):
@@ -269,8 +278,15 @@ time.sleep(1)
 hide_keyboard()
 shot("06-search-idle")
 tap_id("query")
-time.sleep(1)
-type_text("daft punk get lucky")
+time.sleep(3)  # let the keyboard come up, or the typing gets lost
+for attempt in range(3):
+    type_text("daft punk get lucky")
+    time.sleep(1)
+    q = find(rid="query")
+    if q is not None and "lucky" in (q.get("text") or ""):
+        break
+    tap_id("query")
+    time.sleep(2)
 sh("input keyevent 66")
 got = wait_for(lambda: find(rid="title"), 40)
 time.sleep(3)
