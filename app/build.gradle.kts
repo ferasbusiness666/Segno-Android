@@ -41,6 +41,14 @@ android {
     }
 
     signingConfigs {
+        // A fixed debug key kept in the repo, so each new test build installs over the last one.
+        // It is not a secret: the release workflow signs with Feras's own key and refuses this one.
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
         if (hasReleaseKey) {
             create("release") {
                 storeFile = file(releaseStoreFile!!)

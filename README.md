@@ -82,6 +82,9 @@ keyPassword=...
 ```
 
 Without it, release builds are signed with the debug key so you can still install them.
+Debug builds use the fixed key in `app/debug.keystore` (passwords `android`), so every new test
+build, including the ones from CI, installs over the last one. It isn't a secret, and the
+release workflow won't sign with it.
 
 ### How it's made
 

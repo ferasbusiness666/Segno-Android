@@ -16,5 +16,6 @@ local.properties
 # Signing: never commit keys or passwords
 *.jks
 *.keystore
+!app/debug.keystore
 keystore.properties
 signing/
