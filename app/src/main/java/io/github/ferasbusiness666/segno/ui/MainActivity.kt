@@ -1,7 +1,9 @@
 package io.github.ferasbusiness666.segno.ui
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -11,6 +13,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -356,6 +359,19 @@ class MainActivity : AppCompatActivity() {
     fun askStorage(then: () -> Unit) {
         afterStorage = then
         storageLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
+
+    private var afterSystem: ((Boolean) -> Unit)? = null
+    private val systemLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { r ->
+        val run = afterSystem
+        afterSystem = null
+        run?.invoke(r.resultCode == Activity.RESULT_OK)
+    }
+
+    /** Shows a system dialog (such as Android's "Delete this file?") and reports whether it was allowed. */
+    fun askSystem(sender: IntentSender, then: (Boolean) -> Unit) {
+        afterSystem = then
+        systemLauncher.launch(IntentSenderRequest.Builder(sender).build())
     }
 
     private var afterAudio: ((Boolean) -> Unit)? = null

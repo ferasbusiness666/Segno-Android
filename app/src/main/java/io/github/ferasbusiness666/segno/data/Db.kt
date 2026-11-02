@@ -140,16 +140,21 @@ object Changes {
     private val _loved = MutableStateFlow(0L)
     private val _history = MutableStateFlow(0L)
     private val _downloads = MutableStateFlow(0L)
+    private val _local = MutableStateFlow(0L)
 
     val playlists: StateFlow<Long> = _playlists
     val loved: StateFlow<Long> = _loved
     val history: StateFlow<Long> = _history
     val downloads: StateFlow<Long> = _downloads
 
+    /** Music files on the phone (one was deleted). */
+    val local: StateFlow<Long> = _local
+
     fun playlists() { _playlists.value++ }
     fun loved() { _loved.value++ }
     fun history() { _history.value++ }
     fun downloads() { _downloads.value++ }
+    fun local() { _local.value++ }
 }
 
 inline fun <T> SQLiteDatabase.tx(block: SQLiteDatabase.() -> T): T {

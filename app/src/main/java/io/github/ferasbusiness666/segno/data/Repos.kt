@@ -160,6 +160,10 @@ object Loved {
 
     fun isLoved(id: String) = id in ids()
 
+    internal fun dropCache() {
+        cache = null
+    }
+
     fun tracks(): List<Track> =
         db.readableDatabase.rawQuery(
             "SELECT $TRACK_COLS FROM loved l JOIN tracks t ON t.id = l.track_id ORDER BY l.added DESC",
@@ -261,4 +265,25 @@ object Tracks {
     fun get(id: String): Track? = db.track(id)
     fun put(tracks: Collection<Track>) = db.writableDatabase.tx { db.putTracks(this, tracks) }
     fun setVideo(trackId: String, videoId: String, art: String?) = db.setVideo(trackId, videoId, art)
+}
+
+/** A song whose file is gone from the phone: out of playlists, Loved songs and history. Blocking. */
+object Forget {
+    fun everywhere(trackId: String) {
+        val args = arrayOf(trackId)
+        var lists = 0
+        var loved = 0
+        var history = 0
+        db.writableDatabase.tx {
+            lists = delete("playlist_items", "track_id = ?", args)
+            loved = delete("loved", "track_id = ?", args)
+            history = delete("history", "track_id = ?", args)
+        }
+        if (lists > 0) Changes.playlists()
+        if (loved > 0) {
+            Loved.dropCache()
+            Changes.loved()
+        }
+        if (history > 0) Changes.history()
+    }
 }

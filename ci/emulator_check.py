@@ -387,6 +387,71 @@ else:
     else:
         failures.append("local test song not found")
 
+# Delete from phone -------------------------------------------------------------------------------
+def node_at(root, full_rid=None, text=None):
+    for n in nodes(root):
+        if full_rid and n.get("resource-id") != full_rid:
+            continue
+        if text and (n.get("text") or "").strip().lower() != text.lower():
+            continue
+        return dict(n.attrib)
+    return None
+
+
+def delete_check():
+    if level < 29:
+        sh(f"pm grant {PKG} android.permission.WRITE_EXTERNAL_STORAGE")
+    adb("shell", "am", "start", "-n", ACT)
+    time.sleep(2)
+    tap_id("tabLibrary")
+    time.sleep(1)
+    tap_id("chipSongs")
+    time.sleep(2)
+    row = wait_for(lambda: find(rid="title", text="Desert Bloom"), 20)
+    if row is None:
+        return "test song not in Library"
+    y = center(row)[1]
+    root = dump()
+    more = None
+    for n in nodes(root):
+        if n.get("resource-id") == f"{PKG}:id/more":
+            a, b, c, d = map(int, re.findall(r"\d+", n.get("bounds")))
+            if b <= y <= d:
+                more = dict(n.attrib)
+    if more is None:
+        return "no menu button on the song"
+    tap(more)
+    time.sleep(2)
+    item = wait_for(lambda: find(rid=None, text="Delete from phone"), 10)
+    if item is None:
+        shot("17-delete-menu-missing")
+        return "no Delete from phone in the menu"
+    tap(item)
+    time.sleep(3)
+    shot("17-delete-dialog")
+    root = dump()
+    texts = [(n.get("text") or "") for n in nodes(root)]
+    log(f"delete dialog says: {[t for t in texts if t.strip()][:6]}")
+    ok = (node_at(root, full_rid="android:id/button1")
+          or node_at(root, text="Allow") or node_at(root, text="Delete"))
+    if ok is None:
+        return "no delete dialog"
+    tap(ok)
+    time.sleep(4)
+    shot("17b-after-delete")
+    gone = find(rid="title", text="Desert Bloom") is None
+    still = "Desert Bloom" in sh("ls /sdcard/Music/")
+    log(f"after delete: gone from Library={gone}, file still on the phone={still}")
+    if not gone or still:
+        return f"song not deleted (in list={not gone}, file={still})"
+    return None
+
+
+why_not = delete_check()
+log(f"delete from phone: {'ok' if why_not is None else why_not}")
+if why_not:
+    failures.append(f"delete from phone: {why_not}")
+
 # Jank: scroll the search results -----------------------------------------------------------------
 tap_id("tabSearch")
 time.sleep(2)

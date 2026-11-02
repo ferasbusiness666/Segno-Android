@@ -41,6 +41,7 @@ import io.github.ferasbusiness666.segno.ui.common.show
 import io.github.ferasbusiness666.segno.ui.common.whileStarted
 import io.github.ferasbusiness666.segno.ui.detail.DetailFragment
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -87,7 +88,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library), MainActivity.Root {
         }
         whileStarted {
             launch { Changes.playlists.collect { if (ready && page == PLAYLISTS) loadPlaylists() } }
-            launch { Changes.downloads.collect { if (ready && page != PLAYLISTS) loadLocal() } }
+            launch { combine(Changes.downloads, Changes.local) { a, c -> a + c }.collect { if (ready && page != PLAYLISTS) loadLocal() } }
             launch { PlayerHub.state.collect { songs.setNow(it.track?.id) } }
         }
     }

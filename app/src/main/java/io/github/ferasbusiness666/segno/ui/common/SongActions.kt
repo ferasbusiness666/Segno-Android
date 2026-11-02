@@ -49,17 +49,17 @@ object SongActions {
                 toggleLove(activity, track)
             }
             items += Item(R.drawable.ic_list_plus, activity.getString(R.string.menu_add_to_playlist)) { addToPlaylist(activity, listOf(track)) }
-            if (track.isOnline) {
-                if (dl?.isDone == true) {
-                    items += Item(R.drawable.ic_trash, activity.getString(R.string.menu_remove_download)) { removeDownload(activity, track) }
-                } else if (dl?.isActive != true) {
-                    items += Item(R.drawable.ic_download, activity.getString(R.string.menu_download)) { download(activity, listOf(track)) }
-                }
+            if (track.isOnline && dl?.isDone != true && dl?.isActive != true) {
+                items += Item(R.drawable.ic_download, activity.getString(R.string.menu_download)) { download(activity, listOf(track)) }
             }
             if (playlistId != null) {
                 items += Item(R.drawable.ic_close, activity.getString(R.string.menu_remove_from_playlist)) {
                     activity.lifecycleScope.launch(Dispatchers.IO) { Playlists.remove(playlistId, track.id) }
                 }
+            }
+            // Songs with a file on the phone: local ones and finished downloads.
+            if (activity is MainActivity && PhoneDelete.canDelete(track)) {
+                items += Item(R.drawable.ic_trash, activity.getString(R.string.menu_delete_from_phone)) { PhoneDelete.start(activity, track) }
             }
             items += extra
             if (track.kind == Track.Kind.Local && track.albumId != 0L && track.album.isNotEmpty()) {
@@ -136,14 +136,6 @@ object SongActions {
                     else -> activity.getString(R.string.toast_downloading_n, n)
                 },
             )
-        }
-    }
-
-    fun removeDownload(activity: FragmentActivity, track: Track) {
-        val app = activity.applicationContext
-        activity.lifecycleScope.launch {
-            withContext(Dispatchers.IO) { Downloads.delete(app, track.id) }
-            Messages.show(activity.getString(R.string.toast_download_removed))
         }
     }
 

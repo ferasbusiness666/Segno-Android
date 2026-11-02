@@ -204,6 +204,15 @@ object Downloads {
         Changes.downloads()
     }
 
+    /** Forgets the download saved as MediaStore file [mediaId], if one was. Blocking. */
+    fun forgetFile(mediaId: Long) {
+        load()
+        val key = mediaId.toString()
+        _states.value.values
+            .filter { it.uri.startsWith("content://media/") && Uri.parse(it.uri).lastPathSegment == key }
+            .forEach { forgetMissing(it.trackId) }
+    }
+
     private inline fun update(f: (MutableMap<String, DownloadState>) -> Unit) {
         synchronized(this) {
             val m = HashMap(_states.value)

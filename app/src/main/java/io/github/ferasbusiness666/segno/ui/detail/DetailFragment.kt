@@ -37,7 +37,6 @@ import io.github.ferasbusiness666.segno.ui.common.show
 import io.github.ferasbusiness666.segno.ui.common.whileStarted
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -101,7 +100,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         PLAYLIST -> Changes.playlists
         LOVED -> Changes.loved
         DOWNLOADS -> Changes.downloads
-        else -> flowOf(0L)
+        else -> Changes.local
     }
 
     private suspend fun load() {

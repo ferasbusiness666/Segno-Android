@@ -189,6 +189,14 @@ object PlayerHub {
 
     fun remove(index: Int) = controller?.removeMediaItem(index)
 
+    /** Takes every copy of a song out of the queue. The one playing makes way for the next. */
+    fun removeTrack(id: String) {
+        val c = controller ?: return
+        for (i in c.mediaItemCount - 1 downTo 0) {
+            if (c.getMediaItemAt(i).mediaId == id) c.removeMediaItem(i)
+        }
+    }
+
     /** Moves an upcoming song from [from] to [to] (positions in the upcoming list). */
     fun moveUpcoming(from: Int, to: Int) {
         val c = controller ?: return
