@@ -52,7 +52,7 @@ jobs:
           SEGNO_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           SEGNO_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SEGNO_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-        run: ./gradlew --stacktrace assembleRelease
+        run: ./gradlew --stacktrace :app:assembleRelease
 
       - name: Check the signature and name the APK
         run: |

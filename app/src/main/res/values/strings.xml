@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- app_name comes from the build type (Segno, or Segno Debug). -->
+    <!-- app_name comes from the build: Segno, or Segno Debug for debug builds. -->
 
     <!-- Tabs -->
     <string name="tab_home">Home</string>

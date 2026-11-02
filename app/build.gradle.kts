@@ -2,6 +2,7 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.baselineprofile)
 }
 
 kotlin {
@@ -38,6 +39,7 @@ android {
         }
         versionCode = 1
         versionName = "1.0.0"
+        resValue("string", "app_name", "Segno")
     }
 
     signingConfigs {
@@ -71,7 +73,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            resValue("string", "app_name", "Segno")
             signingConfig = if (hasReleaseKey) {
                 signingConfigs.getByName("release")
             } else {
@@ -138,6 +139,7 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.profileinstaller)
+    baselineProfile(project(":baselineprofile"))
     implementation(libs.material)
 
     implementation(libs.media3.exoplayer)
@@ -152,4 +154,12 @@ dependencies {
     implementation(libs.nanojson)
 
     testImplementation(libs.junit)
+}
+
+// The Baseline Profile lists the code to compile ahead of time, so the first screens and scrolls
+// don't stutter while the code is still interpreted. CI makes it on an emulator; it is committed
+// under src/release/generated/baselineProfiles and goes into every release build.
+baselineProfile {
+    automaticGenerationDuringBuild = false
+    saveInSrc = true
 }

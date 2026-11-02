@@ -20,3 +20,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Segno"
 include(":app")
+// Makes the Baseline Profile on an emulator (CI does this). Not part of the app.
+include(":baselineprofile")
