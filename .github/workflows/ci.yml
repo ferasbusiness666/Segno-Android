@@ -39,6 +39,15 @@ jobs:
           ./gradlew --stacktrace :app:assembleRelease -PsegnoVersionName=1.0.1
           cp app/build/outputs/apk/release/app-release.apk out/segno-release-1.0.1.apk
 
+      # The release build from just before the smoothness work (no Baseline Profile), so API 34
+      # can measure before and after on the same emulator.
+      - name: Build the release from before the smoothness work
+        run: |
+          git fetch -q --depth 1 origin 022cf97f93086bf1e8e44b4527851dd9cbc0040a
+          git worktree add -f ../before FETCH_HEAD
+          (cd ../before && ./gradlew --stacktrace :app:assembleRelease)
+          cp ../before/app/build/outputs/apk/release/app-release.apk out/segno-release-before.apk
+
       - name: Collect outputs
         if: always()
         run: |
@@ -125,8 +134,11 @@ jobs:
           path: emulator-out
           retention-days: 3
 
+  # Makes a fresh Baseline Profile. It's committed in app/src/release/generated/baselineProfiles,
+  # so this only runs when asked: by hand, or with [profile] in the commit message.
   profile:
     name: Baseline Profile (API 34)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[profile]')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:

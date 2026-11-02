@@ -68,10 +68,15 @@ installs. Your playlists and downloads stay. Downloading the new APK from GitHub
 You need JDK 21 and the Android SDK (API 37).
 
 ```sh
-./gradlew assembleDebug          # app/build/outputs/apk/debug/app-debug.apk
-./gradlew testDebugUnitTest      # unit tests
-./gradlew assembleRelease        # minified release APK
+./gradlew :app:assembleDebug      # app/build/outputs/apk/debug/app-debug.apk
+./gradlew :app:testDebugUnitTest  # unit tests
+./gradlew :app:assembleRelease    # minified release APK
 ```
+
+Release builds include a Baseline Profile (`app/src/release/generated/baselineProfiles`), so the
+main screens are compiled ahead of time and don't stutter on first use. To make a new one, run
+`./gradlew :app:generateReleaseBaselineProfile` with an Android 13+ emulator or phone connected,
+or push a commit with `[profile]` in its message and take it from the `ci-out` branch.
 
 A release build is signed with your own key when `keystore.properties` exists in the project
 folder (it's ignored by git):

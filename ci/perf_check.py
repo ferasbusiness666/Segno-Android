@@ -7,7 +7,10 @@ moves: scrolling search results, scrolling Library Songs, opening Now Playing an
 queue. Each move is repeated and the frames are added up; the 90th percentile comes from the
 summed frame-time histogram. The numbers go at the end of results.txt.
 
-Usage: perf_check.py <release apk> <output dir>
+Both builds are measured on the same emulator, one after the other: "before" (the release
+build from before the smoothness work, without a Baseline Profile) and "after" (this commit).
+
+Usage: perf_check.py <release apk before> <release apk after> <output dir>
 """
 import math
 import os
@@ -20,7 +23,7 @@ import time
 import wave
 import xml.etree.ElementTree as ET
 
-APK, OUT = sys.argv[1], sys.argv[2]
+APK_BEFORE, APK_AFTER, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
 PKG = "io.github.ferasbusiness666.segno"
 ACT = f"{PKG}/.ui.MainActivity"
 os.makedirs(OUT, exist_ok=True)
@@ -80,6 +83,18 @@ def wait_for(fn, timeout):
     return None
 
 
+def shot(name):
+    sh(f"screencap -p /sdcard/{name}.png")
+    adb("pull", f"/sdcard/{name}.png", os.path.join(OUT, f"{name}.png"))
+
+
+def visible():
+    root = dump()
+    if root is None:
+        return "(no screen dump)"
+    return str([(n.get("text") or "") for n in root.iter("node") if (n.get("text") or "").strip()][:10])
+
+
 def tap(n):
     a, b, c, d = map(int, re.findall(r"\d+", n["bounds"]))
     sh(f"input tap {(a + c) // 2} {(b + d) // 2}")
@@ -129,10 +144,10 @@ class Score:
                 return ms
         return max(self.hist)
 
-    def line(self):
+    def line(self, label):
         pct = f"{100.0 * self.janky / self.frames:.1f}%" if self.frames else "?"
         p90 = self.p90()
-        return f"perf (release) {self.name}: frames={self.frames}, janky={self.janky} ({pct}), 90th percentile={p90 if p90 is not None else '?'}ms"
+        return f"perf ({label}) {self.name}: frames={self.frames}, janky={self.janky} ({pct}), 90th percentile={p90 if p90 is not None else '?'}ms"
 
 
 def measure(score, action):
@@ -154,14 +169,11 @@ def swipes(n=8):
         time.sleep(0.5)
 
 
-# Install and compile like a phone would ------------------------------------------------------------
+# Songs for Library -----------------------------------------------------------------------------------
 log("")
-log("== Smoothness of the release build (gfxinfo)")
+log("== Smoothness of the release build (gfxinfo), before and after, same emulator")
 sh(f"am force-stop {PKG}.debug")  # the debug build from the main check may still be playing
-adb("install", "-r", APK, timeout=300)
 level = int(sh("getprop ro.build.version.sdk").strip() or "0")
-for perm in ("android.permission.READ_MEDIA_AUDIO", "android.permission.POST_NOTIFICATIONS") if level >= 33 else ("android.permission.READ_EXTERNAL_STORAGE",):
-    sh(f"pm grant {PKG} {perm}")
 
 # A few hundred short songs, so Library Songs has something to scroll.
 path = os.path.join(tempfile.gettempdir(), "perf.wav")
@@ -169,7 +181,7 @@ with wave.open(path, "w") as w:
     w.setnchannels(1)
     w.setsampwidth(2)
     w.setframerate(8000)
-    w.writeframes(b"".join(struct.pack("<h", int(2000 * math.sin(2 * math.pi * 330 * t / 8000))) for t in range(8000 * 2)))
+    w.writeframes(b"".join(struct.pack("<h", int(2000 * math.sin(2 * math.pi * 330 * t / 8000))) for t in range(8000 * 20)))
 sh("mkdir -p /sdcard/Music/Perf")
 adb("push", path, "/sdcard/Music/Perf/base.wav")
 sh("cd /sdcard/Music/Perf && for i in $(seq -w 1 240); do cp base.wav \"Perf Song $i.wav\"; done; rm base.wav", timeout=300)
@@ -190,78 +202,96 @@ for _ in range(60):
     time.sleep(2)
 log(f"songs for the Library scroll: {have}")
 
-# First launch: ProfileInstaller writes the Baseline Profile; then compile as the phone would in
-# the background (speed-profile), so the numbers match a phone that has had the app for a day.
-sh(f"am start -W -n {ACT}")
-time.sleep(6)
-sh(f"am broadcast -a androidx.profileinstaller.action.INSTALL_PROFILE -n {PKG}/androidx.profileinstaller.ProfileInstallReceiver")
-time.sleep(3)
-sh(f"am force-stop {PKG}")
-compiled = sh(f"cmd package compile -f -m speed-profile {PKG}", timeout=300).strip()
-log(f"compile with the profile: {compiled or '?'}")
-status = re.search(r"\[status=([^\]]+)\]", sh(f"dumpsys package dexopt | grep -A 2 '\\[{PKG}\\]'"))
-log(f"dexopt status: {status.group(1) if status else '?'}")
 
-starts = []
-for _ in range(3):
+def run(label, apk):
+    log(f"-- {label}")
     sh(f"am force-stop {PKG}")
-    time.sleep(1)
-    m = re.search(r"TotalTime:\s*(\d+)", sh(f"am start -W -n {ACT}"))
-    if m:
-        starts.append(int(m.group(1)))
+    adb("install", "-r", apk, timeout=300)
+    for perm in ("android.permission.READ_MEDIA_AUDIO", "android.permission.POST_NOTIFICATIONS") if level >= 33 else ("android.permission.READ_EXTERNAL_STORAGE",):
+        sh(f"pm grant {PKG} {perm}")
+    # First launch: ProfileInstaller writes the Baseline Profile (if the APK has one); then compile
+    # as the phone does in the background (speed-profile), like a phone that has had it a day.
+    sh(f"am start -W -n {ACT}")
+    time.sleep(6)
+    sh(f"am broadcast -a androidx.profileinstaller.action.INSTALL_PROFILE -n {PKG}/androidx.profileinstaller.ProfileInstallReceiver")
     time.sleep(3)
-starts.sort()
-log(f"perf (release) cold start: {starts} ms, median {starts[len(starts) // 2] if starts else '?'} ms")
+    sh(f"am force-stop {PKG}")
+    compiled = sh(f"cmd package compile -f -m speed-profile {PKG}", timeout=300).strip()
+    status = re.search(r"\[status=([^\]]+)\]", sh(f"dumpsys package dexopt | grep -A 2 '\\[{PKG}\\]'"))
+    log(f"compile: {compiled or '?'}, dexopt status: {status.group(1) if status else '?'}")
 
-# Search results -------------------------------------------------------------------------------------
-search = Score("scrolling search results")
-tap_id("tabSearch")
-time.sleep(1)
-if tap_id("query"):
-    time.sleep(2)
-    sh("input text 'daft%spunk'")
-    time.sleep(1)
-    sh("input keyevent 66")
-    if wait_for(lambda: find(rid="title"), 40) is not None:
+    starts = []
+    for _ in range(3):
+        sh(f"am force-stop {PKG}")
+        time.sleep(1)
+        m = re.search(r"TotalTime:\s*(\d+)", sh(f"am start -W -n {ACT}"))
+        if m:
+            starts.append(int(m.group(1)))
         time.sleep(3)
-        for _ in range(2):
-            measure(search, swipes)
-    else:
-        log("  perf: no search results (YouTube unreachable?)")
-log(search.line())
+    starts.sort()
+    log(f"perf ({label}) cold start: {starts} ms, median {starts[len(starts) // 2] if starts else '?'} ms")
 
-# Library Songs --------------------------------------------------------------------------------------
-library = Score("scrolling Library Songs")
-tap_id("tabLibrary")
-time.sleep(1)
-tap_id("chipSongs")
-time.sleep(2)
-if wait_for(lambda: find(rid="title", text="Perf Song"), 20) is not None:
-    time.sleep(2)
-    for _ in range(2):
-        measure(library, swipes)
-log(library.line())
-
-# Now Playing and the queue --------------------------------------------------------------------------
-now = Score("opening Now Playing")
-queue = Score("opening the queue")
-song = find(rid="title", text="Perf Song")
-if song is not None:
-    tap(song)
-    if wait_for(lambda: find(rid="miniCard"), 15) is not None:
+    # Search results
+    search = Score("scrolling search results")
+    tap_id("tabSearch")
+    time.sleep(1)
+    if tap_id("query"):
         time.sleep(2)
-        for _ in range(3):
-            measure(now, lambda: (tap_id("miniCard"), time.sleep(2)))
-            measure(queue, lambda: (tap_id("npQueue"), time.sleep(2)))
-            sh("input keyevent 4")  # close the queue
-            time.sleep(1.5)
-            sh("input keyevent 4")  # close Now Playing
-            time.sleep(1.5)
-    else:
-        log("  perf: the song didn't start, so Now Playing wasn't measured")
-log(now.line())
-log(queue.line())
+        sh("input text 'daft%spunk'")
+        time.sleep(1)
+        sh("input keyevent 66")
+        if wait_for(lambda: find(rid="title"), 40) is not None:
+            time.sleep(3)
+            for _ in range(2):
+                measure(search, swipes)
+        else:
+            log("  perf: no search results (YouTube unreachable?)")
+    log(search.line(label))
 
-sh(f"am force-stop {PKG}")
+    # Library Songs
+    library = Score("scrolling Library Songs")
+    tap_id("tabLibrary")
+    time.sleep(2)
+    tap_id("chipSongs")
+    time.sleep(3)
+    shot(f"perf-{label}-library")
+    if wait_for(lambda: find(rid="title", text="Perf Song"), 20) is not None:
+        time.sleep(2)
+        for _ in range(2):
+            measure(library, swipes)
+    else:
+        log(f"  perf: Library shows {visible()}")
+    log(library.line(label))
+
+    # Now Playing and the queue
+    now = Score("opening Now Playing")
+    queue = Score("opening the queue")
+    song = find(rid="title", text="Perf Song") or find(rid="title")
+    if song is not None:
+        tap(song)
+        if wait_for(lambda: find(rid="miniCard"), 15) is not None:
+            time.sleep(2)
+            for i in range(3):
+                measure(now, lambda: (tap_id("miniCard"), time.sleep(2)))
+                if i == 0:
+                    shot(f"perf-{label}-now-playing")
+                measure(queue, lambda: (tap_id("npQueue"), time.sleep(2)))
+                if i == 0:
+                    shot(f"perf-{label}-queue")
+                sh("input keyevent 4")  # close the queue
+                time.sleep(1.5)
+                sh("input keyevent 4")  # close Now Playing
+                time.sleep(1.5)
+        else:
+            log(f"  perf: the song didn't start, so Now Playing wasn't measured; screen: {visible()}")
+    else:
+        log(f"  perf: no song to play; screen: {visible()}")
+    log(now.line(label))
+    log(queue.line(label))
+    sh(f"am force-stop {PKG}")
+
+
+run("before", APK_BEFORE)
+run("after", APK_AFTER)
 with open(RESULTS, "a") as f:
     f.write("\n".join(lines) + "\n")
