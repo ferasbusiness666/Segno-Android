@@ -148,7 +148,7 @@ object BackupFormat {
         if (version.toInt() > VERSION) throw Unreadable(Reason.Newer)
         if (version.toInt() < 1) throw Unreadable(Reason.NotABackup)
         return try {
-            val s = o.getObject("settings") ?: JsonObject()
+            val s = o["settings"] as? JsonObject ?: JsonObject()
             Data(
                 app = o.getString("app").orEmpty(),
                 appVersion = o.getString("app_version").orEmpty(),
@@ -175,7 +175,8 @@ object BackupFormat {
                     }
                 },
                 loved = songs(o.getArray("loved")),
-                queue = o.getObject("queue")?.let { q ->
+                // nanojson's getObject gives an empty object for a missing key, so look it up directly.
+                queue = (o["queue"] as? JsonObject)?.let { q ->
                     Queue(
                         songs = songs(q.getArray("songs")),
                         index = q.getInt("index", 0),
