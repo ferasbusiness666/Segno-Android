@@ -1,0 +1,27 @@
+name: Add Segno.apk to the latest release
+
+# The website's Android button downloads releases/latest/download/Segno.apk. New releases get it
+# from release.yml; this adds it to a release that doesn't have it (1.0.0 came out before that).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy Segno-<version>.apk to Segno.apk
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag=$(gh release view --json tagName --jq .tagName)
+          echo "Latest release: $tag"
+          gh release download "$tag" --pattern 'Segno-*.apk' --dir apk
+          ls -l apk
+          [ "$(ls apk | wc -l)" = 1 ] || { echo "::error::Expected one Segno-<version>.apk in $tag"; exit 1; }
+          cp apk/Segno-*.apk Segno.apk
+          gh release upload "$tag" Segno.apk --clobber
+          gh release view "$tag" --json assets --jq '.assets[].name'
