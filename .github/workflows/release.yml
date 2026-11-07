@@ -67,7 +67,10 @@ jobs:
             exit 1
           fi
           cp "$apk" "Segno-${{ steps.version.outputs.version }}.apk"
-          ls -l Segno-*.apk
+          # The same APK under a name that never changes, for the website's Download button
+          # (releases/latest/download/Segno.apk). The app itself updates from Segno-<version>.apk.
+          cp "$apk" Segno.apk
+          ls -l Segno-*.apk Segno.apk
 
       # The app installs updates named Segno-<version>.apk, and Android only takes a higher
       # versionCode, so check both against the last release.
@@ -119,4 +122,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           v="${{ steps.version.outputs.version }}"
-          gh release create "v$v" "Segno-$v.apk" --title "Segno $v" --notes-file notes.md
+          gh release create "v$v" "Segno-$v.apk" Segno.apk --title "Segno $v" --notes-file notes.md
