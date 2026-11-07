@@ -31,13 +31,20 @@ jobs:
       - name: Build debug and release APKs, run unit tests and lint
         run: ./gradlew --stacktrace --continue :app:assembleDebug :app:assembleRelease :app:testDebugUnitTest :app:lintDebug
 
-      # The same app as 1.0.1 (same test key), for the in-app update test on the emulators.
-      - name: Build a test update (1.0.1)
+      # The same app one patch version higher (same test key), for the in-app update test on
+      # the emulators.
+      - name: Build a test update (one version higher)
         run: |
           mkdir -p out
           cp app/build/outputs/apk/release/app-release.apk out/segno-release.apk
-          ./gradlew --stacktrace :app:assembleRelease -PsegnoVersionName=1.0.1
-          cp app/build/outputs/apk/release/app-release.apk out/segno-release-1.0.1.apk
+          v=$(grep -m1 '^val appVersion = ' app/build.gradle.kts | sed -E 's/.*"([^"]+)".*/\1/')
+          IFS=. read -r major minor patch <<< "$v"
+          next="$major.${minor:-0}.$(( ${patch:-0} + 1 ))"
+          echo "$v" > out/version.txt
+          echo "$next" > out/next-version.txt
+          echo "Test update: $v -> $next"
+          ./gradlew --stacktrace :app:assembleRelease -PsegnoVersionName="$next"
+          cp app/build/outputs/apk/release/app-release.apk out/segno-release-next.apk
 
       # The release build from just before the smoothness work (no Baseline Profile), so API 34
       # can measure before and after on the same emulator.

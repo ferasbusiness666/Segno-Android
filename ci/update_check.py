@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """The in-app update, end to end, on the CI emulator.
 
-Installs the release build (1.0.0, signed with the test key in app/debug.keystore) and uses its
+Installs the release build (signed with the test key in app/debug.keystore) and uses its
 CI-only hook (builds without the real key) to offer APKs copied into Segno's files folder:
-  1. the same 1.0.0 APK: Update, Android's "install unknown apps" step, then a refusal (not newer);
+  1. the same APK: Update, Android's "install unknown apps" step, then a refusal (not newer);
   2. the debug APK: refused (another package);
-  3. a 1.0.1 build of the same app: Update, Android's install question, and 1.0.1 is installed.
+  3. a build one version higher: Update, Android's install question, and it's installed.
 
-Usage: update_check.py <release apk> <release 1.0.1 apk> <debug apk> <output dir>
+Usage: update_check.py <release apk> <release apk one version higher> <debug apk> <output dir>
+The versions come from version.txt and next-version.txt next to the release APK.
 """
 import os
 import re
@@ -17,6 +18,9 @@ import time
 import xml.etree.ElementTree as ET
 
 APK, APK_NEXT, APK_DEBUG, OUT = sys.argv[1:5]
+_here = os.path.dirname(APK)
+CUR = open(os.path.join(_here, "version.txt")).read().strip()
+NEXT = open(os.path.join(_here, "next-version.txt")).read().strip()
 PKG = "io.github.ferasbusiness666.segno"
 ACT = f"{PKG}/.ui.MainActivity"
 FILES = f"/sdcard/Android/data/{PKG}/files"
@@ -132,8 +136,8 @@ log(f"installed: {version()}; files for the test: {sh(f'ls {FILES}').split()}")
 adb("logcat", "-c")
 
 # 1. Same version: offer, the install permission step, then "not newer".
-offer("same.apk", "1.0.0")
-dialog = wait_text("Segno 1.0.0 is out")
+offer("same.apk", CUR)
+dialog = wait_text(f"Segno {CUR} is out")
 shot("21-update-offer")
 if dialog is None:
     failures.append("update: no offer dialog")
@@ -170,10 +174,10 @@ if wait_text("Segno 9.9.9 is out") is not None:
 else:
     failures.append("update: no offer for the second test")
 
-# 3. The real thing: 1.0.1, same key.
+# 3. The real thing: one version higher, same key.
 time.sleep(4)
-offer("next.apk", "1.0.1")
-if wait_text("Segno 1.0.1 is out") is not None:
+offer("next.apk", NEXT)
+if wait_text(f"Segno {NEXT} is out") is not None:
     tap(wait_text("Update"))
     ask = wait_text("Update", "Install", timeout=40, other_app=True)
     shot("21f-update-android-asks")
@@ -181,16 +185,16 @@ if wait_text("Segno 1.0.1 is out") is not None:
     if ask is not None:
         tap(ask)
     end = time.time() + 90
-    while time.time() < end and version() != "1.0.1":
+    while time.time() < end and version() != NEXT:
         time.sleep(3)
     now = version()
     log(f"after the update: {now}")
     time.sleep(2)
     shot("21g-update-done")
-    if now != "1.0.1":
-        failures.append(f"update: still {now} after installing 1.0.1")
+    if now != NEXT:
+        failures.append(f"update: still {now} after installing {NEXT}")
 else:
-    failures.append("update: no offer for 1.0.1")
+    failures.append(f"update: no offer for {NEXT}")
 
 log(f"update check: {'ok' if not failures else ', '.join(failures)}")
 with open(os.path.join(OUT, "results.txt"), "a") as f:

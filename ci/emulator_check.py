@@ -28,7 +28,12 @@ def log(msg):
 
 
 def run(args, timeout=120, check=False):
-    p = subprocess.run(args, capture_output=True, text=True, timeout=timeout)
+    try:
+        p = subprocess.run(args, capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        # A command that hangs (an app that won't start, say) is a finding, not the end of the run.
+        print(f"  timed out: {' '.join(args)[:120]}", flush=True)
+        return ""
     if check and p.returncode != 0:
         raise RuntimeError(f"{args}: {p.stderr}")
     return p.stdout
@@ -502,6 +507,10 @@ def lyrics_check():
     if not tap_id("miniCard"):
         return "no mini player"
     time.sleep(2)
+    # Paused: while the time ticks the screen never goes idle and uiautomator can't read it. The
+    # position log keeps coming every 5 s, paused or not.
+    sh("input keyevent 127")
+    time.sleep(1)
     if not tap_id("npLyrics"):
         return "no lyrics button"
     lines = wait_for(lambda: [n.get("text") for n in nodes(dump()) if " line " in (n.get("text") or "")] or None, 20)
@@ -529,14 +538,24 @@ def lyrics_check():
         if pos and not (want - 500 <= pos[-1] <= want + 9000):
             return "a tap on a line didn't play from there"
         shot("23b-lyrics-after-tap")
-    # Back to the cover for the rest of the run.
-    tap_id("npLyrics")
-    back()
-    sh(f"rm -f '/sdcard/Music/{name}.lrc'")
     return None
 
 
+def close_now_playing():
+    """Back to the cover, and out of Now Playing, whatever happened."""
+    sh("input keyevent 127")
+    time.sleep(1)
+    if find(rid="lyricsBar") is not None or find(rid="lyricsStatus") is not None:
+        tap_id("npLyrics", wait=3)
+    for _ in range(2):
+        if find(rid="npClose") is not None:
+            back()
+            time.sleep(1)
+    sh("rm -f '/sdcard/Music/Segno CI - Long Tone.lrc'")
+
+
 why_lyrics = lyrics_check()
+close_now_playing()
 log(f"lyrics: {'ok' if why_lyrics is None else why_lyrics}")
 if why_lyrics:
     failures.append(f"lyrics: {why_lyrics}")
