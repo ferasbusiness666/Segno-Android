@@ -296,6 +296,19 @@ log(f"search results shown: {'yes' if got else 'NO'}")
 shot("07-search-results")
 if not got:
     failures.append("no search results")
+else:
+    # The same words on plain YouTube, then back to YouTube Music for the rest of the run.
+    if tap_id("chipVideos"):
+        yt = wait_for(lambda: find(rid="title"), 40)
+        time.sleep(3)
+        chip = find(rid="chipVideos")
+        log(f"YouTube results shown: {'yes' if yt else 'NO'}; YouTube button selected: {chip is not None and chip.get('selected') == 'true'}")
+        shot("07b-search-youtube")
+        if not yt:
+            failures.append("no YouTube search results")
+        tap_id("chipMusic")
+        got = wait_for(lambda: find(rid="title"), 40)
+        time.sleep(2)
 
 # Play a song -------------------------------------------------------------------------------------
 playing = False

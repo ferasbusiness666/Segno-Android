@@ -120,10 +120,17 @@
 
     <!-- Search -->
     <string name="search_hint">Songs, artists or a link</string>
+    <string name="search_music">YouTube Music</string>
+    <string name="search_youtube">YouTube</string>
+    <string name="search_music_failed">YouTube Music isn\'t answering</string>
+    <string name="search_music_failed_body">It\'s blocked in some countries, and sometimes it\'s just down. YouTube has the same songs, as videos.</string>
+    <string name="search_music_empty_body">YouTube may have it: live versions, covers and everything else are there.</string>
+    <string name="search_try_youtube">Search YouTube instead</string>
+    <string name="search_empty_body">Check the spelling, or try fewer words.</string>
     <string name="search_recent">Recent searches</string>
     <string name="search_clear_recent">Clear</string>
     <string name="search_tip1_title">Type a song or artist</string>
-    <string name="search_tip1_body">Results are songs from YouTube Music. Add the artist\'s name to find the right one faster.</string>
+    <string name="search_tip1_body">YouTube Music finds songs. YouTube finds everything else, like live versions and covers. Segno remembers which one you used last.</string>
     <string name="search_tip2_title">Paste a link</string>
     <string name="search_tip2_body">A YouTube or Spotify song plays right here. Playlists open on the Import page.</string>
     <string name="search_tip3_title">Tap to listen, download to keep</string>

@@ -27,8 +27,9 @@ class SearchViewModel : ViewModel() {
         data object Idle : State
         data class Loading(val query: String) : State
         data class Results(val query: String, val tracks: List<Track>, val canLoadMore: Boolean) : State
-        data class Empty(val query: String) : State
-        data class Failed(val query: String, val message: String, val offline: Boolean, val link: Boolean) : State
+        data class Empty(val query: String, val source: String) : State
+        /** [musicDown]: YouTube Music failed (blocked in some countries), so YouTube is worth a try. */
+        data class Failed(val query: String, val message: String, val offline: Boolean, val link: Boolean, val musicDown: Boolean = false) : State
     }
 
     private val _state = MutableStateFlow<State>(State.Idle)
@@ -42,6 +43,24 @@ class SearchViewModel : ViewModel() {
     private var job: Job? = null
     private var moreJob: Job? = null
     private var lastQuery = ""
+
+    /** YouTube.SONGS (YouTube Music) or YouTube.VIDEOS (YouTube), remembered between visits. */
+    private val _source = MutableStateFlow(YouTube.SONGS)
+    val source: StateFlow<String> = _source
+
+    fun loadSource() {
+        viewModelScope.launch {
+            _source.value = withContext(Dispatchers.IO) { Settings.searchSource }.takeIf { it == YouTube.VIDEOS } ?: YouTube.SONGS
+        }
+    }
+
+    /** Switches between YouTube Music and YouTube, and searches again if there was a search. */
+    fun setSource(s: String) {
+        if (s == _source.value) return
+        _source.value = s
+        viewModelScope.launch(Dispatchers.IO) { Settings.searchSource = s }
+        if (lastQuery.isNotEmpty() && !Links.looksLikeLink(lastQuery)) search(lastQuery)
+    }
 
     fun clear() {
         job?.cancel()
@@ -64,21 +83,23 @@ class SearchViewModel : ViewModel() {
         page = null
         _state.value = State.Loading(query)
         val isLink = Links.looksLikeLink(query)
+        val from = _source.value
         job = viewModelScope.launch {
             try {
                 val result = withContext(Dispatchers.IO) {
                     if (!isLink) remember(query)
-                    if (isLink) link(Links.fullUrl(query)) else words(query)
+                    if (isLink) link(Links.fullUrl(query)) else words(query, from)
                 }
                 if (result == null) {
                     _state.value = State.Idle
                     return@launch
                 }
-                _state.value = if (result.isEmpty()) State.Empty(query) else State.Results(query, result, page?.next != null)
+                _state.value = if (result.isEmpty()) State.Empty(query, from) else State.Results(query, result, page?.next != null)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: YouTubeException) {
-                _state.value = State.Failed(query, e.message.orEmpty(), e.network, isLink)
+                val musicDown = !isLink && !e.network && from == YouTube.SONGS
+                _state.value = State.Failed(query, e.message.orEmpty(), e.network, isLink, musicDown)
             } catch (e: SpotifyException) {
                 _state.value = State.Failed(query, e.message.orEmpty(), false, isLink)
             } catch (e: Exception) {
@@ -87,14 +108,14 @@ class SearchViewModel : ViewModel() {
         }
     }
 
-    /** Songs from YouTube Music. One quiet retry, because a single failed answer is common. */
-    private suspend fun words(query: String): List<Track> {
+    /** Songs from YouTube Music, or videos from YouTube. One quiet retry, because a single failed answer is common. */
+    private suspend fun words(query: String, from: String): List<Track> {
         val p = try {
-            YouTube.search(query, YouTube.SONGS)
+            YouTube.search(query, from)
         } catch (e: YouTubeException) {
             delay(700)
             try {
-                YouTube.search(query, YouTube.SONGS)
+                YouTube.search(query, from)
             } catch (again: YouTubeException) {
                 throw if (again.network || again.cause is ReCaptchaException) again else YouTubeException(SEARCH_FAILED, again)
             }
@@ -142,7 +163,7 @@ class SearchViewModel : ViewModel() {
     }
 
     private companion object {
-        const val SEARCH_FAILED = "YouTube Music didn't answer the way Segno expected. Give it a moment and try again."
+        const val SEARCH_FAILED = "YouTube didn't answer the way Segno expected. Give it a moment and try again."
     }
 
     private fun remember(query: String) {

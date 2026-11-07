@@ -27,17 +27,23 @@ import io.github.ferasbusiness666.segno.ui.common.SongActions
 import io.github.ferasbusiness666.segno.ui.common.TrackAdapter
 import io.github.ferasbusiness666.segno.ui.common.show
 import io.github.ferasbusiness666.segno.ui.common.whileStarted
+import io.github.ferasbusiness666.segno.youtube.YouTube
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Search songs on YouTube Music, or paste a link. */
+/** Search YouTube Music (songs) or YouTube (all videos), or paste a link. */
 class SearchFragment : Fragment(R.layout.fragment_search), MainActivity.Root {
     private var b: FragmentSearchBinding? = null
     private val vm: SearchViewModel by viewModels()
     private val main get() = requireActivity() as MainActivity
     private lateinit var adapter: TrackAdapter
     private var pendingQuery: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) vm.loadSource()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val b = FragmentSearchBinding.bind(view)
@@ -84,6 +90,8 @@ class SearchFragment : Fragment(R.layout.fragment_search), MainActivity.Root {
             b.query.requestFocus()
             showKeyboard()
         }
+        b.chipMusic.setOnClickListener { vm.setSource(YouTube.SONGS) }
+        b.chipVideos.setOnClickListener { vm.setSource(YouTube.VIDEOS) }
         b.clearRecent.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 withContext(Dispatchers.IO) { Settings.recentSearches = emptyList() }
@@ -94,6 +102,12 @@ class SearchFragment : Fragment(R.layout.fragment_search), MainActivity.Root {
 
         whileStarted {
             launch { vm.state.collect(::render) }
+            launch {
+                vm.source.collect { s ->
+                    b.chipMusic.isSelected = s == YouTube.SONGS
+                    b.chipVideos.isSelected = s == YouTube.VIDEOS
+                }
+            }
             launch { vm.openImport.collect { main.openImport(it) } }
             launch { PlayerHub.state.collect { adapter.setNow(it.track?.id) } }
             launch { Downloads.states.collect { adapter.setDownloads(it) } }
@@ -139,9 +153,19 @@ class SearchFragment : Fragment(R.layout.fragment_search), MainActivity.Root {
         b.empty.root.isVisible = false
         when (s) {
             is SearchViewModel.State.Results -> adapter.submitList(s.tracks)
-            is SearchViewModel.State.Empty -> b.empty.show(R.drawable.ic_search, getString(R.string.search_no_results), getString(R.string.search_tip1_body))
+            is SearchViewModel.State.Empty -> if (s.source == YouTube.SONGS) {
+                b.empty.show(R.drawable.ic_search, getString(R.string.search_no_results), getString(R.string.search_music_empty_body), getString(R.string.search_try_youtube)) {
+                    vm.setSource(YouTube.VIDEOS)
+                }
+            } else {
+                b.empty.show(R.drawable.ic_search, getString(R.string.search_no_results), getString(R.string.search_empty_body))
+            }
             is SearchViewModel.State.Failed -> when {
                 s.offline -> b.empty.show(R.drawable.ic_offline, getString(R.string.search_offline), getString(R.string.search_offline_body), getString(R.string.try_again)) { vm.retry() }
+                // YouTube Music is blocked in some countries: offer plain YouTube.
+                s.musicDown -> b.empty.show(R.drawable.ic_alert, getString(R.string.search_music_failed), getString(R.string.search_music_failed_body), getString(R.string.search_try_youtube)) {
+                    vm.setSource(YouTube.VIDEOS)
+                }
                 else -> b.empty.show(
                     R.drawable.ic_alert,
                     getString(if (s.link) R.string.search_link_failed else R.string.search_failed),

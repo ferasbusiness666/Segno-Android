@@ -301,6 +301,9 @@ def run(label, apk):
     if song is not None:
         tap(song)
         if wait_for(lambda: find(rid="miniCard"), 15) is not None:
+            # Paused: while the time ticks, the screen never goes idle and uiautomator can't read it.
+            time.sleep(2)
+            sh("input keyevent 127")
             time.sleep(2)
             for i in range(3):
                 measure(now, lambda: (tap_id("miniCard"), time.sleep(2)))
