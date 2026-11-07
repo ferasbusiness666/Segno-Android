@@ -34,9 +34,8 @@ class SegnoApp : Application(), SingletonImageLoader.Factory {
                     val system = listOf("android.", "com.android.", "java.", "javax.", "libcore.", "dalvik.", "sun.", "kotlin.")
                     val where = v.stackTrace.firstOrNull { it.className.startsWith("io.github.ferasbusiness666") }
                         ?: v.stackTrace.firstOrNull { f -> system.none { f.className.startsWith(it) } }
-                        // Over Binder (another app's provider): its frames first, then ours, so all of them.
-                        ?: v.stackTrace.filter { it.className.startsWith("io.github") || it.className.startsWith("androidx") || it.className.startsWith("coil") || it.className.contains("Binder") || it.methodName.contains("checkUriPermission") }
-                            .take(12).joinToString(" < ")
+                        // Over Binder (another app's provider): its frames come first, then ours, so all of them.
+                        ?: v.stackTrace.joinToString(" < ") { "${it.className.substringAfterLast('.')}.${it.methodName}" }
                     runCatching { File(filesDir, "strictmode.txt").appendText("${v.javaClass.simpleName} at $where\n") }
                 }
             }
