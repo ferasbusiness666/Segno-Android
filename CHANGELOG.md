@@ -13,7 +13,7 @@ Inside, use "### New", "### Better" or "### Fixed", with one "- " line per chang
 - Lyrics in Now Playing: tap the microphone. The line being sung lights up and the lyrics follow the song. Tap a line to play from there.
 - Lyrics come from YouTube Music first, then LRCLIB and NetEase, all asked at once; the best answer wins. Arabic songs too.
 - Lyrics a little early or late? Earlier and Later move them a quarter of a second, and Segno remembers. Wrong lyrics? finds others.
-- A .lrc file next to a song on your phone always wins (Android 8 to 10).
+- A .lrc file with the same name next to a song on your phone always wins, when Android lets Segno read it.
 - Synced lyrics in Settings: off, and Segno never looks lyrics up.
 
 ### Better
