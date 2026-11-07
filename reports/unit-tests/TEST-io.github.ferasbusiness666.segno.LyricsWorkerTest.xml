@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.LyricsWorkerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-07T19:17:40.012Z" hostname="runnervm7aw5e" time="0.512">
+  <properties/>
+  <testcase name="aNewSongDropsTheFollowUp" classname="io.github.ferasbusiness666.segno.LyricsWorkerTest" time="0.187"/>
+  <testcase name="foundLyricsAreKeptAndNotFoundIsRememberedOnlyWhenEveryoneAnswered" classname="io.github.ferasbusiness666.segno.LyricsWorkerTest" time="0.039"/>
+  <testcase name="sidecarBeatsEverything" classname="io.github.ferasbusiness666.segno.LyricsWorkerTest" time="0.002"/>
+  <testcase name="asksAgainALittleLater" classname="io.github.ferasbusiness666.segno.LyricsWorkerTest" time="0.064"/>
+  <testcase name="readsAheadQuietly" classname="io.github.ferasbusiness666.segno.LyricsWorkerTest" time="0.211"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

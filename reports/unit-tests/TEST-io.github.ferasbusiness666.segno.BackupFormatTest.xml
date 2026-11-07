@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.BackupFormatTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-07T19:17:30.965Z" hostname="runnervm7aw5e" time="0.127">
+  <properties/>
+  <testcase name="wrongFilesAreRefusedKindly" classname="io.github.ferasbusiness666.segno.BackupFormatTest" time="0.051"/>
+  <testcase name="tracksComeBack" classname="io.github.ferasbusiness666.segno.BackupFormatTest" time="0.011"/>
+  <testcase name="playlistsWithoutNamesAreSkipped" classname="io.github.ferasbusiness666.segno.BackupFormatTest" time="0.008"/>
+  <testcase name="roundTrip" classname="io.github.ferasbusiness666.segno.BackupFormatTest" time="0.021"/>
+  <testcase name="unknownAndIncompleteSongsAreSkipped" classname="io.github.ferasbusiness666.segno.BackupFormatTest" time="0.002"/>
+  <testcase name="aFileNotOnThisPhoneIsKeptAsMissing" classname="io.github.ferasbusiness666.segno.BackupFormatTest" time="0.011"/>
+  <testcase name="repeatNames" classname="io.github.ferasbusiness666.segno.BackupFormatTest" time="0.0"/>
+  <testcase name="songsCarryWhatAnotherDeviceNeeds" classname="io.github.ferasbusiness666.segno.BackupFormatTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

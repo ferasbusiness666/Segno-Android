@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.MatcherTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-07T19:17:40.526Z" hostname="runnervm7aw5e" time="0.043">
+  <properties/>
+  <testcase name="otherVersionsAreLeftOut" classname="io.github.ferasbusiness666.segno.MatcherTest" time="0.011"/>
+  <testcase name="unknownLengthTakesTheFirst" classname="io.github.ferasbusiness666.segno.MatcherTest" time="0.001"/>
+  <testcase name="picksTheFirstGoodMatch" classname="io.github.ferasbusiness666.segno.MatcherTest" time="0.007"/>
+  <testcase name="onlyLooksAtTheFirstFive" classname="io.github.ferasbusiness666.segno.MatcherTest" time="0.009"/>
+  <testcase name="lengthWindowIs15PercentPlus5Seconds" classname="io.github.ferasbusiness666.segno.MatcherTest" time="0.001"/>
+  <testcase name="fallsBackToTheFirstResult" classname="io.github.ferasbusiness666.segno.MatcherTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

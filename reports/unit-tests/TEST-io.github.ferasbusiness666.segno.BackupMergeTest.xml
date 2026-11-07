@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.BackupMergeTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-07T19:17:31.107Z" hostname="runnervm7aw5e" time="0.109">
+  <properties/>
+  <testcase name="missingSongsAreNotPlayable" classname="io.github.ferasbusiness666.segno.BackupMergeTest" time="0.029"/>
+  <testcase name="playlistsMergeByNameAndNeverLoseSongs" classname="io.github.ferasbusiness666.segno.BackupMergeTest" time="0.067"/>
+  <testcase name="twoWithOneNameBecomeOne" classname="io.github.ferasbusiness666.segno.BackupMergeTest" time="0.0"/>
+  <testcase name="otherwiseNothing" classname="io.github.ferasbusiness666.segno.BackupMergeTest" time="0.001"/>
+  <testcase name="matchesTitleArtistAndLengthFirst" classname="io.github.ferasbusiness666.segno.BackupMergeTest" time="0.0"/>
+  <testcase name="restoringTwiceAddsNothing" classname="io.github.ferasbusiness666.segno.BackupMergeTest" time="0.001"/>
+  <testcase name="thenThePath" classname="io.github.ferasbusiness666.segno.BackupMergeTest" time="0.0"/>
+  <testcase name="aBrokenFileFailsTheTest" classname="io.github.ferasbusiness666.segno.BackupMergeTest" time="0.001"/>
+  <testcase name="lovedSongsAreAddedNotReplaced" classname="io.github.ferasbusiness666.segno.BackupMergeTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

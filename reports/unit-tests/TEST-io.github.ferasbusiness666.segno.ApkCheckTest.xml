@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.ApkCheckTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-07T19:17:30.847Z" hostname="runnervm7aw5e" time="0.098">
+  <properties/>
+  <testcase name="sameOrOlderIsRefused" classname="io.github.ferasbusiness666.segno.ApkCheckTest" time="0.029"/>
+  <testcase name="otherAppIsRefused" classname="io.github.ferasbusiness666.segno.ApkCheckTest" time="0.002"/>
+  <testcase name="unreadableFile" classname="io.github.ferasbusiness666.segno.ApkCheckTest" time="0.0"/>
+  <testcase name="sameAppSameKeyNewerIsOk" classname="io.github.ferasbusiness666.segno.ApkCheckTest" time="0.001"/>
+  <testcase name="otherKeyIsRefused" classname="io.github.ferasbusiness666.segno.ApkCheckTest" time="0.035"/>
+  <testcase name="rotatedKeyThatVouchesForOursIsOk" classname="io.github.ferasbusiness666.segno.ApkCheckTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

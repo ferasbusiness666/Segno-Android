@@ -1,0 +1,29 @@
+commit: 03e57d03e158e50d7b244c97ddd0fb3bbcfdd6ae
+date: 2026-11-07T23:36:49Z
+
+== APK sizes (bytes)
+13287452 out/segno-debug.apk
+3890139 out/segno-release-before.apk
+3962479 out/segno-release-next.apk
+3962479 out/segno-release.apk
+
+== Unit tests
+io.github.ferasbusiness666.segno.ApkCheckTest tests="6" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.BackupFormatTest tests="8" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.BackupMergeTest tests="9" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.ImporterTest tests="3" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.LinksTest tests="6" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.LyricsLiveTest tests="1" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.LyricsSourcesTest tests="10" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.LyricsTest tests="22" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.LyricsWorkerTest tests="5" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.MatcherTest tests="6" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.Mp4TaggerTest tests="2" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.PickApkTest tests="3" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.QueueOpsTest tests="5" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.SleepTimerTest tests="5" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.SpotifyParserTest tests="8" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.UpdateParseTest tests="3" failures="0" errors="0" 
+io.github.ferasbusiness666.segno.VersionsTest tests="4" failures="0" errors="0" 
+
+== Lint

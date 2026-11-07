@@ -1,0 +1,55 @@
+{
+  "segno_backup":1,
+  "app":"Segno for Android",
+  "app_version":"1.1.0",
+  "created":"2026-11-07T23:47:22Z",
+  "settings":{
+    "autoplay":true,
+    "check_updates":true,
+    "search":"youtube_music",
+    "library_page":"songs",
+    "recent_searches":["فيروز","daft punk get lucky"]
+  },
+  "playlists":[{
+    "name":"CI Mix",
+    "songs":[{
+      "source":"file",
+      "title":"Atlas Echo - Northern Lights",
+      "album":"Music",
+      "duration_ms":3000,
+      "path":"/storage/emulated/0/Music/Atlas Echo - Northern Lights.wav"
+    }]
+  }],
+  "loved":[{
+    "source":"file",
+    "title":"Lumen - Paper Planes",
+    "album":"Music",
+    "duration_ms":3000,
+    "path":"/storage/emulated/0/Music/Lumen - Paper Planes.wav"
+  }],
+  "queue":{
+    "index":2,
+    "position_ms":0,
+    "shuffle":false,
+    "repeat":"off",
+    "songs":[{
+      "source":"file",
+      "title":"Atlas Echo - Northern Lights",
+      "album":"Music",
+      "duration_ms":3000,
+      "path":"/storage/emulated/0/Music/Atlas Echo - Northern Lights.wav"
+    },{
+      "source":"file",
+      "title":"Lumen - Paper Planes",
+      "album":"Music",
+      "duration_ms":3000,
+      "path":"/storage/emulated/0/Music/Lumen - Paper Planes.wav"
+    },{
+      "source":"file",
+      "title":"Segno CI - Long Tone",
+      "album":"Music",
+      "duration_ms":120000,
+      "path":"/storage/emulated/0/Music/Segno CI - Long Tone.wav"
+    }]
+  }
+}

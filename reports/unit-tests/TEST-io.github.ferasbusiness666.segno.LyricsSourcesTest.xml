@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.LyricsSourcesTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-07T19:17:31.405Z" hostname="runnervm7aw5e" time="0.371">
+  <properties/>
+  <testcase name="readsANetEaseSearchAndLyrics" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.1"/>
+  <testcase name="readsSongsFromARealSearch" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.077"/>
+  <testcase name="anOfficialSongUsesItsOwnTimedLyrics" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.05"/>
+  <testcase name="netEaseCreditsAreToldFromWords" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.001"/>
+  <testcase name="spotifySongsFindTheirTwinOnYouTubeMusic" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.021"/>
+  <testcase name="withoutAVideoTheSongIsFoundByName" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.033"/>
+  <testcase name="readsTimedUntimedAndMissingLyrics" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.002"/>
+  <testcase name="aMusicVideoLooksForItsSongThenFallsBackToItsOwnWords" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.03"/>
+  <testcase name="tellsSongsFromMusicVideosAndFindsTheLyrics" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.021"/>
+  <testcase name="smallReaders" classname="io.github.ferasbusiness666.segno.LyricsSourcesTest" time="0.019"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

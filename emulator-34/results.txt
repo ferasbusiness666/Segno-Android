@@ -1,0 +1,56 @@
+== Segno emulator check, API 34
+screen: Physical size: 1080x2400 / Physical density: 420
+cold start, debug build (am start -W TotalTime): first 2442 ms, then [1121, 2341, 2691] ms, median 2341 ms
+library opens on: chipSongs (should be chipSongs)
+library after Home and back: chipAlbums (should be chipAlbums)
+search results shown: yes
+YouTube results shown: yes; YouTube button selected: True
+playback started: NO
+YouTube playback on this runner: did not start. Segno said: YouTube wants this network to sign in before it plays anything. Try again later, or switch between Wi-Fi and mobile data. (org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException: YouTube probably temporarily blocked anonymous watch access with this IP , got error LOGIN_REQUIRED: "Sign in to confirm that you're not a bot")
+  extractor error: org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException: YouTube probably temporarily blocked anonymous watch access with this IP , got error LOGIN_REQUIRED: "Sign in to confirm that you're not a bot"
+local file playback started: yes
+background (local-file): media_session has Segno: True; playback states: ['3', '7', '7', '7', '7', '0', '0', '7']
+background (local-file): positions every 5 s with the app in the background: [14100, 19099, 24100, 29102, 34102, 39099]
+background (local-file): PLAYING=True, position advancing=True, media notification=True
+lyrics shown from the .lrc beside the song: ['Sidecar line 1', 'Sidecar line 2', 'Sidecar line 3', 'Sidecar line 4']
+tapped 'Sidecar line 6' (starts at 20000 ms): position after [20000]
+lyrics: ok
+delete dialog says: ['Allow Segno Debug to delete this audio file?', 'Deny', 'Allow']
+after delete: gone from Library=True, file still on the phone=False
+delete from phone: ok
+jank after scrolling search results: frames=359, janky=199 (55.43%), 90th percentile=69ms
+for comparison, Android Settings with the same swipes: frames=355, janky=172 (48.45%), 90th percentile=61ms
+memory (TOTAL PSS): 117 MB
+Home's Songs tile opens: chipSongs (should be chipSongs)
+StrictMode on the main thread: 12 warnings
+  12 x DiskReadViolation at StrictMode$AndroidBlockGuardPolicy.onReadFromDisk < SQLiteConnection.applyBlockGuardPolicy < SQLiteConnection.executeForCursorWindow < SQLiteSession.executeForCursorWindow < SQLiteQuery.fillWindow < SQLiteCursor.fillWindow < SQLiteCursor.getCount < MediaProvider.checkUriPermission < ContentProvider$Transport.checkUriPermission < ContentProviderNative.onTransact < Binder.execTransactInternal < Binder.execTransact
+backup made: 1 playlists, 1 Loved songs, settings {'autoplay': True, 'check_updates': True, 'search': 'youtube_music', 'library_page': 'songs', 'recent_searches': ['فيروز', 'daft punk get lucky']}
+restore summary: ['Restored 1 playlist and 1 Loved song.']
+backup and restore: ok
+failures: none
+
+== Smoothness of the release build (gfxinfo), before and after, same emulator
+songs for the Library scroll: 240
+-- before
+compile: Success, dexopt status: speed-profile
+perf (before) cold start: [551, 642, 752] ms, median 642 ms
+perf (before) scrolling search results: frames=357, janky=199 (55.7%), 90th percentile=69ms; main thread per frame: median 0.5ms, 90th 3.4ms
+perf (before) scrolling Library Songs: frames=365, janky=210 (57.5%), 90th percentile=73ms; main thread per frame: median 0.9ms, 90th 5.5ms
+perf (before) opening Now Playing: frames=55, janky=44 (80.0%), 90th percentile=121ms; main thread per frame: median 0.2ms, 90th 1.1ms
+perf (before) opening the queue: frames=57, janky=50 (87.7%), 90th percentile=150ms; main thread per frame: median 0.2ms, 90th 4.0ms
+-- after
+compile: Success, dexopt status: speed-profile
+perf (after) cold start: [629, 750, 815] ms, median 750 ms
+perf (after) scrolling search results: frames=356, janky=222 (62.4%), 90th percentile=73ms; main thread per frame: median 0.7ms, 90th 2.7ms
+perf (after) scrolling Library Songs: frames=385, janky=227 (59.0%), 90th percentile=73ms; main thread per frame: median 0.7ms, 90th 4.5ms
+perf (after) opening Now Playing: frames=62, janky=42 (67.7%), 90th percentile=113ms; main thread per frame: median 0.2ms, 90th 0.8ms
+perf (after) opening the queue: frames=58, janky=51 (87.9%), 90th percentile=200ms; main thread per frame: median 0.2ms, 90th 8.8ms
+
+== In-app update (release build, CI hook)
+installed: 1.1.0; files for the test: ['next.apk', 'other.apk', 'same.apk']
+install permission explained: True
+same version refused: on screen
+other app refused: on screen
+Android's install question: ['Segno', 'Do you want to update this app?', 'Cancel', 'Update']
+after the update: 1.1.1
+update check: ok

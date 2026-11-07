@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.UpdateParseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-07T19:17:40.660Z" hostname="runnervm7aw5e" time="0.007">
+  <properties/>
+  <testcase name="noApkMeansTheReleasePage" classname="io.github.ferasbusiness666.segno.UpdateParseTest" time="0.005"/>
+  <testcase name="findsTheApkAndNotes" classname="io.github.ferasbusiness666.segno.UpdateParseTest" time="0.001"/>
+  <testcase name="preReleasesAndJunkAreIgnored" classname="io.github.ferasbusiness666.segno.UpdateParseTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

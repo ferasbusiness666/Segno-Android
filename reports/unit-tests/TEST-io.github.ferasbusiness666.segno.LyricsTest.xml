@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.ferasbusiness666.segno.LyricsTest" tests="22" skipped="0" failures="0" errors="0" timestamp="2026-11-07T19:17:31.800Z" hostname="runnervm7aw5e" time="8.202">
+  <properties/>
+  <testcase name="trackNumbersFromFileNames" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.001"/>
+  <testcase name="askingEveryPlaceKeepsTheBestAndRestsTheBroken" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.036"/>
+  <testcase name="offsetAndWordStamps" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.001"/>
+  <testcase name="lrclibBusyTwiceIsAFailureNotAMiss" classname="io.github.ferasbusiness666.segno.LyricsTest" time="8.057"/>
+  <testcase name="wrongLyricsAreSkipped" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.007"/>
+  <testcase name="picksTheRightLyrics" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.013"/>
+  <testcase name="parsesStampsTagsAndRepeats" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.005"/>
+  <testcase name="keepsPausesButNotAtTheEdges" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.001"/>
+  <testcase name="youtubeMusicLinesAreTidied" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.0"/>
+  <testcase name="encodesForUrls" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.0"/>
+  <testcase name="theMostTrustedAnswerWinsWithoutWaitingForWorse" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.008"/>
+  <testcase name="lrclibAsksExactlyFirstAndStopsAtTheFirstTimedMatch" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.011"/>
+  <testcase name="matchesNamesLoosely" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.005"/>
+  <testcase name="cleansNames" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.001"/>
+  <testcase name="findsTheLineBeingSung" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.001"/>
+  <testcase name="stretchesTheOriginalForASlowedVersion" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.008"/>
+  <testcase name="cacheNamesIgnoreVideoTalk" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.021"/>
+  <testcase name="savesAsLrcAndBack" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.0"/>
+  <testcase name="videoTitlesBecomeSongAndArtist" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.006"/>
+  <testcase name="plainLyrics" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.001"/>
+  <testcase name="notLyrics" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.0"/>
+  <testcase name="timingMovesAndStaysInOrder" classname="io.github.ferasbusiness666.segno.LyricsTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
