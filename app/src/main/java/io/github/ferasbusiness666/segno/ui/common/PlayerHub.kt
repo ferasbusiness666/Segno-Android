@@ -100,11 +100,16 @@ object PlayerHub {
     // Playing -------------------------------------------------------------------------------------
 
     /** Plays [tracks], starting at [index]. */
-    fun play(context: Context, tracks: List<Track>, index: Int = 0, shuffle: Boolean = false) {
+    fun play(context: Context, all: List<Track>, index: Int = 0, shuffle: Boolean = false) {
+        // Songs from a backup that aren't on this phone can't play, so they're left out; the
+        // first playable song from [index] on starts.
+        val tracks = all.filterNot { it.isMissing }
         if (tracks.isEmpty()) return
+        val from = all.drop(index.coerceIn(0, all.size - 1)).firstOrNull { !it.isMissing }
+        val at = if (shuffle || from == null) 0 else tracks.indexOf(from).coerceAtLeast(0)
         val items = tracks.map(MediaItems::from)
         whenReady(context) { c ->
-            val start = if (shuffle) (tracks.indices).random() else index.coerceIn(0, tracks.size - 1)
+            val start = if (shuffle) (tracks.indices).random() else at
             c.shuffleModeEnabled = false
             c.setMediaItems(items, start, C.TIME_UNSET)
             if (shuffle) c.shuffleModeEnabled = true
@@ -113,11 +118,23 @@ object PlayerHub {
         }
     }
 
+    /** A backup's queue, put back only when nothing is queued here. Doesn't start playing. */
+    fun restoreQueue(context: Context, tracks: List<Track>, index: Int, positionMs: Long, shuffle: Boolean, repeat: Int) {
+        if (tracks.isEmpty()) return
+        whenReady(context) { c ->
+            if (c.mediaItemCount > 0) return@whenReady
+            c.setMediaItems(tracks.map(MediaItems::from), index.coerceIn(0, tracks.size - 1), positionMs.coerceAtLeast(0))
+            c.shuffleModeEnabled = shuffle
+            c.repeatMode = repeat
+        }
+    }
+
     fun playNext(context: Context, tracks: List<Track>) = send(context, Commands.QUEUE_NEXT, tracksBundle(tracks))
 
     fun addToQueue(context: Context, tracks: List<Track>) = send(context, Commands.QUEUE_ADD, tracksBundle(tracks))
 
-    private fun tracksBundle(tracks: List<Track>) = Bundle().apply {
+    private fun tracksBundle(all: List<Track>) = Bundle().apply {
+        val tracks = all.filterNot { it.isMissing }
         putParcelableArrayList(Commands.ARG_TRACKS, ArrayList(tracks.map(MediaItems::toBundle)))
     }
 

@@ -35,7 +35,7 @@ object PhoneDelete {
 
     /** Songs with a file on the phone: local songs and finished downloads. */
     fun canDelete(track: Track): Boolean =
-        track.kind == Track.Kind.Local || Downloads.state(track.id)?.isDone == true
+        (track.kind == Track.Kind.Local && !track.isMissing) || Downloads.state(track.id)?.isDone == true
 
     fun start(main: MainActivity, track: Track) {
         main.lifecycleScope.launch {

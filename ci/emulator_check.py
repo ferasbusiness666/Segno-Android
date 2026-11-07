@@ -6,6 +6,7 @@ Usage: emulator_check.py APK OUT_DIR
 Writes OUT_DIR/results.txt and OUT_DIR/*.png. Exits non-zero only if the app crashes on launch
 or background playback fails, so the screenshots are kept either way.
 """
+import json
 import os
 import re
 import subprocess
@@ -578,6 +579,153 @@ if level >= 28:
         counts[l] = counts.get(l, 0) + 1
     for l, n in sorted(counts.items(), key=lambda kv: -kv[1])[:12]:
         log(f"  {n} x {l}")
+
+# Backup: some data made in the app, saved, the app's data cleared, restored, saved again, compared.
+def menu_on(title_text, item_text):
+    row = wait_for(lambda: find(rid="title", text=title_text), 15)
+    if row is None:
+        log(f"  backup: no row {title_text}")
+        return False
+    y = center(row)[1]
+    more = None
+    for n in nodes(dump()):
+        if n.get("resource-id") == f"{PKG}:id/more":
+            a, b, c, d = map(int, re.findall(r"\d+", n.get("bounds")))
+            if b <= y <= d:
+                more = dict(n.attrib)
+    if more is None:
+        return False
+    tap(more)
+    time.sleep(2)
+    item = wait_for(lambda: find(text=item_text), 10)
+    if item is None:
+        log(f"  backup: no menu item {item_text}")
+        back()
+        return False
+    tap(item)
+    time.sleep(2)
+    return True
+
+
+def song_keys(songs):
+    return [(s.get("source"), s.get("youtube_id", ""), s.get("spotify_id", ""), s.get("title", ""), s.get("artist", ""), s.get("path", "")) for s in songs]
+
+
+def backup_view(path):
+    with open(path) as f:
+        d = json.load(f)
+    return {
+        "version": d.get("segno_backup"),
+        "settings": d.get("settings"),
+        "playlists": sorted((p["name"], song_keys(p.get("songs", []))) for p in d.get("playlists", [])),
+        "loved": song_keys(d.get("loved", [])),
+    }
+
+
+def hook(mode, name):
+    sh(f"am start -n {ACT} -a io.github.ferasbusiness666.segno.TEST_BACKUP --es mode {mode} --es file {name}")
+
+
+def backup_check():
+    files = f"/sdcard/Android/data/{PKG}/files"
+    adb("shell", "am", "start", "-n", ACT)
+    time.sleep(2)
+    tap_id("tabLibrary")
+    time.sleep(1)
+    tap_id("chipSongs")
+    time.sleep(2)
+    menu_on("Lumen - Paper Planes", "Love")
+    if menu_on("Atlas Echo - Northern Lights", "Add to playlist"):
+        n = wait_for(lambda: find(text="New playlist"), 5)
+        if n is not None:
+            tap(n)
+            time.sleep(2)
+        type_text("CI Mix")
+        time.sleep(1)
+        ok = wait_for(lambda: find(text="Save"), 5)
+        if ok is not None:
+            tap(ok)
+        time.sleep(2)
+    hide_keyboard()
+    # Settings, scrolled to the Backup card.
+    tap_id("tabHome")
+    time.sleep(1)
+    if tap_id("settings"):
+        time.sleep(2)
+        for _ in range(8):
+            if find(rid="backupSave") is not None:
+                break
+            sh(f"input swipe {w // 2} {int(h * 0.7)} {w // 2} {int(h * 0.4)} 300")
+            time.sleep(1)
+        shot("22-settings-backup")
+        back()
+    sh(f"rm -f {files}/b1.json {files}/b2.json")
+    hook("save", "b1.json")
+    if wait_for(lambda: "b1.json" in sh(f"ls {files}") or None, 20) is None:
+        return "the backup wasn't saved"
+    time.sleep(1)
+    one = os.path.join(OUT, "backup-1.json")
+    adb("pull", f"{files}/b1.json", one)
+    before = backup_view(one)
+    log(f"backup made: {len(before['playlists'])} playlists, {len(before['loved'])} Loved songs, settings {before['settings']}")
+    if not before["playlists"] or not before["loved"]:
+        return "the test data (a playlist and a Loved song) wasn't made"
+
+    # Everything gone, as after uninstalling.
+    sh(f"am force-stop {PKG}")
+    sh(f"pm clear {PKG}")
+    perm = "android.permission.READ_MEDIA_AUDIO" if level >= 33 else "android.permission.READ_EXTERNAL_STORAGE"
+    sh(f"pm grant {PKG} {perm}")
+    if level >= 33:
+        sh(f"pm grant {PKG} android.permission.POST_NOTIFICATIONS")
+    adb("shell", "am", "start", "-W", "-n", ACT)
+    time.sleep(3)
+    sh(f"mkdir -p {files}")
+    adb("push", one, f"{files}/b1.json")
+    hook("restore", "b1.json")
+    summary = wait_for(lambda: find(text="Backup restored"), 30)
+    time.sleep(1)
+    shot("22b-restore-summary")
+    if summary is None:
+        return "no restore summary"
+    root = dump()
+    log(f"restore summary: {[(n.get('text') or '') for n in nodes(root) if (n.get('text') or '').startswith('Restored')]}")
+    ok = find(text="OK")
+    if ok is not None:
+        tap(ok)
+    time.sleep(1)
+    hook("save", "b2.json")
+    if wait_for(lambda: "b2.json" in sh(f"ls {files}") or None, 20) is None:
+        return "the second backup wasn't saved"
+    time.sleep(1)
+    two = os.path.join(OUT, "backup-2.json")
+    adb("pull", f"{files}/b2.json", two)
+    after = backup_view(two)
+    for k in ("version", "settings", "playlists", "loved"):
+        if before[k] != after[k]:
+            log(f"  backup: {k} differs after restoring:\n    before {before[k]}\n    after  {after[k]}")
+            return f"{k} differ after restoring"
+    # Restoring again adds nothing.
+    hook("restore", "b1.json")
+    wait_for(lambda: find(text="Backup restored"), 30)
+    ok = find(text="OK")
+    if ok is not None:
+        tap(ok)
+    time.sleep(1)
+    hook("save", "b3.json")
+    if wait_for(lambda: "b3.json" in sh(f"ls {files}") or None, 20) is not None:
+        time.sleep(1)
+        three = os.path.join(OUT, "backup-3.json")
+        adb("pull", f"{files}/b3.json", three)
+        if backup_view(three)["playlists"] != before["playlists"] or backup_view(three)["loved"] != before["loved"]:
+            return "restoring twice changed the playlists"
+    return None
+
+
+why_backup = backup_check()
+log(f"backup and restore: {'ok' if why_backup is None else why_backup}")
+if why_backup:
+    failures.append(f"backup: {why_backup}")
 
 if crashed():
     failures.append("crash during the run")

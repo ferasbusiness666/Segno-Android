@@ -182,6 +182,44 @@
                     android:textColor="@color/text_3" />
             </LinearLayout>
 
+            <!-- Backup -->
+            <LinearLayout style="@style/Widget.Segno.SettingsCard">
+
+                <TextView
+                    style="@style/Widget.Segno.SettingsTitle"
+                    android:text="@string/set_backup" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_backup_sub"
+                    android:textAppearance="@style/TextAppearance.Segno.Body"
+                    android:textColor="@color/text_2"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/backupSave"
+                    style="@style/Widget.Segno.Pill.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/s3"
+                    android:text="@string/set_backup_save" />
+
+                <TextView
+                    android:id="@+id/backupRestore"
+                    style="@style/Widget.Segno.Pill.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/s2"
+                    android:text="@string/set_backup_restore" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s2"
+                    android:text="@string/set_backup_note"
+                    android:textAppearance="@style/TextAppearance.Segno.Small"
+                    android:textColor="@color/text_3" />
+            </LinearLayout>
+
             <!-- Updates -->
             <LinearLayout style="@style/Widget.Segno.SettingsCard">
 

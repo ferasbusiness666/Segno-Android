@@ -75,6 +75,30 @@ object LocalMusic {
         return out
     }
 
+    /** Every music file with its path (for backups and matching them on another phone). */
+    @Suppress("DEPRECATION")
+    fun songsWithPaths(context: Context): List<Pair<Track, String>> {
+        if (!hasPermission(context)) return emptyList()
+        val cols = SONG_COLS + MediaStore.Audio.Media.DATA
+        val out = ArrayList<Pair<Track, String>>()
+        context.contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, cols, MUSIC, null, null)?.use { c ->
+            while (c.moveToNext()) {
+                val id = c.getLong(0)
+                val track = Track(
+                    id = Track.LOCAL + id,
+                    title = c.getString(1)?.takeIf { it.isNotBlank() } ?: "Unknown song",
+                    artist = clean(c.getString(2)),
+                    album = clean(c.getString(3)),
+                    albumId = c.getLong(4),
+                    durationMs = c.getLong(5),
+                    uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id).toString(),
+                )
+                out += track to c.getString(6).orEmpty()
+            }
+        }
+        return out
+    }
+
     fun albums(context: Context): List<Album> {
         if (!hasPermission(context)) return emptyList()
         val cols = arrayOf(

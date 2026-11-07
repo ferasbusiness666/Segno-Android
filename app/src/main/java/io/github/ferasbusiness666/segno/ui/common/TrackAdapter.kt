@@ -104,7 +104,9 @@ class TrackAdapter(
         val h = Holder(b)
         b.root.setOnClickListener {
             val pos = h.bindingAdapterPosition
-            if (pos != RecyclerView.NO_POSITION) onClick(pos, getItem(pos))
+            if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
+            val t = getItem(pos)
+            if (t.isMissing) Messages.show(it.context.getString(R.string.missing_song)) else onClick(pos, t)
         }
         b.more.setOnClickListener {
             val pos = h.bindingAdapterPosition
@@ -155,6 +157,10 @@ class TrackAdapter(
         val source = if (t.kind == Track.Kind.Spotify) ctx.getString(R.string.from_spotify) else null
         var icon = 0
         b.sub.text = when {
+            t.isMissing -> {
+                icon = R.drawable.ic_alert_small
+                Format.sub(artist, ctx.getString(R.string.missing_short))
+            }
             d == null -> Format.sub(artist, length, source)
             d.isDone -> {
                 icon = R.drawable.ic_downloaded_small

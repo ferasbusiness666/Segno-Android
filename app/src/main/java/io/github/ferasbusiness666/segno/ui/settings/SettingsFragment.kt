@@ -2,13 +2,16 @@ package io.github.ferasbusiness666.segno.ui.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import io.github.ferasbusiness666.segno.BuildConfig
 import io.github.ferasbusiness666.segno.R
+import io.github.ferasbusiness666.segno.backup.Backup
 import io.github.ferasbusiness666.segno.data.Settings
 import io.github.ferasbusiness666.segno.databinding.FragmentSettingsBinding
 import io.github.ferasbusiness666.segno.ui.MainActivity
+import io.github.ferasbusiness666.segno.ui.common.Messages
 import io.github.ferasbusiness666.segno.ui.common.openUrl
 import io.github.ferasbusiness666.segno.update.Updates
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +52,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             val on = b.autoCheck.isChecked
             lifecycleScopeIO { Settings.checkUpdates = on }
         }
+        b.backupSave.setOnClickListener {
+            runCatching { saveFile.launch(Backup.fileName()) }.onFailure { Messages.show(getString(R.string.backup_save_failed)) }
+        }
+        b.backupRestore.setOnClickListener {
+            runCatching { openFile.launch(arrayOf("application/json", "text/*", "application/octet-stream")) }
+                .onFailure { Messages.show(getString(R.string.backup_read_failed)) }
+        }
         b.updateButton.setOnClickListener {
             val found = Updates.available.value
             if (found != null) {
@@ -57,6 +67,14 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 check()
             }
         }
+    }
+
+    // The system's "save as" and "open" screens, so the backup can go to Downloads or Google Drive.
+    private val saveFile = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        if (uri != null) main.saveBackup(uri)
+    }
+    private val openFile = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) main.restoreBackup(uri)
     }
 
     private fun lifecycleScopeIO(block: () -> Unit) {

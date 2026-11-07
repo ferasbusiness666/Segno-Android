@@ -5,6 +5,7 @@ package io.github.ferasbusiness666.segno.core
  *
  * [id] says where: "yt:<video id>" for YouTube, "sp:<track id>" for Spotify (played from a
  * YouTube video Segno finds) and "local:<MediaStore id>" for music files on the phone.
+ * "missing:<hash>" is a phone file from a backup that isn't on this phone (see BackupFormat).
  */
 data class Track(
     val id: String,
@@ -32,6 +33,9 @@ data class Track(
 
     val isOnline: Boolean get() = kind != Kind.Local
 
+    /** A phone file from a backup that this phone doesn't have: shown, kept, never played. */
+    val isMissing: Boolean get() = id.startsWith(MISSING)
+
     /** The YouTube video that plays: the song's own, or the one found for a Spotify song. */
     val youtubeId: String?
         get() = when (kind) {
@@ -56,6 +60,7 @@ data class Track(
         const val YT = "yt:"
         const val SP = "sp:"
         const val LOCAL = "local:"
+        const val MISSING = "missing:"
 
         fun youtube(videoId: String, title: String, artist: String, durationMs: Long, art: String = "") =
             Track(id = YT + videoId, title = title, artist = artist, durationMs = durationMs, art = art)

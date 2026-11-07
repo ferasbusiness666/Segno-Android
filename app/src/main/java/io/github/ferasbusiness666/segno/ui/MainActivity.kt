@@ -31,8 +31,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.ferasbusiness666.segno.BuildConfig
 import io.github.ferasbusiness666.segno.R
+import io.github.ferasbusiness666.segno.backup.Backup
+import io.github.ferasbusiness666.segno.backup.BackupFormat
 import io.github.ferasbusiness666.segno.data.Settings
 import io.github.ferasbusiness666.segno.databinding.ActivityMainBinding
+import io.github.ferasbusiness666.segno.library.LocalMusic
 import io.github.ferasbusiness666.segno.spotify.SpotifyParser
 import io.github.ferasbusiness666.segno.ui.common.Images
 import io.github.ferasbusiness666.segno.ui.common.Messages
@@ -55,6 +58,7 @@ import io.github.ferasbusiness666.segno.youtube.Links
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
@@ -164,6 +168,83 @@ class MainActivity : AppCompatActivity() {
                 if (text.isNotEmpty()) openShared(text)
             }
             ACTION_TEST_UPDATE -> if (BuildConfig.UPDATE_TEST_HOOK) testUpdate(intent)
+            ACTION_TEST_BACKUP -> if (BuildConfig.DEBUG) testBackup(intent)
+        }
+    }
+
+    // Backup ---------------------------------------------------------------------------------------
+
+    /** Saves the backup to [uri] (picked in the system's "save as" screen). */
+    fun saveBackup(uri: Uri) {
+        val app = applicationContext
+        lifecycleScope.launch {
+            val r = withContext(Dispatchers.IO) { runCatching { Backup.save(app, uri) } }
+            r.onSuccess {
+                toast(
+                    getString(
+                        R.string.backup_saved,
+                        resources.getQuantityString(R.plurals.backup_playlists, it.playlists, it.playlists),
+                        resources.getQuantityString(R.plurals.backup_loved, it.loved, it.loved),
+                    ),
+                )
+            }.onFailure {
+                android.util.Log.w("Segno", "Couldn't save the backup", it)
+                toast(getString(R.string.backup_save_failed))
+            }
+        }
+    }
+
+    /** Restores the backup at [uri]. Asks for the music files first, so they can be matched. */
+    fun restoreBackup(uri: Uri) {
+        if (LocalMusic.hasPermission(this)) restoreNow(uri) else askAudio(LocalMusic.permission) { restoreNow(uri) }
+    }
+
+    private fun restoreNow(uri: Uri) {
+        val app = applicationContext
+        toast(getString(R.string.backup_restoring))
+        lifecycleScope.launch {
+            val r = withContext(Dispatchers.IO) { runCatching { Backup.restore(app, uri) } }
+            r.onSuccess { done ->
+                done.queue?.let { q ->
+                    PlayerHub.restoreQueue(this@MainActivity, done.queueTracks, q.index, q.positionMs, q.shuffle, BackupFormat.repeatMode(q.repeat))
+                }
+                var text = getString(
+                    R.string.backup_restored,
+                    resources.getQuantityString(R.plurals.backup_playlists, done.playlists, done.playlists),
+                    resources.getQuantityString(R.plurals.backup_loved, done.lovedAdded, done.lovedAdded),
+                )
+                if (done.missing > 0) {
+                    text += "\n\n" + getString(R.string.backup_restored_missing, resources.getQuantityString(R.plurals.backup_songs, done.missing, done.missing))
+                }
+                MaterialAlertDialogBuilder(this@MainActivity)
+                    .setTitle(R.string.backup_restored_title)
+                    .setMessage(text)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+            }.onFailure { e ->
+                android.util.Log.w("Segno", "Couldn't restore the backup", e)
+                val why = when ((e as? BackupFormat.Unreadable)?.reason) {
+                    BackupFormat.Reason.NotABackup -> R.string.backup_not_backup
+                    BackupFormat.Reason.Newer -> R.string.backup_newer
+                    BackupFormat.Reason.Damaged -> R.string.backup_damaged
+                    null -> R.string.backup_read_failed
+                }
+                MaterialAlertDialogBuilder(this@MainActivity)
+                    .setTitle(R.string.backup_failed_title)
+                    .setMessage(why)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+            }
+        }
+    }
+
+    /** CI only (debug builds): saves or restores a backup file in Segno's files folder, without the file picker. */
+    private fun testBackup(intent: Intent) {
+        val dir = getExternalFilesDir(null) ?: return
+        val file = File(dir, File(intent.getStringExtra("file").orEmpty().ifEmpty { "backup.json" }).name)
+        when (intent.getStringExtra("mode")) {
+            "save" -> saveBackup(Uri.fromFile(file))
+            "restore" -> restoreBackup(Uri.fromFile(file))
         }
     }
 
@@ -481,6 +562,7 @@ class MainActivity : AppCompatActivity() {
         const val ACTION_NOW_PLAYING = "io.github.ferasbusiness666.segno.NOW_PLAYING"
         const val ACTION_DOWNLOADS = "io.github.ferasbusiness666.segno.DOWNLOADS"
         const val ACTION_TEST_UPDATE = "io.github.ferasbusiness666.segno.TEST_UPDATE"
+        const val ACTION_TEST_BACKUP = "io.github.ferasbusiness666.segno.TEST_BACKUP"
         private const val KEY_TAB = "tab"
         private const val NP = "now_playing"
         private val TAGS = listOf("home", "search", "library")

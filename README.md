@@ -40,6 +40,9 @@ No account, no ads, no tracking. Segno collects nothing.
   skipping live versions, covers and sped-up edits unless the song itself is one.
 - **Sleep timer**: 15, 30 or 45 minutes, an hour, or the end of the song. The music fades out
   over the last 30 seconds.
+- **Backup**: playlists, Loved songs and settings in one file you can keep anywhere and restore
+  on another phone. The format is in [docs/backup-format.md](docs/backup-format.md), so Segno on
+  a computer can read it too.
 - **Updates inside the app**: once a day Segno asks GitHub if there's a newer version. Home then
   shows what's new, and **Update** downloads and installs it. You can turn the check off too.
 

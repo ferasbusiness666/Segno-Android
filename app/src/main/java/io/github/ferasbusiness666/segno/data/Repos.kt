@@ -170,6 +170,31 @@ object Loved {
             null,
         ).use { c -> buildList { while (c.moveToNext()) add(c.toTrack()) } }
 
+    /** Loves songs that aren't loved yet; [tracks] newest first. Returns how many were added. Blocking. */
+    fun addAll(tracks: List<Track>): Int {
+        val fresh = tracks.filter { it.id !in ids() }.distinctBy { it.id }
+        if (fresh.isEmpty()) return 0
+        val now = System.currentTimeMillis()
+        db.writableDatabase.tx {
+            db.putTracks(this, fresh)
+            fresh.forEachIndexed { i, t ->
+                insertWithOnConflict(
+                    "loved",
+                    null,
+                    ContentValues().apply {
+                        put("track_id", t.id)
+                        // Older ones a little earlier, so the order stays as it was.
+                        put("added", now - i)
+                    },
+                    android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE,
+                )
+            }
+        }
+        cache = null
+        Changes.loved()
+        return fresh.size
+    }
+
     /** Loves or un-loves a song. Returns whether it's loved now. */
     fun toggle(track: Track): Boolean {
         val now = !isLoved(track.id)
