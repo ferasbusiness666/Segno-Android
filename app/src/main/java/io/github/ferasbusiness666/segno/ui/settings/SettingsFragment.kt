@@ -10,6 +10,7 @@ import io.github.ferasbusiness666.segno.R
 import io.github.ferasbusiness666.segno.backup.Backup
 import io.github.ferasbusiness666.segno.data.Settings
 import io.github.ferasbusiness666.segno.databinding.FragmentSettingsBinding
+import io.github.ferasbusiness666.segno.lyrics.LyricsCenter
 import io.github.ferasbusiness666.segno.ui.MainActivity
 import io.github.ferasbusiness666.segno.ui.common.Messages
 import io.github.ferasbusiness666.segno.ui.common.openUrl
@@ -36,8 +37,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         viewLifecycleOwner.lifecycleScope.launch {
             val (autoplay, autoCheck) = withContext(Dispatchers.IO) {
                 Updates.load()
+                Settings.syncedLyrics
                 Settings.autoplay to Settings.checkUpdates
             }
+            b.lyricsSwitch.isChecked = Settings.syncedLyrics
             b.autoplay.isChecked = autoplay
             b.autoCheck.isChecked = autoCheck
             renderUpdate(null)
@@ -46,6 +49,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             b.autoplay.isChecked = !b.autoplay.isChecked
             val on = b.autoplay.isChecked
             lifecycleScopeIO { Settings.autoplay = on }
+        }
+        b.lyricsRow.setOnClickListener {
+            b.lyricsSwitch.isChecked = !b.lyricsSwitch.isChecked
+            val on = b.lyricsSwitch.isChecked
+            if (!on) LyricsCenter.clear()
+            lifecycleScopeIO { Settings.syncedLyrics = on }
         }
         b.autoCheckRow.setOnClickListener {
             b.autoCheck.isChecked = !b.autoCheck.isChecked

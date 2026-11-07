@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One line of lyrics. The line being sung is bright; the others are dimmed with alpha only,
+     so a new line never lays the list out again. Arabic and Hebrew lines align right. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_lyric_line"
+    android:breakStrategy="balanced"
+    android:fontFamily="@font/inter_display_bold"
+    android:lineSpacingMultiplier="1.08"
+    android:paddingStart="@dimen/s2"
+    android:paddingTop="@dimen/s2"
+    android:paddingEnd="@dimen/s2"
+    android:paddingBottom="@dimen/s2"
+    android:textAlignment="textStart"
+    android:textColor="@color/text"
+    android:textDirection="firstStrong"
+    android:textSize="@dimen/text_lyric" />

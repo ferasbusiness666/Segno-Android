@@ -51,6 +51,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top" />
 
+    <include
+        android:id="@+id/lyrics"
+        layout="@layout/view_np_lyrics"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/s4"
+        android:layout_marginEnd="@dimen/s4"
+        android:layout_marginBottom="@dimen/s2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/half"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top" />
+
     <TextView
         android:id="@+id/npTitle"
         android:layout_width="0dp"

@@ -7,6 +7,19 @@ Each version starts with "## <version>" (the same as versionName in app/build.gr
 Inside, use "### New", "### Better" or "### Fixed", with one "- " line per change. Keep lines short.
 -->
 
+## 1.1.0
+
+### New
+- Lyrics in Now Playing: tap the microphone. The line being sung lights up and the lyrics follow the song. Tap a line to play from there.
+- Lyrics come from YouTube Music first, then LRCLIB and NetEase, all asked at once; the best answer wins. Arabic songs too.
+- Lyrics a little early or late? Earlier and Later move them a quarter of a second, and Segno remembers. Wrong lyrics? finds others.
+- A .lrc file next to a song on your phone always wins (Android 8 to 10).
+- Synced lyrics in Settings: off, and Segno never looks lyrics up.
+
+### Better
+- Spotify songs play YouTube Music's own song when it has the same one, so the length and lyrics fit.
+- Lyrics are only looked up while they're open, plus the next song once one is found, to save data and battery.
+
 ## 1.0.0
 
 ### New

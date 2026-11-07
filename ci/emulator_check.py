@@ -461,6 +461,86 @@ def delete_check():
     return None
 
 
+# Lyrics: a .lrc next to the song (read on Android 8-10) and saved lyrics (every version), on the
+# local test song; the line being sung lights up and a tap on a line plays from there.
+def fnv64(text):
+    h = 0xcbf29ce484222325
+    for byte in text.encode("utf-8"):
+        h ^= byte
+        h = (h * 0x100000001b3) & 0xFFFFFFFFFFFFFFFF
+    return "%016x" % h
+
+
+def lyrics_check():
+    import tempfile
+    name = "Segno CI - Long Tone"
+    def lrc(word):
+        return "".join(f"[{(i * 4) // 60:02d}:{(i * 4) % 60:02d}.00]{word} line {i + 1}\n" for i in range(30))
+    side = os.path.join(tempfile.gettempdir(), "side.lrc")
+    with open(side, "w") as f:
+        f.write(lrc("Sidecar"))
+    adb("push", side, f"/sdcard/Music/{name}.lrc")
+    saved = os.path.join(tempfile.gettempdir(), "saved.lrc")
+    with open(saved, "w") as f:
+        f.write("[re:Segno]\n" + lrc("Saved"))
+    # Segno's saved lyrics: the cleaned title and artist and the length, hashed (Store.cacheName).
+    cache = fnv64("segnocilongtone\n\n120") + ".lrc"
+    adb("push", saved, "/data/local/tmp/saved.lrc")
+    sh("chmod 644 /data/local/tmp/saved.lrc")
+    sh(f"run-as {PKG} mkdir -p files/lyrics")
+    sh(f"run-as {PKG} cp /data/local/tmp/saved.lrc files/lyrics/{cache}")
+    adb("shell", "am", "start", "-n", ACT)
+    time.sleep(2)
+    tap_id("tabLibrary")
+    time.sleep(1)
+    tap_id("chipSongs")
+    time.sleep(2)
+    adb("logcat", "-c")
+    if not tap_id("title", wait=20, text="Long Tone"):
+        return "test song not in Library"
+    wait_for(lambda: "playing=true" in adb("logcat", "-d", "-s", "SegnoCI:I") or None, 20)
+    if not tap_id("miniCard"):
+        return "no mini player"
+    time.sleep(2)
+    if not tap_id("npLyrics"):
+        return "no lyrics button"
+    lines = wait_for(lambda: [n.get("text") for n in nodes(dump()) if " line " in (n.get("text") or "")] or None, 20)
+    time.sleep(3)
+    shot("23-lyrics")
+    if not lines:
+        texts = [(n.get("text") or "") for n in nodes(dump()) if (n.get("text") or "").strip()]
+        log(f"lyrics screen shows: {texts[:12]}")
+        return "no lyrics lines"
+    which = "the .lrc beside the song" if lines[0].startswith("Sidecar") else "saved lyrics"
+    log(f"lyrics shown from {which}: {lines[:4]}")
+    if level < 29 and which != "the .lrc beside the song":
+        return "the .lrc beside the song wasn't read"
+    # A tap on a line plays from there.
+    target = find(text="line 6")
+    if target is None:
+        target = next((dict(n.attrib) for n in nodes(dump()) if " line " in (n.get("text") or "")), None)
+    if target is not None:
+        want = (int(re.search(r"line (\d+)", target["text"]).group(1)) - 1) * 4000
+        adb("logcat", "-c")
+        tap(target)
+        time.sleep(6)
+        pos = [int(p) for p in re.findall(r"pos=(\d+)", adb("logcat", "-d", "-s", "SegnoCI:I"))]
+        log(f"tapped '{target['text']}' (starts at {want} ms): position after {pos[-2:] if pos else '?'}")
+        if pos and not (want - 500 <= pos[-1] <= want + 9000):
+            return "a tap on a line didn't play from there"
+        shot("23b-lyrics-after-tap")
+    # Back to the cover for the rest of the run.
+    tap_id("npLyrics")
+    back()
+    sh(f"rm -f '/sdcard/Music/{name}.lrc'")
+    return None
+
+
+why_lyrics = lyrics_check()
+log(f"lyrics: {'ok' if why_lyrics is None else why_lyrics}")
+if why_lyrics:
+    failures.append(f"lyrics: {why_lyrics}")
+
 why_not = delete_check()
 log(f"delete from phone: {'ok' if why_not is None else why_not}")
 if why_not:

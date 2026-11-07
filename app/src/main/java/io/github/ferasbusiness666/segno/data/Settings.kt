@@ -20,6 +20,16 @@ object Settings {
         get() = prefs.getBoolean("autoplay", true)
         set(v) = prefs.edit { putBoolean("autoplay", v) }
 
+    /** Look up lyrics online when they're opened (desktop's "Synced lyrics"). Off sends nothing. */
+    var syncedLyrics: Boolean
+        get() = prefs.getBoolean("synced_lyrics", true)
+        set(v) = prefs.edit { putBoolean("synced_lyrics", v) }
+
+    /** Now Playing shows the lyrics instead of the cover. */
+    var lyricsOpen: Boolean
+        get() = prefs.getBoolean("lyrics_open", false)
+        set(v) = prefs.edit { putBoolean("lyrics_open", v) }
+
     var checkUpdates: Boolean
         get() = prefs.getBoolean("check_updates", true)
         set(v) = prefs.edit { putBoolean("check_updates", v) }

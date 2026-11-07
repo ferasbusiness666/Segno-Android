@@ -32,4 +32,5 @@
     <dimen name="text_h2">19sp</dimen>
     <dimen name="text_h1">28sp</dimen>
     <dimen name="text_np_title">22sp</dimen>
+    <dimen name="text_lyric">24sp</dimen>
 </resources>

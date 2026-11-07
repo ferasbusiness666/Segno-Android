@@ -38,6 +38,8 @@ No account, no ads, no tracking. Segno collects nothing.
 - **Import playlists** from Spotify (playlists, albums, songs) and YouTube (playlists, or a whole
   channel's public playlists). Spotify songs play from a YouTube video with the same length,
   skipping live versions, covers and sped-up edits unless the song itself is one.
+- **Lyrics**: timed lyrics in Now Playing from YouTube Music, LRCLIB and NetEase, asked together.
+  The line being sung lights up; tap a line to play from there. Earlier and Later fix the timing.
 - **Sleep timer**: 15, 30 or 45 minutes, an hour, or the end of the song. The music fades out
   over the last 30 seconds.
 - **Backup**: playlists, Loved songs and settings in one file you can keep anywhere and restore

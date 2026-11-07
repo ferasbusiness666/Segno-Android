@@ -200,6 +200,22 @@
     <string name="np_nothing_title">Nothing playing</string>
     <string name="np_nothing_body">Pick a song and it shows up here.</string>
     <string name="np_queue">Queue</string>
+    <string name="np_lyrics">Lyrics</string>
+    <string name="np_lyrics_hide">Hide lyrics</string>
+    <string name="lyrics_looking">Looking for lyrics…</string>
+    <string name="lyrics_none">No lyrics found for this song</string>
+    <string name="lyrics_none_body">Not on YouTube Music, LRCLIB or NetEase.</string>
+    <string name="lyrics_failed">Couldn\'t load lyrics</string>
+    <string name="lyrics_failed_body">Check your internet. Segno tries again by itself too.</string>
+    <string name="lyrics_busy">The lyrics site is busy right now</string>
+    <string name="lyrics_busy_body">Segno keeps trying by itself.</string>
+    <string name="lyrics_not_timed">Not timed to the song</string>
+    <string name="lyrics_earlier">Earlier</string>
+    <string name="lyrics_later">Later</string>
+    <string name="lyrics_earlier_desc">Lyrics come too late: show them earlier</string>
+    <string name="lyrics_later_desc">Lyrics come too soon: show them later</string>
+    <string name="lyrics_wrong">Wrong lyrics?</string>
+    <string name="lyrics_jump">Play from this line</string>
     <string name="np_sleep">Sleep timer</string>
     <string name="np_love">Love</string>
     <string name="np_download">Download</string>
@@ -282,6 +298,8 @@
     <!-- Settings -->
     <string name="set_playback">Playback</string>
     <string name="set_autoplay">Keep playing when the queue ends</string>
+    <string name="set_lyrics">Synced lyrics</string>
+    <string name="set_lyrics_sub">Finds lyrics on YouTube Music, LRCLIB and NetEase when you open them, using the song\'s name. Off sends nothing.</string>
     <string name="set_autoplay_sub">Carries on with songs like the last one, so the music doesn\'t stop.</string>
     <string name="set_downloads">Downloads</string>
     <string name="set_downloads_sub">Songs are saved as M4A files in Music/Segno, with their name, artist and cover, so every music app on your phone sees them.</string>

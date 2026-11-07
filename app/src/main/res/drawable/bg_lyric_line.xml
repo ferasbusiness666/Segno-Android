@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tap feedback on a lyrics line: a soft ripple with rounded corners, nothing at rest. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/ripple">
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/r_md" />
+            <solid android:color="#FFFFFFFF" />
+        </shape>
+    </item>
+</ripple>

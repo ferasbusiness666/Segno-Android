@@ -74,6 +74,18 @@
         android:layout_weight="1" />
 
     <ImageButton
+        android:id="@+id/npLyrics"
+        style="@style/Widget.Segno.IconButton"
+        android:contentDescription="@string/np_lyrics"
+        android:src="@drawable/ic_lyrics" />
+
+    <Space
+        android:id="@+id/npLyricsGap"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <ImageButton
         android:id="@+id/npQueue"
         style="@style/Widget.Segno.IconButton"
         android:contentDescription="@string/np_queue"

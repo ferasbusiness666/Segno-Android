@@ -156,6 +156,35 @@
                         android:id="@+id/autoplay"
                         style="@style/Widget.Segno.Switch" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lyricsRow"
+                    style="@style/Widget.Segno.SettingsRow">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/set_lyrics"
+                            android:textAppearance="@style/TextAppearance.Segno.Body" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/set_lyrics_sub"
+                            android:textAppearance="@style/TextAppearance.Segno.Small" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/lyricsSwitch"
+                        style="@style/Widget.Segno.Switch" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Downloads -->

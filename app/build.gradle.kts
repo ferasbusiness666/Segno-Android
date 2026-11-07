@@ -23,7 +23,7 @@ fun signingValue(env: String, prop: String): String? =
 // The version. Raise appVersion for every release; versionCode comes from it (1.2.3 → 1002003,
 // the same rule as Versions.code in the app), so it always goes up with the name. CI can pass
 // -PsegnoVersionName=... to build a test update.
-val appVersion = "1.0.0"
+val appVersion = "1.1.0"
 val versionNameUsed = providers.gradleProperty("segnoVersionName").orNull ?: appVersion
 
 fun versionCodeOf(name: String): Int {

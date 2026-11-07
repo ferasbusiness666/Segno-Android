@@ -27,9 +27,12 @@ import io.github.ferasbusiness666.segno.core.Format
 import io.github.ferasbusiness666.segno.core.Track
 import io.github.ferasbusiness666.segno.data.Changes
 import io.github.ferasbusiness666.segno.data.Loved
+import io.github.ferasbusiness666.segno.data.Settings
 import io.github.ferasbusiness666.segno.databinding.FragmentNowPlayingBinding
 import io.github.ferasbusiness666.segno.download.DownloadState
 import io.github.ferasbusiness666.segno.download.Downloads
+import io.github.ferasbusiness666.segno.lyrics.LyricsCenter
+import io.github.ferasbusiness666.segno.lyrics.LyricsState
 import io.github.ferasbusiness666.segno.playback.MediaItems
 import io.github.ferasbusiness666.segno.playback.Sleep
 import io.github.ferasbusiness666.segno.playback.SleepTimer
@@ -45,6 +48,7 @@ import io.github.ferasbusiness666.segno.ui.common.setIcon
 import io.github.ferasbusiness666.segno.ui.common.setTextIfChanged
 import io.github.ferasbusiness666.segno.ui.common.whileStarted
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,6 +65,11 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private var loved = false
     private var state = NowState()
     private var sleepPopup: SleepPopup? = null
+    private var lyricsPanel: LyricsPanel? = null
+    private var lyricsJob: Job? = null
+    private var lyricsRetry: Job? = null
+    /** Lyrics show instead of the cover (and only then are they looked up). */
+    private var lyricsOpen = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val b = FragmentNowPlayingBinding.bind(view)
@@ -80,6 +89,21 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         }
         b.actions.npDownload.setOnClickListener { onDownload() }
         b.actions.npSleep.setOnClickListener { openSleep() }
+        lyricsPanel = LyricsPanel(
+            b.lyrics,
+            onSeek = { ms -> PlayerHub.seekTo(ms) },
+            onRetry = { askLyrics(force = true) },
+            onWrong = { key -> askLyrics(force = true, avoid = key) },
+            onNudge = { by ->
+                val app = main.applicationContext
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { LyricsCenter.nudge(app, by) }
+            },
+        )
+        b.actions.npLyrics.setOnClickListener { setLyricsOpen(!lyricsOpen, save = true) }
+        val lyricsOn = Settings.syncedLyrics
+        b.actions.npLyrics.isVisible = lyricsOn
+        b.actions.npLyricsGap.isVisible = lyricsOn
+        setLyricsOpen(lyricsOn && Settings.lyricsOpen, save = false)
         b.actions.npQueue.setOnClickListener {
             if (childFragmentManager.findFragmentByTag("queue") == null) QueueSheet().show(childFragmentManager, "queue")
         }
@@ -102,6 +126,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             launch { PlayerHub.state.collect(::render) }
             launch { Downloads.states.collect { renderDownload() } }
             launch { Changes.loved.collect { refreshLoved() } }
+            launch { LyricsCenter.shown.collect(::renderLyrics) }
             launch {
                 // Position and sleep countdown, only while this screen shows: once a second, on
                 // the song's next whole second, so the time changes once and on time.
@@ -156,7 +181,10 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             artId = artKey
             loadArt(t)
         }
-        if (old.track?.id != t.id) refreshLoved()
+        if (old.track?.id != t.id) {
+            refreshLoved()
+            if (lyricsOpen) askLyrics()
+        }
 
         val playing = s.showPause
         b.controls.npPlay.setIcon(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
@@ -378,12 +406,100 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         p.show(b.actions.npSleepBox, state.sleep)
     }
 
+    // Lyrics ---------------------------------------------------------------------------------------
+
+    private fun setLyricsOpen(open: Boolean, save: Boolean) {
+        val b = b ?: return
+        lyricsOpen = open
+        b.npArt.visibility = if (open) View.INVISIBLE else View.VISIBLE
+        lyricsPanel?.visible = open
+        b.actions.npLyrics.setIcon(R.drawable.ic_lyrics, if (open) R.color.accent else R.color.text_2)
+        b.actions.npLyrics.contentDescription = getString(if (open) R.string.np_lyrics_hide else R.string.np_lyrics)
+        if (save) viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { Settings.lyricsOpen = open }
+        if (open) {
+            renderLyrics(LyricsCenter.shown.value)
+            askLyrics()
+        } else {
+            stopLyricsTicks()
+        }
+    }
+
+    /** Look up the song playing (only while the lyrics are open). */
+    private fun askLyrics(force: Boolean = false, avoid: Long? = null) {
+        if (!lyricsOpen) return
+        val t = state.track ?: return
+        val dur = state.durationMs
+        val app = main.applicationContext
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { LyricsCenter.request(app, t, dur, force, avoid) }
+    }
+
+    private fun renderLyrics(shown: LyricsCenter.Shown?) {
+        val panel = lyricsPanel ?: return
+        if (!lyricsOpen) return
+        val t = state.track
+        // Until the song playing has been looked up, what's there is another song's.
+        val mine = shown?.takeIf { it.trackId == t?.id }
+        panel.show(mine)
+        lyricsRetry?.cancel()
+        when (val st = mine?.state) {
+            is LyricsState.Found -> {
+                if (st.lyrics.synced) startLyricsTicks() else stopLyricsTicks()
+                readAhead()
+            }
+            is LyricsState.Failed -> {
+                stopLyricsTicks()
+                // Asked again by itself after half a minute.
+                lyricsRetry = viewLifecycleOwner.lifecycleScope.launch {
+                    delay(30_000)
+                    askLyrics()
+                }
+            }
+            LyricsState.Missing -> {
+                stopLyricsTicks()
+                readAhead()
+            }
+            else -> stopLyricsTicks()
+        }
+    }
+
+    /** The next song's lyrics, quietly, once the one playing is done. */
+    private fun readAhead() {
+        val next = PlayerHub.queue().second.firstOrNull()?.track ?: return
+        val app = main.applicationContext
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { LyricsCenter.ahead(app, next, 0) }
+    }
+
+    private fun startLyricsTicks() {
+        if (lyricsJob?.isActive == true) return
+        lyricsJob = viewLifecycleOwner.lifecycleScope.launch {
+            // The player's position already allows for the delay to the speakers (ExoPlayer
+            // counts the audio output's latency), so it's used as it is.
+            while (true) {
+                val panel = lyricsPanel ?: break
+                val wait = panel.tick(PlayerHub.position() / 1000f, state.isPlaying)
+                delay(wait)
+            }
+        }
+    }
+
+    private fun stopLyricsTicks() {
+        lyricsJob?.cancel()
+        lyricsJob = null
+    }
+
     /** For the CI screenshots: opens the sleep timer popup. */
     fun showSleepForTest() = openSleep()
+
+    override fun onStop() {
+        stopLyricsTicks()
+        lyricsRetry?.cancel()
+        super.onStop()
+    }
 
     override fun onDestroyView() {
         sleepPopup?.dismiss()
         sleepPopup = null
+        lyricsPanel = null
         // A new view starts from scratch: cover, sleep icon and the rest are drawn again.
         state = NowState()
         artId = null
